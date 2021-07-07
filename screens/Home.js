@@ -8,7 +8,6 @@ import { StyleSheet,
   import APIKit, {setClientToken} from '../shared/APIKit';
   import { COLORS, SIZES, FONTS } from '../constants'
 
-  import CategoryModel from '../models/Category';
 
 export default class Home extends React.Component { 
 
@@ -18,8 +17,6 @@ export default class Home extends React.Component {
 		this.state = {
       navigation: props.navigation,
       userEmail: null,
-      setCategory: null,
-      category: null
 		}
   }
   
@@ -28,8 +25,7 @@ export default class Home extends React.Component {
 		this._focusListener = this.props.navigation.addListener('focus', () => {
 			this.verifysession();
 			this.getData();
-      this.fillTable();
-      console.log( this.state.setCategory)
+
 		});
   }
 
@@ -37,71 +33,6 @@ export default class Home extends React.Component {
 		this._focusListener();
   }
 
-
-  async fillTable () {
-  
-    await CategoryModel.createTable()
-    console.log('Table created successfully')
-  
-  
-    const props =[
-      {
-        name: 'Education',
-        icon: 'faGraduationCap',
-        color: COLORS.blue
-    },
-    {
-      name: 'Nutrition',
-      icon: 'faCutlery',
-      color: COLORS.green
-   },
-    {
-        name: 'Child',
-        icon: 'faChild',
-        color: COLORS.yellow
-    },
-    {
-      name: 'Beauty & Care',
-      icon: 'faEye',
-      color: COLORS.pink
-   },
-    {
-        name: 'Travel',
-        icon: 'faPlane',
-        color: COLORS.blue
-    },
-    {
-      name: 'Clothing',
-      icon: 'faShoppingBag',
-      color: COLORS.primary
-   }
-    ]
-   
-          var loopData = ''
-          var i ;
-          for(i=0; i < props.length; i++){
-            const categoria = new CategoryModel(props[i])
-            await categoria.save()
-
-            loopData += categoria
-          }
-
-    console.log(loopData)
-  
-    const options = {
-        columns: 'id, name, icon, color',
-        where: {
-            name:'Travel'
-        },
-        page: 2,
-        limit: 30,
-        order: 'id ASC'
-      }
-
-      this.state.setCategory = await CategoryModel.query()
-      console.log(this.state.setCategory)
-  }
-  
   async getData () {
 		await AsyncStorage.getItem('userEmail')
 			.then((value) => this.setState({ userEmail: value }));

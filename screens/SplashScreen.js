@@ -14,11 +14,6 @@ import { FONTS, COLORS } from '../constants'
 
 
 
-
-
-
-
-
 const SplashScreen = ({ navigation }) => {
 
 
