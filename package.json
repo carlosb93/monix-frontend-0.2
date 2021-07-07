@@ -8,7 +8,13 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@databases/expo": "^5.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@fortawesome/react-native-fontawesome": "^0.2.6",
     "@react-native-async-storage/async-storage": "^1.13.3",
+    "@react-native-community/google-signin": "^5.0.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/slider": "3.0.0",
     "@react-navigation/bottom-tabs": "^5.11.8",
@@ -19,6 +25,9 @@
     "expo": "~41.0.1",
     "expo-av": "~8.2.1",
     "expo-barcode-scanner": "~8.2.1",
+    "expo-google-sign-in": "^9.2.1",
+    "expo-sqlite": "^9.2.1",
+    "expo-sqlite-orm": "^1.5.6",
     "expo-status-bar": "~1.0.4",
     "formik": "^2.2.6",
     "lodash": "^4.17.21",
@@ -41,6 +50,7 @@
     "react-native-sqlite-storage": "^5.0.0",
     "react-native-svg": "^9.12.0",
     "react-native-web": "~0.13.12",
+    "victory-native": "^35.3.3",
     "yup": "^0.29.3"
   },
   "devDependencies": {

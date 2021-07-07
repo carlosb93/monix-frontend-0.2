@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Home, Signup, Login, SplashScreen } from './screens'
-import Tabs from './navigation/tabs'
+import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses } from './screens';
+import Tabs from './navigation/tabs';
+import { COLORS, SIZES } from './constants';
 
-import { COLORS, SIZES } from './constants'
+
+
 
 const Stack = createStackNavigator();
 
+
 export default class App extends React.Component {
 
+    
 	constructor() {
 		super();
 		this.state = {
@@ -41,9 +45,15 @@ export default class App extends React.Component {
                 
             > 
                 <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}}/>
-                <Stack.Screen name="Home" component={Tabs} />
                 <Stack.Screen name="Signup" component={Signup} />
                 <Stack.Screen name="Login" component={Login} />
+
+                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen name="Business" component={Business} />
+                <Stack.Screen name="Expenses" component={Expenses} />
+                <Stack.Screen name="Home" component={Tabs} />
+
                  
             </Stack.Navigator>
         </NavigationContainer>

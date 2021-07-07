@@ -2,19 +2,23 @@ import React from 'react';
 import {
     View,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    StyleSheet
 } from 'react-native';
 import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs"
 import Svg, { Path } from 'react-native-svg';
 import { isIphoneX } from 'react-native-iphone-x-helper';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faUsers,faBriefcase } from '@fortawesome/free-solid-svg-icons'
 
-import { Home} from "../screens"
+import { Home, Profile, Business,Expenses} from "../screens"
 
 import { COLORS, icons } from "../constants"
 
 
 
 const Tab = createBottomTabNavigator();
+
 
 const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
 
@@ -27,7 +31,7 @@ const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
                     <View style={{ flex: 1, backgroundColor: COLORS.white }}></View>
                     <Svg
                         width={70}
-                        height={61}
+                        height={60}
                         viewBox="0 0 75 61"
                     >
                         <Path
@@ -145,8 +149,8 @@ const Tabs = ({ navigation }) => {
             />
 
             <Tab.Screen
-                name="Search"
-                component={Home}
+                name="Expenses"
+                component={Expenses}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Image
@@ -161,6 +165,7 @@ const Tabs = ({ navigation }) => {
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
+                        onPress ={ () => { navigation.replace('Expenses') }}
                         {...props}
                         />
                     )
@@ -168,41 +173,33 @@ const Tabs = ({ navigation }) => {
             />
 
             <Tab.Screen
-                name="Like"
-                component={Home}
+                name="Business"
+                component={Business}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={icons.like}
-                            resizeMode="contain"
-                            style={{
-                                width: 25,
-                                height: 25,
-                                tintColor: focused ? COLORS.primary : COLORS.secondary
-                            }}
-                        />
+                        <FontAwesomeIcon size={25} icon={ faBriefcase  } 
+                        style={{
+                            color: focused ? COLORS.primary : COLORS.secondary,
+                        }}/>
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
+                        onPress ={ () => { navigation.replace('Business') }}
                             {...props}
                         />
                     )
                 }}
             />
+
             <Tab.Screen
                 name="Users"
                 component={Home}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={icons.users}
-                            resizeMode="contain"
-                            style={{
-                                width: 25,
-                                height: 25,
-                                tintColor: focused ? COLORS.primary : COLORS.secondary
-                            }}
-                        />
+                        <FontAwesomeIcon size={25} icon={ faUsers  } 
+                        style={{
+                            color: focused ? COLORS.primary : COLORS.secondary,
+                        }}/>
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -214,7 +211,7 @@ const Tabs = ({ navigation }) => {
 
             <Tab.Screen
                 name="User"
-                component={Home}
+                component={Profile}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Image
@@ -229,6 +226,7 @@ const Tabs = ({ navigation }) => {
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
+                        onPress ={ () => { navigation.replace('Profile') }}
                             {...props}
                         />
                     )

@@ -9,13 +9,26 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { FONTS } from '../constants'
+import { FONTS, COLORS } from '../constants'
+
+
+
+
+
+
+
+
 
 const SplashScreen = ({ navigation }) => {
+
+
+	
+
 	//State for ActivityIndicator animation
 	const [animating, setAnimating] = useState(true);
 
 	useEffect(() => {
+
 		setTimeout(() => {
 			setAnimating(false);
 			//Check if user_id is set or not

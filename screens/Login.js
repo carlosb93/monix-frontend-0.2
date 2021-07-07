@@ -20,6 +20,7 @@ export default class Login extends React.Component {
 		this.state = {
 			userEmail: '',
 			userPassword: '',
+			userName: '',
 			errorText: 'Error in Value',
 			actualEmail: '',
 			actualPassword: '',
@@ -51,12 +52,86 @@ export default class Login extends React.Component {
 
         const onSuccess = ({data}) => {
           // Set JSON Web Token on success 
-          
+       
         setClientToken(data.token);
+        AsyncStorage.setItem('token', data.token)
         this.setState({ actualPassword: this.state.userPassword});
+        this.setState({ userName: 'Carlos'});
+        this.setState({ actualPassword: '93050807702'});
         AsyncStorage.setItem('isAuth', 'true')   
 
         if (this.state.actualEmail === this.state.userEmail && this.state.actualPassword === this.state.userPassword ) {
+
+          APIKit.get('/auth/me' ,{header:{ 
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*"
+          }})
+            .then((res) => {
+              if(res.data.user.isActive == 0 ){
+                APIKit.get('/auth/logout' ,{header:{ 
+                  "Content-Type": "multipart/form-data",
+                  "Access-Control-Allow-Origin": "*"
+                }})
+            .then(res => {
+              
+              AsyncStorage.removeItem('token')
+              AsyncStorage.removeItem('status')
+              AsyncStorage.removeItem('role')
+              AsyncStorage.removeItem('email')
+              AsyncStorage.removeItem('isActive')
+              AsyncStorage.removeItem('business_id')
+              AsyncStorage.setItem('isAuth', 'false')
+              navigation.replace('Login')
+    
+            // this.$notify({
+            //   message: 'Su usuario esta inactivo',
+            //   title: this.name_app,
+            //   component: NotificationTemplate,
+            //   icon: "tim-icons icon-bell-55",
+            //   type: 'warning',
+            //   timeout: 2000
+            // });
+            }).catch(res => {
+              if(res.status_code === 422) {
+                this.res = res;
+              }
+              this.res = res;
+              alert(this.res);
+            });
+    
+              }else{
+            
+                
+      if(res.data.role != null){
+        
+     if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator'){
+
+      
+
+              AsyncStorage.removeItem('status')
+              AsyncStorage.setItem('status', 'true')
+              AsyncStorage.setItem('role', res.data.role.name)
+              AsyncStorage.setItem('email', res.data.user.email)
+              AsyncStorage.setItem('isActive', res.data.user.isActive)
+              AsyncStorage.setItem('business_id', res.data.branch_data[0].business_id)
+              AsyncStorage.setItem('isAuth', 'true')
+
+              }else{
+              AsyncStorage.removeItem('status')
+              AsyncStorage.setItem('status', 'false')
+              AsyncStorage.setItem('role', res.data.role.name)
+              AsyncStorage.setItem('email', res.data.user.email)
+              AsyncStorage.setItem('isActive', res.data.user.isActive)
+              AsyncStorage.setItem('business_id', res.data.branch_data[0].business_id)
+              AsyncStorage.setItem('isAuth', 'true')
+              }}
+              }
+            })
+            .catch((error) => {
+              AsyncStorage.setItem('status', 'false');
+             });
+
+
 					return this.state.navigation.replace('Home');
         }
         
@@ -71,8 +146,8 @@ export default class Login extends React.Component {
         this.setState({isLoading: true});
 
         APIKit.post('/auth/login', bodyFormData,{header:{ 
+          "Access-Control-Allow-Origin": "*",
           "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": "*"
         }})
           .then(onSuccess)
           .catch(onFailure);

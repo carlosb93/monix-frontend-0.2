@@ -5,32 +5,181 @@ import { StyleSheet,
   TouchableOpacity} from 'react-native'
 
   import AsyncStorage from '@react-native-async-storage/async-storage';
-
+  import APIKit, {setClientToken} from '../shared/APIKit';
   import { COLORS, SIZES, FONTS } from '../constants'
+
+  import CategoryModel from '../models/Category';
 
 export default class Home extends React.Component { 
 
+  
   constructor(props) {
-		super(props);
+    super(props);
 		this.state = {
-			navigation: props.navigation,
-			userEmail: null
+      navigation: props.navigation,
+      userEmail: null,
+      setCategory: null,
+      category: null
 		}
   }
   
+  
   componentDidMount() {
 		this._focusListener = this.props.navigation.addListener('focus', () => {
+			this.verifysession();
 			this.getData();
+      this.fillTable();
+      console.log( this.state.setCategory)
 		});
   }
 
   componentWillUnmount() {
 		this._focusListener();
   }
+
+
+  async fillTable () {
+  
+    await CategoryModel.createTable()
+    console.log('Table created successfully')
+  
+  
+    const props =[
+      {
+        name: 'Education',
+        icon: 'faGraduationCap',
+        color: COLORS.blue
+    },
+    {
+      name: 'Nutrition',
+      icon: 'faCutlery',
+      color: COLORS.green
+   },
+    {
+        name: 'Child',
+        icon: 'faChild',
+        color: COLORS.yellow
+    },
+    {
+      name: 'Beauty & Care',
+      icon: 'faEye',
+      color: COLORS.pink
+   },
+    {
+        name: 'Travel',
+        icon: 'faPlane',
+        color: COLORS.blue
+    },
+    {
+      name: 'Clothing',
+      icon: 'faShoppingBag',
+      color: COLORS.primary
+   }
+    ]
+   
+          var loopData = ''
+          var i ;
+          for(i=0; i < props.length; i++){
+            const categoria = new CategoryModel(props[i])
+            await categoria.save()
+
+            loopData += categoria
+          }
+
+    console.log(loopData)
+  
+    const options = {
+        columns: 'id, name, icon, color',
+        where: {
+            name:'Travel'
+        },
+        page: 2,
+        limit: 30,
+        order: 'id ASC'
+      }
+
+      this.state.setCategory = await CategoryModel.query()
+      console.log(this.state.setCategory)
+  }
   
   async getData () {
 		await AsyncStorage.getItem('userEmail')
 			.then((value) => this.setState({ userEmail: value }));
+
+  }
+  async verifysession () {
+    setClientToken(AsyncStorage.getItem('token'));
+
+		APIKit.get('/auth/me' ,{header:{
+      "Access-Control-Allow-Origin": "*"
+    }})
+      .then((res) => {
+        
+        if(res.data.user.isActive == 0 ){
+          APIKit.get('/auth/logout' ,{header:{ 
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*"
+          }})
+      .then(res => {
+        
+        AsyncStorage.removeItem('token')
+        AsyncStorage.removeItem('status')
+        AsyncStorage.removeItem('role')
+        AsyncStorage.removeItem('email')
+        AsyncStorage.removeItem('isActive')
+        AsyncStorage.removeItem('business_id')
+        AsyncStorage.setItem('isAuth', 'false')
+        this.state.navigation.replace('Login')
+
+      // this.$notify({
+      //   message: 'Su usuario esta inactivo',
+      //   title: this.name_app,
+      //   component: NotificationTemplate,
+      //   icon: "tim-icons icon-bell-55",
+      //   type: 'warning',
+      //   timeout: 2000
+      // });
+      }).catch(res => {
+        if(res.status_code === 422) {
+          this.res = res;
+        }
+        this.res = res;
+        alert(this.res);
+      });
+
+        }else{
+      
+          
+if(res.data.role != null){
+  
+if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator'){
+
+
+        AsyncStorage.removeItem('status')
+        AsyncStorage.setItem('status', 'true')
+        AsyncStorage.setItem('role', res.data.role.name)
+        AsyncStorage.setItem('email', res.data.user.email)
+        AsyncStorage.setItem('isActive', res.data.user.isActive)
+        AsyncStorage.setItem('business_id', '1')
+        AsyncStorage.setItem('isAuth', 'true')
+
+        }else{
+        AsyncStorage.removeItem('status')
+        AsyncStorage.setItem('status', 'false')
+        AsyncStorage.setItem('role', res.data.role.name)
+        AsyncStorage.setItem('email', res.data.user.email)
+        AsyncStorage.setItem('isActive', res.data.user.isActive)
+        AsyncStorage.setItem('business_id', '1')
+        AsyncStorage.setItem('isAuth', 'true')
+        }}
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        AsyncStorage.setItem('status', 'false');
+        AsyncStorage.setItem('isAuth', 'false');
+        this.state.navigation.replace('Login')
+       });
 
   }
   

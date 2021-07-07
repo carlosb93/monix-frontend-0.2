@@ -19,7 +19,7 @@
     "ios": {
       "bundleIdentifier": "com.charlie_wave.photomanager",
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
     },
     "android": {
       "package": "com.charlie_wave.photomanager",

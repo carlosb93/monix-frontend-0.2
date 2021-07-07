@@ -6,6 +6,7 @@ export const COLORS = {
     primary: "#FC6D3F", // orange
     secondary: "#CDCDD2",   // gray
 
+
     // colors
     black: "#1E1F20",
     white: "#FFFFFF",
@@ -16,6 +17,16 @@ export const COLORS = {
     lightGray4: "#F8F8F9",
     transparent: "transparent",
     darkgray: '#898C95',
+    gray: "#BEC1D2",
+    blue: '#42B0FF',
+    yellow: '#FFD573',
+    lightBlue: '#95A9B8',
+    darkgreen: '#008159',
+    peach: '#FF615F',
+    purple: '#8e44ad',
+    red: '#FF0000',
+    green:"#1fa67a",
+    pink:"FD33FF",
 };
 
 export const SIZES = {
