@@ -6,6 +6,7 @@ import Profile from './Profile'
 import EditProfile from './EditProfile'
 import Business from './Business'
 import Expenses from './Expenses'
+import BusinessForm from './BusinessForm'
 
 export {
     Home,
@@ -15,5 +16,6 @@ export {
     Profile,
     EditProfile,
     Expenses,
-    Business
+    Business,
+    BusinessForm
 }

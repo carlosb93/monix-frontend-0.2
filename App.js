@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses } from './screens';
+import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses, BusinessForm } from './screens';
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
 
@@ -136,6 +136,7 @@ export default class App extends React.Component {
 
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
+                <Stack.Screen name="BusinessForm" component={BusinessForm} />
                 <Stack.Screen name="Business" component={Business} />
                 <Stack.Screen name="Expenses" component={Expenses} />
                 <Stack.Screen name="Home" component={Tabs} />

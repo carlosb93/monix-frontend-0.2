@@ -7,7 +7,7 @@ import { StyleSheet,
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import APIKit, {setClientToken} from '../shared/APIKit';
   import { COLORS, SIZES, FONTS } from '../constants'
-
+  import UserModel from '../models/User';
 
 export default class Home extends React.Component { 
 
@@ -41,9 +41,7 @@ export default class Home extends React.Component {
   async verifysession () {
     setClientToken(AsyncStorage.getItem('token'));
 
-		APIKit.get('/auth/me' ,{header:{
-      "Access-Control-Allow-Origin": "*"
-    }})
+		APIKit.get('/auth/me' )
       .then((res) => {
         
         if(res.data.user.isActive == 0 ){
@@ -52,8 +50,12 @@ export default class Home extends React.Component {
             "Access-Control-Allow-Origin": "*"
           }})
       .then(res => {
-        
+        const user = UserModel.find(res.data.user.id)
+        user.isAuth = false
+        user.save()
+
         AsyncStorage.removeItem('token')
+        AsyncStorage.removeItem('id')
         AsyncStorage.removeItem('status')
         AsyncStorage.removeItem('role')
         AsyncStorage.removeItem('email')
@@ -62,14 +64,6 @@ export default class Home extends React.Component {
         AsyncStorage.setItem('isAuth', 'false')
         this.state.navigation.replace('Login')
 
-      // this.$notify({
-      //   message: 'Su usuario esta inactivo',
-      //   title: this.name_app,
-      //   component: NotificationTemplate,
-      //   icon: "tim-icons icon-bell-55",
-      //   type: 'warning',
-      //   timeout: 2000
-      // });
       }).catch(res => {
         if(res.status_code === 422) {
           this.res = res;
@@ -84,9 +78,10 @@ export default class Home extends React.Component {
 if(res.data.role != null){
   
 if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator'){
-
+        
 
         AsyncStorage.removeItem('status')
+        AsyncStorage.setItem('id', toString(res.data.user.id))
         AsyncStorage.setItem('status', 'true')
         AsyncStorage.setItem('role', res.data.role.name)
         AsyncStorage.setItem('email', res.data.user.email)
@@ -95,7 +90,9 @@ if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator
         AsyncStorage.setItem('isAuth', 'true')
 
         }else{
+
         AsyncStorage.removeItem('status')
+        AsyncStorage.setItem('id', toString(res.data.user.id))
         AsyncStorage.setItem('status', 'false')
         AsyncStorage.setItem('role', res.data.role.name)
         AsyncStorage.setItem('email', res.data.user.email)
@@ -140,7 +137,9 @@ if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator
             elevation: 5,
         }}
         onPress={() => {
-          
+                  const user = UserModel.find(AsyncStorage.getItem('id'))
+                  user.isAuth = false,
+                  user.save()
                   AsyncStorage.setItem('isAuth', 'false')
                   navigation.replace('Login')
             

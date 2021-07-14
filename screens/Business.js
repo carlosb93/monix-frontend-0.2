@@ -5,6 +5,8 @@ import { StyleSheet,
   TouchableOpacity,
   TextInput,
   Image,
+  Dimensions,
+  FlatList,
   ColorPropType} from 'react-native'
 
   import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,8 +14,25 @@ import { StyleSheet,
   import { icons,COLORS, SIZES, FONTS } from '../constants'
   import APIKit, {setClientToken} from '../shared/APIKit';
   import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+  import Icon from 'react-native-vector-icons/FontAwesome';
   import { faPlus } from '@fortawesome/free-solid-svg-icons'
-  
+  import BusinessModel from '../models/Business';
+
+
+const numColumns = 2;
+const size = Dimensions.get('window').width / numColumns;
+const stylesflat = StyleSheet.create({
+  itemContainer: {
+    width: size - 20,
+    marginRight: SIZES.padding,
+    marginLeft:  SIZES.padding,
+    marginVertical: SIZES.radius,
+    borderRadius: 16,
+    backgroundColor: COLORS.white,
+    elevation: 5
+  }
+});
+
 export default class Business extends React.Component { 
 
   
@@ -25,6 +44,7 @@ export default class Business extends React.Component {
 		this.passwordRef = React.createRef();
 		this.confirmPasswordRef = React.createRef();
     this.state = {
+      id:null,
       name:'',
 			email: '',
 			password: '',
@@ -36,82 +56,48 @@ export default class Business extends React.Component {
 			nameError: false,
 			passwordError: false,
 			confirmPasswordError: false,
-			navigation: this.props.navigation
+      navigation: this.props.navigation,
+      negocio:[
+        {name:'TEST',color:'#FC6D3F',icon:'archive',code:'YUMMY'},
+
+        
+      ]
 		}
 	}
+  async get_businnesses(){
+
+    
+    setClientToken(AsyncStorage.getItem('token'));
+
+    await APIKit.get('/auth/me')
+            .then((res) => {
+              this.setState({id: res.data.user.id})
+              const options = {
+                columns: 'id, name, categoria, code, user_id, icon, color',
+                where: {
+                  user_id: this.state.id
+                },
+                order: 'id ASC'
+              }
+      this.setState({negocio: BusinessModel.query(options)}) 
   
+      console.log(this.state.negocio);
+
+            }).catch((error) => {
+              console.log(error);
+            })
+   
+  }
+
   componentDidMount() {
 		this._focusListener = this.props.navigation.addListener('focus', () => {
+      this.get_businnesses();
 		
 		});
   }
 
   componentWillUnmount() {
 		this._focusListener();
-  }
-  
-
-
-	showData = async() => {
-		let { code, email,name, password, confirmPassword } = this.state;
-
-		let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-		let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-
-		if (emailRegex.test(email)) {
-				if (passwordRegex.test(password)) {
-					this.setState({ passwordError: true })
-					if (password === confirmPassword) {
-						this.setState({ passwordError: false, confirmPasswordError: false })
-            
-            
-            const payload ={
-              'code':code,
-              'password':password,
-              'username':name,
-              'password_confirmation':confirmPassword,
-              'email':email,
-            }
-
-            const onSuccess = ({data}) => {
-              // Set JSON Web Token on success 
-            setClientToken(data.token);
-              
-    
-            AsyncStorage.setItem('userCode', code)
-						AsyncStorage.setItem('userName', name)
-						AsyncStorage.setItem('userEmail', email)
-						AsyncStorage.setItem('userPassword', password)
-						AsyncStorage.setItem('isAuth', 'true')
-						
-						return this.state.navigation.replace('Home');
-            
-            };
-    
-            const onFailure = error => {
-              console.log(error && error.response);
-              this.setState({ errorText: 'Email o Contraseña incorrectos' });
-              return alert(this.state.errorText);
-            };
-            
-            APIKit.post('/auth/register', payload,{header:{ 
-              "Content-Type": "multipart/form-data",
-              "Access-Control-Allow-Origin": "*"
-            }})
-              .then(onSuccess)
-              .catch(onFailure);
-
-
-						
-					}
-				}
-				this.setState({ password: '', confirmPassword: '', passwordError: true, confirmPasswordError: true })
-				return alert('Password Not Matching');
-		}
-
-		this.setState({ emailError: true })
-
-		return alert('Email Incorrect');
   }
   
   
@@ -123,84 +109,82 @@ export default class Business extends React.Component {
     
 
       <View  style={{
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor:COLORS.transparent,
         padding: SIZES.padding * 0.5,
     }}>
-        <View style={{height: 480}}>
+        
                  <Text style={{ color: COLORS.black, ...FONTS.h2 }}>Negocios</Text>
-                 <View style={{
-                width: 200,
-                marginRight: SIZES.padding,
-                marginLeft:  SIZES.padding,
-                marginVertical: SIZES.radius,
-                borderRadius: 16,
-                backgroundColor: COLORS.white,
-                elevation: 5
-            }}>
-                {/* Title */}
-                <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center' }}>
-                    <View
-                        style={{
-                            height: 50,
-                            width: 50,
-                            borderRadius: 25,
-                            backgroundColor: COLORS.lightGray,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginRight: SIZES.base
-                        }}
-                    >
-                        <Image
-                            source={icons.cloth_icon }
-                            style={{
-                                width: 30,
-                                height: 30,
-                                tintColor: COLORS.red
-                            }}
-                        />
-                    </View>
 
-                    <Text style={{ ...FONTS.h3, color: COLORS.red, }}>name</Text>
-                </View>
+      <FlatList
+      data={this.state.negocio}
+      renderItem={({item}) => (
+        <View style={stylesflat.itemContainer}>
+          {/* Title */}
+          <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center' }}>
+              <View
+                  style={{
+                      height: 70,
+                      width: 70,
+                      borderRadius: 25,
+                      backgroundColor: COLORS.white,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: SIZES.base
+                  }}
+              >
+                  <Icon size={60} name={item.icon}
+                                  style={{
+                                      color: item.color,
+                                  }}/>
+              </View>
 
-                {/* Expense Description */}
-                <View style={{ paddingHorizontal: SIZES.padding }}>
-                    {/* Title and description */}
-                    <Text style={{ ...FONTS.h2, }}>title</Text>
-                    <Text style={{ ...FONTS.body3, flexWrap: 'wrap', color: COLORS.darkgray }}>
-                        descripcion
-                    </Text>
+                                <Text style={{ ...FONTS.h3, color: item.color, }}>{item.name}</Text>
+          </View>
 
-                    {/* Location */}
-                    <Text style={{ marginTop: SIZES.padding, ...FONTS.h4, }}>Location</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Image
-                            source={icons.pin}
-                            style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: COLORS.darkgray,
-                                marginRight: 5
-                            }}
-                        />
-                        <Text style={{ marginBottom: SIZES.base, color: COLORS.darkgray, ...FONTS.body4 }}>location</Text>
-                    </View>
-                </View>
+          {/* Expense Description */}
+          <View style={{ paddingHorizontal: SIZES.padding }}>
+              {/* Title and description */}
+              <Text style={{ ...FONTS.h2, }}>{item.name}</Text>
+              <Text style={{ ...FONTS.body3, flexWrap: 'wrap', color: COLORS.darkgray }}>
+                  CODIGO:{item.code}
+              </Text>
 
-                {/* Price */}
-                <View
-                    style={{
-                        height: 50,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderBottomStartRadius: 16,
-                        borderBottomEndRadius: 16,
-                        backgroundColor: COLORS.red,
-                    }}
-                >
-                    <Text style={{ color: COLORS.white, ...FONTS.body3 }}>CONFIRM 100 USD</Text>
-                </View>
-            </View>
-        </View>
+
+          </View>
+
+          {/* Price */}
+          <View
+              style={{
+                  height: 50,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderBottomStartRadius: 16,
+                  borderBottomEndRadius: 16,
+                  backgroundColor: item.color,
+              }}
+          >
+              <Text style={{ color: COLORS.white, ...FONTS.body3 }}>CONFIRM 100 USD</Text>
+          </View>
+      </View>
+
+
+  //       <View style={stylesflat.itemContainer}>
+         
+  //                        <Icon size={60} name={item.icon}
+  //  style={{
+  //      color: item.color,
+  //  }}/>
+  //       </View>
+      )}
+      keyExtractor={item => item.id}
+      numColumns={numColumns} />
+
+
+
+                 
+        
         <View>
     <TouchableOpacity
     style={{
@@ -209,14 +193,17 @@ export default class Business extends React.Component {
       alignItems: 'center',
       justifyContent: 'center',
       width: 60,
-      bottom: -200,
-      right: -300,
+      bottom: 60,
+      right: -150,
       height: 60,
-      elevation: 5,
+      elevation: 6,
       backgroundColor: '#fff',
       borderRadius: 100,
     }}
-     onPress={() => {navigation.navigate('NewBusiness'); }}
+     onPress={() => {navigation.navigate('BusinessForm', {
+      itemId: this.state.id,
+      otherParam: 'New',
+    }); }}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 
                         style={{

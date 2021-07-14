@@ -18,7 +18,8 @@ export default class Business extends BaseModel {
     return {
       id: { type: types.INTEGER, primary_key: true }, // For while only supports id as primary key
       name: { type: types.TEXT, not_null: true },
-      categoria_id: { type: types.INTEGER },
+      code: { type: types.TEXT, not_null: true },
+      categoria: { type: types.TEXT, not_null: true },
       user_id: { type: types.INTEGER },
       icon: { type: types.TEXT },
       color: { type: types.TEXT },
