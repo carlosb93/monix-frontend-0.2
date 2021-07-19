@@ -28,12 +28,12 @@ const stylesflat = StyleSheet.create({
     marginLeft:  SIZES.padding,
     marginVertical: SIZES.radius,
     borderRadius: 16,
-    backgroundColor:COLORS.lightGray4,
+    backgroundColor: COLORS.white,
     elevation: 5
   }
 });
 
-export default class Business extends React.Component { 
+export default class BusinessServices extends React.Component { 
 
   
   constructor(props){
@@ -57,20 +57,16 @@ export default class Business extends React.Component {
 			passwordError: false,
 			confirmPasswordError: false,
       navigation: this.props.navigation,
+      negocioId: this.props.route.params.itemId,
+      otherParam: this.props.route.params.otherParam,
       negocio:[ ]
 		}
 	}
   async get_businnesses(){
 
-
-    
-
-  
-
-  
     var negocios = [];
-    negocios = await BusinessModel.query({user_id: JSON.parse(await AsyncStorage.getItem('id'))});
-   
+    negocios = await BusinessModel.find( this.state.negocioId);
+   console.log(negocios)
 
     setClientToken(await AsyncStorage.getItem('token'));
 
@@ -115,18 +111,63 @@ export default class Business extends React.Component {
         flex: 1,
         alignItems: 'center',
         backgroundColor:COLORS.transparent,
-        padding: SIZES.padding * 0.5,
-    }}>
         
-                 <Text style={{ color: COLORS.black, ...FONTS.h2 }}>Negocios</Text>
-
+    }}>
+        <View  style={{
+        backgroundColor:COLORS.transparent,
+        height: 35,
+        width: Dimensions.get('window').width,
+    }}>
+                 
+                 <View
+                  style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    
+                      height:30,
+                      width: Dimensions.get('window').width,
+                      backgroundColor: COLORS.primary,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginRight: SIZES.base
+                  }}
+              >
+                 <TouchableOpacity
+     onPress={() => {navigation.navigate('Home')}}
+  >
+     <Image
+                            source={icons.back_arrow}
+                            resizeMode="contain"
+                            style={{
+                                width: 30,
+                                height: 30,
+                                margin:6,
+                                tintColor: COLORS.secondary
+                            }}
+                        />
+                </TouchableOpacity>
+                  <Text style={{ color: COLORS.secondary, ...FONTS.h2 }}>    {this.state.otherParam.name}</Text>
+                  <TouchableOpacity
+     onPress={() => {navigation.navigate('BussinessEdit', {
+      itemId: this.state.otherParam.id,
+      otherParam: this.state.otherParam,
+    }); }}
+  >
+                  <Icon size={30} name='edit'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.secondary,
+                                  }}/>
+</TouchableOpacity>
+              </View>
+              </View>
       <FlatList
       data={this.state.negocio}
       renderItem={({item}) => (
         <TouchableOpacity
      onPress={() => {navigation.navigate('BusinessServices', {
       itemId: item.id,
-      otherParam: item,
+      otherParam: 'New',
     }); }}
   >
         <View style={stylesflat.itemContainer}>
@@ -134,16 +175,16 @@ export default class Business extends React.Component {
           <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center' }}>
               <View
                   style={{
-                      height: 40,
-                      width: 40,
+                      height: 70,
+                      width: 70,
                       borderRadius: 25,
-                      backgroundColor: COLORS.lightGray4,
+                      backgroundColor: COLORS.white,
                       alignItems: 'center',
                       justifyContent: 'center',
                       marginRight: SIZES.base
                   }}
               >
-                  <Icon size={30} name={item.icon}
+                  <Icon size={60} name={item.icon}
                                   style={{
                                       color: item.color,
                                   }}/>
@@ -166,7 +207,7 @@ export default class Business extends React.Component {
           {/* Price */}
           <View
               style={{
-                  height: 40,
+                  height: 50,
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderBottomStartRadius: 16,
@@ -174,7 +215,7 @@ export default class Business extends React.Component {
                   backgroundColor: item.color,
               }}
           >
-              <Text style={{ color: COLORS.white, ...FONTS.h2 }}>{item.categoria}</Text>
+              <Text style={{ color: COLORS.white, ...FONTS.body3 }}>CONFIRM 100 USD</Text>
           </View>
       </View>
       </TouchableOpacity>
@@ -210,7 +251,10 @@ export default class Business extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 100,
     }}
-     onPress={() => {navigation.navigate('BusinessForm') }}
+     onPress={() => {navigation.navigate('BusinessForm', {
+      itemId: this.state.id,
+      otherParam: 'New',
+    }); }}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 
                         style={{

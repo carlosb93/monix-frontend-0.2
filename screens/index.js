@@ -7,6 +7,8 @@ import EditProfile from './EditProfile'
 import Business from './Business'
 import Expenses from './Expenses'
 import BusinessForm from './BusinessForm'
+import BusinessServices from './BusinessServices'
+import BussinessEdit from './BussinessEdit'
 
 export {
     Home,
@@ -17,5 +19,7 @@ export {
     EditProfile,
     Expenses,
     Business,
-    BusinessForm
+    BusinessForm,
+    BusinessServices,
+    BussinessEdit,
 }

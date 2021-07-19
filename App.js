@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses, BusinessForm } from './screens';
+import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses, BusinessForm, BusinessServices, BussinessEdit } from './screens';
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
 
@@ -69,7 +69,9 @@ export default class App extends React.Component {
         
       
       try {
+        await UserModel.dropTable()
         user =  await UserModel.query()
+        console.log(user)
           } catch (error) {
                 await UserModel.createTable()
                 console.log('Table user created successfully')
@@ -89,15 +91,6 @@ export default class App extends React.Component {
             const categoria = new CategoryModel(props[i])
             await categoria.save()
           }
-           // const options = {
-          //     columns: 'id, name, icon, color',
-          //     where: {
-          //         name:'Travel'
-          //     },
-          //     page: 2,
-          //     limit: 30,
-          //     order: 'id ASC'
-          //   }
           this.state.setCategory = await CategoryModel.query()
           console.log('Table categories filled with data')
         }
@@ -108,8 +101,14 @@ export default class App extends React.Component {
             
     }
 
-	componentDidMount() {
-		let isAuth = AsyncStorage.getItem('isAuthenticated');
+async	componentDidMount() {
+		let isAuth = await AsyncStorage.getItem('isAuth', (err, value) => {
+      if (err) {
+          console.log(err)
+      } else {
+          JSON.parse(value) // boolean false
+      }
+  });
         this.setState({ isAuthenticated: isAuth });
         this.fillTable();
 	}
@@ -122,7 +121,7 @@ export default class App extends React.Component {
                     headerStyle: {
                         
                         height: SIZES.header,
-                        backgroundColor: COLORS.lightGray4,
+                        backgroundColor: COLORS.primary,
                         shadowOpacity: 0,
                         elevation: 0,
                       },
@@ -137,6 +136,8 @@ export default class App extends React.Component {
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="BusinessForm" component={BusinessForm} />
+                <Stack.Screen name="BusinessServices" component={BusinessServices} />
+                <Stack.Screen name="BussinessEdit" component={BussinessEdit} />
                 <Stack.Screen name="Business" component={Business} />
                 <Stack.Screen name="Expenses" component={Expenses} />
                 <Stack.Screen name="Home" component={Tabs} />

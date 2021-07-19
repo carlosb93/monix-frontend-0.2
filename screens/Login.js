@@ -5,12 +5,9 @@ import { StyleSheet,
          Text,
          TouchableOpacity,
          Image } from 'react-native'
-
 import { icons, COLORS, SIZES, FONTS } from '../constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import APIKit, {setClientToken} from '../shared/APIKit';
-import UserModel from '../models/User';
 
 export default class Login extends React.Component {
 
@@ -19,6 +16,14 @@ export default class Login extends React.Component {
 		this.emailRef = React.createRef();
 		this.passwordRef = React.createRef();
 		this.state = {
+      isAuth: true,
+      id: 0,
+      name: '',
+      role: '',
+      email: '',
+      token:'',
+      isActive: '',
+      business_id: 0,
 			userEmail: '',
 			userPassword: '',
 			userName: '',
@@ -28,15 +33,6 @@ export default class Login extends React.Component {
 			navigation: this.props.navigation
 		}
 	}
-
-  componentDidMount = async() => {
-		await AsyncStorage.getItem('userEmail')
-			.then((value) => this.setState({ actualEmail: value }));
-		await AsyncStorage.getItem('userPassword')
-			.then((value) => this.setState({ actualPassword: value }));
-		
-		// alert(this.state.actualEmail + ", " + this.state.actualPassword)
-  }
   
   dataValidation = () => {
 		
@@ -50,145 +46,43 @@ export default class Login extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append('email', this.state.userEmail);
         bodyFormData.append('password', this.state.userPassword); 
-        
-        const onSuccess = ({data}) => {
+        console.log(bodyFormData)
+
+
+const onSuccess = async({data}) => {
+ 
           // Set JSON Web Token on success 
-       
-        setClientToken(data.token);
-        AsyncStorage.setItem('token', data.token)
-        this.setState({ actualPassword: this.state.userPassword});
-        this.setState({ userName: 'Carlos'});
-        this.setState({ actualPassword: '93050807702'});
+      console.log('func onSuccess');
+      console.log(APIKit.getUri);
+      setClientToken(data.token);
+      this.setState({ token: data.token});
+      this.setState({ isAuth: true});
 
-        AsyncStorage.setItem('isAuth', 'true') 
+      await AsyncStorage.setItem('isAuth', JSON.stringify(true))
+      await AsyncStorage.setItem('token', this.state.token)
 
-         const options = {
-              columns: 'id, name, email, isAuth',
-              where: {
-                  email: this.state.userEmail
-              }
-            }
-
-        // const user =  UserModel.query(options)
-        // if(user.isAuth){
-        //     return this.state.navigation.replace('Home');
-        // }
-
-        if (this.state.actualEmail === this.state.userEmail && this.state.actualPassword === this.state.userPassword ) {
-
-          APIKit.get('/auth/me')
-            .then((res) => {
-
-              if(res.data.user.isActive == 0 ){
-                APIKit.get('/auth/logout' ,{header:{ 
-                  "Content-Type": "multipart/form-data",
-                  "Access-Control-Allow-Origin": "*"
-                }}).then(res => {
-            
-          const user = UserModel.find(res.data.user.id)
-          user.isAuth = false
-          user.save()
-              
-              AsyncStorage.removeItem('id')
-              AsyncStorage.removeItem('token')
-              AsyncStorage.removeItem('status')
-              AsyncStorage.removeItem('role')
-              AsyncStorage.removeItem('email')
-              AsyncStorage.removeItem('isActive')
-              AsyncStorage.removeItem('business_id')
-              AsyncStorage.setItem('isAuth', 'false')
-              navigation.replace('Login')
-
-//add notification
-
-            }).catch(res => {
-              if(res.status_code === 422) {
-                this.res = res;
-              }
-              this.res = res;
-              alert(this.res);
-            });
-    
-              }else{
-            
-                
-      if(res.data.role != null){
-        
-     if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator'){
-
-             props = {
-               id: res.data.user.id,
-               name: res.data.user.name,
-               password: this.state.userPassword,
-               email: res.data.user.email,
-               rol: res.data.role.name,
-               isActive: res.data.user.isActive,
-               isAuth: true,
-              }
-            
-
-              AsyncStorage.removeItem('status')
-              AsyncStorage.setItem('id', parseInt(res.data.user.id))
-              AsyncStorage.setItem('status', 'true')
-              AsyncStorage.setItem('role', res.data.role.name)
-              AsyncStorage.setItem('email', res.data.user.email)
-              AsyncStorage.setItem('isActive', res.data.user.isActive)
-              AsyncStorage.setItem('business_id', toString(res.data.branch_data[0].business_id))
-              AsyncStorage.setItem('isAuth', 'true')
-              console.log(AsyncStorage.getItem('id'));
-              }else{
-
-                props = {
-                  id: res.data.user.id,
-                  name: res.data.user.name,
-                  password: this.state.userPassword,
-                  email: res.data.user.email,
-                  rol: res.data.role.name,
-                  isActive: res.data.user.isActive,
-                  isAuth: true,
-                 }
-
-              AsyncStorage.removeItem('status')
-              AsyncStorage.setItem('id', toString(res.data.user.id))
-              AsyncStorage.setItem('status', 'false')
-              AsyncStorage.setItem('role', res.data.role.name)
-              AsyncStorage.setItem('email', res.data.user.email)
-              AsyncStorage.setItem('isActive', res.data.user.isActive)
-              AsyncStorage.setItem('business_id', toString(res.data.branch_data[0].business_id))
-              AsyncStorage.setItem('isAuth', 'true')
-              }
-
-              const user = new UserModel(props)
-              user.save()
-            }
-              }
-            })
-            .catch((error) => {
-              
-             //add notification
-
-              AsyncStorage.setItem('status', 'false');
-             });
-
-
-					return this.state.navigation.replace('Home');
-        }
+      return this.state.navigation.replace('Home');
         
         };
 
-        const onFailure = error => {
+    const onFailure = error => {
           console.log(error && error.response);
           this.setState({ userEmail: '', userPassword: '', errorText: 'Email o Contraseña incorrectos' });
 					return alert(this.state.errorText);
         };
 
+       
+
         this.setState({isLoading: true});
-console.log(bodyFormData);
+
+
+
+
         APIKit.post('/auth/login', bodyFormData,{header:{
           "Content-Type": "multipart/form-data",
         }})
           .then(onSuccess)
-          .catch(error => {console.log(error)});
+          .catch(onFailure);
 
 
 				
@@ -203,7 +97,6 @@ console.log(bodyFormData);
 
  	}
 
-  
   render() {
 
 
@@ -234,6 +127,7 @@ console.log(bodyFormData);
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -254,6 +148,7 @@ console.log(bodyFormData);
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -283,6 +178,8 @@ console.log(bodyFormData);
                         <TouchableOpacity
                             style={{
                                 width: SIZES.width * 0.8,
+                                height: SIZES.width * 0.1,
+                                justifyContent: 'center',
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.primary,
                                 alignItems: 'center',
@@ -305,6 +202,8 @@ console.log(bodyFormData);
                         <TouchableOpacity
                             style={{
                                 width: SIZES.width * 0.8,
+                                height: SIZES.width * 0.1,
+                                justifyContent: 'center',
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.secondary,
                                 alignItems: 'center',

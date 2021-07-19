@@ -57,16 +57,16 @@ export default class Signup extends React.Component {
               'email':email,
             }
 
-            const onSuccess = ({data}) => {
+            const onSuccess = async({data}) => {
               // Set JSON Web Token on success 
             setClientToken(data.token);
               
     
-            AsyncStorage.setItem('userCode', code)
-						AsyncStorage.setItem('userName', name)
-						AsyncStorage.setItem('userEmail', email)
-						AsyncStorage.setItem('userPassword', password)
-						AsyncStorage.setItem('isAuth', 'true')
+            await AsyncStorage.setItem('userCode', code)
+						await AsyncStorage.setItem('userName', name)
+						await AsyncStorage.setItem('userEmail', email)
+						await AsyncStorage.setItem('userPassword', password)
+						await AsyncStorage.setItem('isAuth', JSON.stringify(true))
 						
 						return this.state.navigation.replace('Home');
             
@@ -130,8 +130,10 @@ export default class Signup extends React.Component {
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
             padding: SIZES.padding,
             alignItems: 'center',
+            justifyContent: 'center',
             borderRadius: SIZES.radius,
             borderColor: COLORS.primary,
             borderWidth: SIZES.input,
@@ -152,6 +154,8 @@ export default class Signup extends React.Component {
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -175,6 +179,8 @@ export default class Signup extends React.Component {
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -200,6 +206,8 @@ export default class Signup extends React.Component {
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -224,6 +232,8 @@ export default class Signup extends React.Component {
           <TextInput
           style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
             padding: SIZES.padding,
             alignItems: 'center',
             borderRadius: SIZES.radius,
@@ -255,6 +265,8 @@ export default class Signup extends React.Component {
                         <TouchableOpacity
                             style={{
                                 width: SIZES.width * 0.8,
+                                height: SIZES.width * 0.1,
+                                justifyContent: 'center',
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.primary,
                                 alignItems: 'center',
@@ -277,6 +289,8 @@ export default class Signup extends React.Component {
                         <TouchableOpacity
                             style={{
                                 width: SIZES.width * 0.8,
+                                height: SIZES.width * 0.1,
+                                justifyContent: 'center',
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.secondary,
                                 alignItems: 'center',

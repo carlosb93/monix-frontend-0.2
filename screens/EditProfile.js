@@ -70,16 +70,16 @@ export default class Profile extends React.Component {
               'email':email,
             }
 
-            const onSuccess = ({data}) => {
+            const onSuccess = async({data}) => {
               // Set JSON Web Token on success 
             setClientToken(data.token);
               
     
-            AsyncStorage.setItem('userCode', code)
-						AsyncStorage.setItem('userName', name)
-						AsyncStorage.setItem('userEmail', email)
-						AsyncStorage.setItem('userPassword', password)
-						AsyncStorage.setItem('isAuth', 'true')
+            await AsyncStorage.setItem('userCode', code)
+						await AsyncStorage.setItem('userName', name)
+						await AsyncStorage.setItem('userEmail', email)
+						await AsyncStorage.setItem('userPassword', password)
+						await AsyncStorage.setItem('isAuth', JSON.stringify(true))
 						
 						return this.state.navigation.replace('Home');
             

@@ -15,6 +15,14 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
 		this.state = {
+      isAuth: true,
+      id: 0,
+      name: '',
+      role: '',
+      email: '',
+      token:'',
+      isActive: '',
+      business_id: 0,
       navigation: props.navigation,
       userEmail: null,
 		}
@@ -22,9 +30,8 @@ export default class Home extends React.Component {
   
   
   componentDidMount() {
-		this._focusListener = this.props.navigation.addListener('focus', () => {
+		  this._focusListener = this.props.navigation.addListener('focus', () => {
 			this.verifysession();
-			this.getData();
 
 		});
   }
@@ -33,81 +40,108 @@ export default class Home extends React.Component {
 		this._focusListener();
   }
 
-  async getData () {
-		await AsyncStorage.getItem('userEmail')
-			.then((value) => this.setState({ userEmail: value }));
+  async logOut () {
+
+    await AsyncStorage.setItem('isAuth', JSON.stringify(false))
+    this.state.navigation.replace('Login')
+  }
+
+  async verifysession() {
+
+
+ 
+    const token = await AsyncStorage.getItem('token')
+    setClientToken(token);
+    console.log(setClientToken(token))
+
+    console.log(token)
+
+    APIKit.get('/auth/me').then((res) => {
+        
+
+    if(res.data.user.isActive == 0 ){
+
+           this.logOut()
+
+    }else{
+        console.log('me');
+        console.log(res.data.user)
+        this.setState({ isAuth: true})
+        this.setState({ id: res.data.user.id})
+        this.setState({ name: res.data.user.name})
+        this.setState({ role: res.data.role.name})
+        this.setState({ email: res.data.user.email})
+        this.setState({ isActive: res.data.user.isActive})
+        this.setState({ business_id: res.data.branch_data[0].business_id})
+
+      if(this.state.isAuth){
+        this.filluser();
+      }
+    }
+    }).catch((error) => {
+        console.log(error);  
+        console.log(this.state);   
+        this.setState({ isAuth: false});
+        // this.state.navigation.replace('Login');
+       });
+
+
 
   }
-  async verifysession () {
-    setClientToken(AsyncStorage.getItem('token'));
+  async filluser(){
+    
+    const usuario = await UserModel.query({id: this.state.id})
 
-		APIKit.get('/auth/me' )
-      .then((res) => {
+    if(usuario.length > 0){
+      console.log('1')
+      this.setState({ isAuth: true});
+        console.log('2')
+        await AsyncStorage.setItem('isAuth', JSON.stringify(true))
+        await AsyncStorage.setItem('id', JSON.stringify(this.state.id))
+        await AsyncStorage.setItem('token', this.state.token)
         
-        if(res.data.user.isActive == 0 ){
-          APIKit.get('/auth/logout' ,{header:{ 
-            "Content-Type": "multipart/form-data",
-            "Access-Control-Allow-Origin": "*"
-          }})
-      .then(res => {
-        const user = UserModel.find(res.data.user.id)
-        user.isAuth = false
-        user.save()
 
-        AsyncStorage.removeItem('token')
-        AsyncStorage.removeItem('id')
-        AsyncStorage.removeItem('status')
-        AsyncStorage.removeItem('role')
-        AsyncStorage.removeItem('email')
-        AsyncStorage.removeItem('isActive')
-        AsyncStorage.removeItem('business_id')
-        AsyncStorage.setItem('isAuth', 'false')
-        this.state.navigation.replace('Login')
+        const user_id = this.state.id
+         const user = await UserModel.find(user_id)
+         console.log(user)
+         if(user){
+          console.log('3')
 
-      }).catch(res => {
-        if(res.status_code === 422) {
-          this.res = res;
-        }
-        this.res = res;
-        alert(this.res);
-      });
+           user.name = this.state.name,
+           user.email = this.state.email,
+           user.rol = this.state.role,
+           user.isActive = this.state.isActive,
+           user.token = this.state.token,
+           user.isAuth = true,
+           user.save()
 
-        }else{
+          }else{
+            console.log('query error')
+
+          }
+    
+     }else{
+      console.log('6')
+      await AsyncStorage.setItem('isAuth', JSON.stringify(true))
+      await AsyncStorage.setItem('id', JSON.stringify(this.state.id))
+      await AsyncStorage.setItem('token', this.state.token)
+
+      const props = {
+        user_id: this.state.id,
+        name: this.state.name,
+        email: this.state.email,
+        rol: this.state.role,
+        token: this.state.token,
+        isActive: this.state.isActive,
+        isAuth: true
+       }
+
+      console.log(props);
+      const newuser = new UserModel(props)
+      newuser.save()
       
-          
-if(res.data.role != null){
-  
-if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator'){
-        
+    }
 
-        AsyncStorage.removeItem('status')
-        AsyncStorage.setItem('id', toString(res.data.user.id))
-        AsyncStorage.setItem('status', 'true')
-        AsyncStorage.setItem('role', res.data.role.name)
-        AsyncStorage.setItem('email', res.data.user.email)
-        AsyncStorage.setItem('isActive', res.data.user.isActive)
-        AsyncStorage.setItem('business_id', '1')
-        AsyncStorage.setItem('isAuth', 'true')
-
-        }else{
-
-        AsyncStorage.removeItem('status')
-        AsyncStorage.setItem('id', toString(res.data.user.id))
-        AsyncStorage.setItem('status', 'false')
-        AsyncStorage.setItem('role', res.data.role.name)
-        AsyncStorage.setItem('email', res.data.user.email)
-        AsyncStorage.setItem('isActive', res.data.user.isActive)
-        AsyncStorage.setItem('business_id', '1')
-        AsyncStorage.setItem('isAuth', 'true')
-        }}
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        AsyncStorage.setItem('status', 'false');
-        AsyncStorage.setItem('isAuth', 'false');
-        this.state.navigation.replace('Login')
-       });
 
   }
   
@@ -124,12 +158,14 @@ if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator
     }}
 >
       <Text>Home</Text>
-      <Text>{this.state.userEmail}</Text>
+      <Text>{this.state.email}</Text>
     
    
     <TouchableOpacity
         style={{
             width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
             padding: SIZES.padding,
             backgroundColor: COLORS.primary,
             alignItems: 'center',
@@ -137,11 +173,8 @@ if(res.data.role.name == 'Admin_negocio' || res.data.role.name == 'Administrator
             elevation: 5,
         }}
         onPress={() => {
-                  const user = UserModel.find(AsyncStorage.getItem('id'))
-                  user.isAuth = false,
-                  user.save()
-                  AsyncStorage.setItem('isAuth', 'false')
-                  navigation.replace('Login')
+                 this.logOut();
+                  navigation.replace('Login');
             
         }
         }

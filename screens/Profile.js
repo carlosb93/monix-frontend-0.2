@@ -134,7 +134,7 @@ export default class Profile extends React.Component {
             borderRadius: SIZES.radius,
             elevation: 5,
         }}
-        onPress={() => { AsyncStorage.setItem('isAuth', 'false')
+        onPress={() => { AsyncStorage.setItem('isAuth', JSON.stringify(false))
         navigation.replace('Login')}}>
         <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Salir</Text>
     </TouchableOpacity>

@@ -17,10 +17,12 @@ export default class User extends BaseModel {
   static get columnMapping() {
     return {
       id: { type: types.INTEGER, primary_key: true }, // For while only supports id as primary key
+      user_id: { type: types.INTEGER }, // For while only supports id as primary key
       name: { type: types.TEXT, not_null: true },
       password: { type: types.TEXT },
       email: { type: types.TEXT, not_null: true, unique: true  },
       code: { type: types.TEXT},
+      token: { type: types.TEXT},
       rol: { type: types.TEXT },
       isActive: { type: types.INTEGER },
       isAuth: { type: types.INTEGER },
