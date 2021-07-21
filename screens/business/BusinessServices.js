@@ -11,12 +11,12 @@ import { StyleSheet,
   
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
-  import { icons,COLORS, SIZES, FONTS } from '../constants'
-  import APIKit, {setClientToken} from '../shared/APIKit';
+  import { icons,COLORS, SIZES, FONTS } from '../../constants'
+  import APIKit, {setClientToken} from '../../shared/APIKit';
   import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
   import Icon from 'react-native-vector-icons/FontAwesome';
-  import { faPlus } from '@fortawesome/free-solid-svg-icons'
-  import BusinessModel from '../models/Business';
+  import { faArchive, faPlus } from '@fortawesome/free-solid-svg-icons'
+  import BusinessModel from '../../models/Business';
 
 
 const numColumns = 2;
@@ -27,7 +27,7 @@ const stylesflat = StyleSheet.create({
     marginRight: SIZES.padding,
     marginLeft:  SIZES.padding,
     marginVertical: SIZES.radius,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: COLORS.white,
     elevation: 5
   }
@@ -59,7 +59,21 @@ export default class BusinessServices extends React.Component {
       navigation: this.props.navigation,
       negocioId: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
-      negocio:[ ]
+      negocio:[ ],
+      options:[ 
+        {id:1,
+        icon: 'archive',
+        texto: 'Inventario'},
+        {id:2,
+        icon: 'money',
+        texto: 'Gastos'},
+        {id:3,
+        icon: 'shopping-basket',
+        texto: 'Ventas'},
+        {id:4,
+        icon: 'users',
+        texto: 'Mis Trabajadores'}
+    ]
 		}
 	}
   async get_businnesses(){
@@ -139,16 +153,16 @@ export default class BusinessServices extends React.Component {
                             source={icons.back_arrow}
                             resizeMode="contain"
                             style={{
-                                width: 30,
-                                height: 30,
+                                width: 25,
+                                height: 25,
                                 margin:6,
-                                tintColor: COLORS.secondary
+                                tintColor: COLORS.white,
                             }}
                         />
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.secondary, ...FONTS.h2 }}>    {this.state.otherParam.name}</Text>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>    {this.state.otherParam.name}</Text>
                   <TouchableOpacity
-     onPress={() => {navigation.navigate('BussinessEdit', {
+     onPress={() => {navigation.navigate('BusinessEdit', {
       itemId: this.state.otherParam.id,
       otherParam: this.state.otherParam,
     }); }}
@@ -156,78 +170,78 @@ export default class BusinessServices extends React.Component {
                   <Icon size={30} name='edit'
                                   style={{
                                     margin:8,
-                                    color: COLORS.secondary,
+                                    color: COLORS.white,
                                   }}/>
 </TouchableOpacity>
               </View>
               </View>
       <FlatList
-      data={this.state.negocio}
+      data={this.state.options}
       renderItem={({item}) => (
         <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessServices', {
-      itemId: item.id,
-      otherParam: 'New',
-    }); }}
+     onPress={() => {
+       if(item.id === 1){
+        navigation.navigate('BusinessInv', {
+          itemId: item.id,
+          otherParam: this.state.otherParam,
+        });
+     }else if(item.id === 2){
+      navigation.navigate('BusinessInv', {
+        itemId: item.id,
+        otherParam: this.state.otherParam,
+      });
+     
+     }else if(item.id === 3){
+      navigation.navigate('BusinessInv', {
+        itemId: item.id,
+        otherParam: this.state.otherParam,
+      });
+     
+     }else {
+      navigation.navigate('BusinessInv', {
+        itemId: item.id,
+        otherParam: this.state.otherParam,
+      });
+     }
+      }}
   >
         <View style={stylesflat.itemContainer}>
           {/* Title */}
-          <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center' }}>
-              <View
-                  style={{
-                      height: 70,
-                      width: 70,
-                      borderRadius: 25,
-                      backgroundColor: COLORS.white,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: SIZES.base
-                  }}
-              >
-                  <Icon size={60} name={item.icon}
+          <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center',justifyContent: 'center' }}>
+              
+                  <Icon size={70} name={item.icon}
                                   style={{
-                                      color: item.color,
+                                      color: COLORS.primary,
                                   }}/>
-              </View>
+              
 
-                                <Text style={{ ...FONTS.h3, color: item.color, }}>{item.name}</Text>
+                               
           </View>
 
           {/* Expense Description */}
-          <View style={{ paddingHorizontal: SIZES.padding }}>
+          <View style={{ paddingHorizontal: SIZES.padding, justifyContent: 'center',alignItems: 'center'  }}>
               {/* Title and description */}
-              <Text style={{ ...FONTS.h2, }}>{item.name}</Text>
-              <Text style={{ ...FONTS.body3, flexWrap: 'wrap', color: COLORS.darkgray }}>
-                  CODIGO:{item.code}
-              </Text>
-
+              
 
           </View>
 
           {/* Price */}
           <View
               style={{
-                  height: 50,
+                  height: 20,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderBottomStartRadius: 16,
-                  borderBottomEndRadius: 16,
-                  backgroundColor: item.color,
+                  borderBottomStartRadius: 8,
+                  borderBottomEndRadius: 8,
+                  backgroundColor: COLORS.primary,
               }}
           >
-              <Text style={{ color: COLORS.white, ...FONTS.body3 }}>CONFIRM 100 USD</Text>
+            <Text style={{ ...FONTS.body4,color: COLORS.white, }}>{item.texto}</Text>
+
           </View>
       </View>
       </TouchableOpacity>
 
-
-  //       <View style={stylesflat.itemContainer}>
-         
-  //                        <Icon size={60} name={item.icon}
-  //  style={{
-  //      color: item.color,
-  //  }}/>
-  //       </View>
       )}
       keyExtractor={item => item.id}
       numColumns={numColumns} />

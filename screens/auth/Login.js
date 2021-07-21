@@ -5,9 +5,9 @@ import { StyleSheet,
          Text,
          TouchableOpacity,
          Image } from 'react-native'
-import { icons, COLORS, SIZES, FONTS } from '../constants'
+import { icons, COLORS, SIZES, FONTS } from '../../constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import APIKit, {setClientToken} from '../shared/APIKit';
+import APIKit, {setClientToken} from '../../shared/APIKit';
 
 export default class Login extends React.Component {
 
@@ -34,7 +34,7 @@ export default class Login extends React.Component {
 		}
 	}
   
-  dataValidation = () => {
+  dataValidation = async() => {
 		
 		let passwordRegex = /^(?=.*?[0-9]).{8,}$/;
 		// let passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
@@ -53,7 +53,6 @@ const onSuccess = async({data}) => {
  
           // Set JSON Web Token on success 
       console.log('func onSuccess');
-      console.log(APIKit.getUri);
       setClientToken(data.token);
       this.setState({ token: data.token});
       this.setState({ isAuth: true});
@@ -78,7 +77,7 @@ const onSuccess = async({data}) => {
 
 
 
-        APIKit.post('/auth/login', bodyFormData,{header:{
+        await APIKit.post('/auth/login', bodyFormData,{header:{
           "Content-Type": "multipart/form-data",
         }})
           .then(onSuccess)

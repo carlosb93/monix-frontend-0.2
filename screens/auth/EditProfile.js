@@ -8,8 +8,8 @@ import { StyleSheet,
 
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
-  import { icons,COLORS, SIZES, FONTS } from '../constants'
-  import APIKit, {setClientToken} from '../shared/APIKit';
+  import { icons,COLORS, SIZES, FONTS } from '../../constants'
+  import APIKit, {setClientToken} from '../../shared/APIKit';
   
 export default class Profile extends React.Component { 
 

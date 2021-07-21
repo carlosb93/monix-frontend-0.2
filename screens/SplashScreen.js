@@ -47,7 +47,7 @@ const SplashScreen = ({ navigation }) => {
 		<View style={styles.container}>
 				<Image
 					source={require('../assets/icons/logo.png')}
-					style={{width: '90%', resizeMode: 'contain', margin: 30}}
+					style={{width: '90%', resizeMode: 'contain', margin: 50}}
 				/>
 				<Text style={{ ...FONTS.h1 }}>Bienvenido a</Text>
                 <Text style={{ ...FONTS.h1 }}>Photo Manager</Text>

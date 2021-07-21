@@ -11,12 +11,12 @@ import { StyleSheet,
   
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
-  import { icons,COLORS, SIZES, FONTS } from '../constants'
-  import APIKit, {setClientToken} from '../shared/APIKit';
+  import { icons,COLORS, SIZES, FONTS } from '../../constants'
+  import APIKit, {setClientToken} from '../../shared/APIKit';
   import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
   import Icon from 'react-native-vector-icons/FontAwesome';
   import { faPlus } from '@fortawesome/free-solid-svg-icons'
-  import BusinessModel from '../models/Business';
+  import BusinessModel from '../../models/Business';
 
 
 const numColumns = 2;
@@ -131,16 +131,15 @@ export default class Business extends React.Component {
   >
         <View style={stylesflat.itemContainer}>
           {/* Title */}
-          <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center',justifyContent: 'center' }}>
               <View
                   style={{
-                      height: 40,
-                      width: 40,
+                      height: 45,
+                      width: 45,
                       borderRadius: 25,
                       backgroundColor: COLORS.lightGray4,
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: SIZES.base
+                      justifyContent: 'center'
                   }}
               >
                   <Icon size={30} name={item.icon}
@@ -149,13 +148,13 @@ export default class Business extends React.Component {
                                   }}/>
               </View>
 
-                                <Text style={{ ...FONTS.h3, color: item.color, }}>{item.name}</Text>
+                             
           </View>
 
           {/* Expense Description */}
           <View style={{ paddingHorizontal: SIZES.padding }}>
               {/* Title and description */}
-              <Text style={{ ...FONTS.h2, }}>{item.name}</Text>
+              <Text style={{ ...FONTS.h2, color:item.color }}>{item.name}</Text>
               <Text style={{ ...FONTS.body3, flexWrap: 'wrap', color: COLORS.darkgray }}>
                   CODIGO:{item.code}
               </Text>

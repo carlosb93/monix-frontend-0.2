@@ -7,7 +7,7 @@ import { StyleSheet,
 
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
-  import { icons,COLORS, SIZES, FONTS } from '../constants'
+  import { icons,COLORS, SIZES, FONTS } from '../../constants'
 
 export default class Profile extends React.Component { 
 
@@ -135,6 +135,8 @@ export default class Profile extends React.Component {
             elevation: 5,
         }}
         onPress={() => { AsyncStorage.setItem('isAuth', JSON.stringify(false))
+         AsyncStorage.setItem('token', '')
+        AsyncStorage.setItem('id', JSON.stringify(0))
         navigation.replace('Login')}}>
         <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Salir</Text>
     </TouchableOpacity>

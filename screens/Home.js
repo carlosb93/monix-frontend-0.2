@@ -43,6 +43,8 @@ export default class Home extends React.Component {
   async logOut () {
 
     await AsyncStorage.setItem('isAuth', JSON.stringify(false))
+    await AsyncStorage.setItem('token', '')
+    await AsyncStorage.setItem('id', JSON.stringify(0))
     this.state.navigation.replace('Login')
   }
 
@@ -52,7 +54,7 @@ export default class Home extends React.Component {
  
     const token = await AsyncStorage.getItem('token')
     setClientToken(token);
-    console.log(setClientToken(token))
+    console.log(token)
 
     console.log(token)
 
@@ -174,8 +176,6 @@ export default class Home extends React.Component {
         }}
         onPress={() => {
                  this.logOut();
-                  navigation.replace('Login');
-            
         }
         }
     >

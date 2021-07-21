@@ -3,13 +3,19 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Signup, Login, SplashScreen, Profile, EditProfile, Business, Expenses, BusinessForm, BusinessServices, BussinessEdit } from './screens';
+import {Signup, Login, SplashScreen, Profile,
+        EditProfile, Expenses, Business, BusinessForm,
+        BusinessServices, InventaryNew, InventaryEdit, BusinessEdit,
+        BusinessInv } from './screens';
+
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
 
 import CategoryModel from './models/Category';
 import BusinessModel from './models/Business';
 import UserModel from './models/User';
+import InventaryModel from './models/Inventary';
+import SalesModel from './models/Sales';
 
 
 
@@ -32,6 +38,8 @@ export default class App extends React.Component {
 
         var categories =[];
         var negocio =[];
+        var inv =[];
+        var sales =[];
         var user =[];
       
         const props =[
@@ -69,7 +77,6 @@ export default class App extends React.Component {
         
       
       try {
-        await UserModel.dropTable()
         user =  await UserModel.query()
         console.log(user)
           } catch (error) {
@@ -81,6 +88,18 @@ export default class App extends React.Component {
           } catch (error) {
                 await BusinessModel.createTable()
                 console.log('Table negocio created successfully')
+      }
+      try {
+        inv =  await InventaryModel.query()
+          } catch (error) {
+                await InventaryModel.createTable()
+                console.log('Table inventary created successfully')
+      }
+      try {
+        inv =  await SalesModel.query()
+          } catch (error) {
+                await SalesModel.createTable()
+                console.log('Table sales created successfully')
       }
       try {
         categories =  await CategoryModel.query()
@@ -137,7 +156,10 @@ async	componentDidMount() {
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="BusinessForm" component={BusinessForm} />
                 <Stack.Screen name="BusinessServices" component={BusinessServices} />
-                <Stack.Screen name="BussinessEdit" component={BussinessEdit} />
+                <Stack.Screen name="BusinessEdit" component={BusinessEdit} />
+                <Stack.Screen name="BusinessInv" component={BusinessInv} />
+                <Stack.Screen name="InventaryNew" component={InventaryNew} />
+                <Stack.Screen name="InventaryEdit" component={InventaryEdit} />
                 <Stack.Screen name="Business" component={Business} />
                 <Stack.Screen name="Expenses" component={Expenses} />
                 <Stack.Screen name="Home" component={Tabs} />

@@ -248,8 +248,8 @@ const Expenses = () => {
                     <Image
                         source={icons.back_arrow}
                         style={{
-                            width: 30,
-                            height: 30,
+                            width: 25,
+                            height: 25,
                             tintColor: COLORS.primary
                         }}
                     />

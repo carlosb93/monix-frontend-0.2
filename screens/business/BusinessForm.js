@@ -31,15 +31,14 @@ import {
   COLORS,
   SIZES,
   FONTS,
-  icons,
   iconData
-} from '../constants'
+} from '../../constants'
 import APIKit, {
   setClientToken
-} from '../shared/APIKit';
+} from '../../shared/APIKit';
 
-import CategoryModel from '../models/Category';
-import BusinessModel from '../models/Business';
+import CategoryModel from '../../models/Category';
+import BusinessModel from '../../models/Business';
 
 const options = ["Productos", "Servicios", "Restauración"]
 
@@ -54,7 +53,7 @@ const stylesflat = StyleSheet.create({
   }
 });
 
-export default class BussinessEdit extends React.Component {
+export default class BusinessForm extends React.Component {
 
 
   toggleModal(visible) {
@@ -78,13 +77,11 @@ export default class BussinessEdit extends React.Component {
     this.onHuePickerChange = this.onHuePickerChange.bind(this);
     this.hsvColorPicker = React.createRef();
     this.state = {
-      name: this.props.route.params.otherParam.name,
-      type: this.props.route.params.otherParam.categoria,
-      color: this.props.route.params.otherParam.color,
-      icon: this.props.route.params.otherParam.icon,
-      code: this.props.route.params.otherParam.code,
-      user_id: this.props.route.params.otherParam.user_id,
-      id: this.props.route.params.otherParam.id,
+      name: '',
+      type: '',
+      color: '',
+      icon: '',
+      code: '',
       error: '',
       nameError: false,
       navigation: this.props.navigation,
@@ -93,10 +90,8 @@ export default class BussinessEdit extends React.Component {
       val: 1,
       modalVisible: false,
       modal2Visible: false,
-      ColorPicker:  this.props.route.params.otherParam.color,
-      IconSelection: this.props.route.params.otherParam.icon,
-      otherParam: this.props.route.params.otherParam,
-      itemId: this.props.route.params.itemId
+      ColorPicker: COLORS.primary,
+      IconSelection: 'archive',
       
 
     }
@@ -144,25 +139,18 @@ export default class BussinessEdit extends React.Component {
 
   showData = async () => {
 
-    
-const id = this.state.id;
-const negocio = await BusinessModel.find(id)
-negocio.name = this.state.name
-negocio.categoria = this.state.type
-negocio.code = this.state.code
-negocio.icon = this.state.IconSelection
-negocio.color = this.state.ColorPicker
+    props = {
+      name: this.state.name,
+      categoria: this.state.type,
+      code: this.state.code,
+      user_id: JSON.parse(await AsyncStorage.getItem('id')),
+      icon: this.state.IconSelection,
+      color: this.state.ColorPicker,
+      
+     }
+var negocio =[];
+negocio = new BusinessModel(props)
 negocio.save()
-
-this.state.navigation.navigate('Home')
-  }
-
-  Delete = async () => {
-
-    
-const id = this.state.id;
-const negocio = await BusinessModel.destroy(id)
-console.log(negocio)
 
 this.state.navigation.navigate('Home')
   }
@@ -177,60 +165,11 @@ render() {
 
   return (
       <View  style={{
+        padding: SIZES.padding * 0.5,
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-         <View  style={{
-        backgroundColor:COLORS.transparent,
-        height: 35,
-        width: Dimensions.get('window').width,
-    }}>
-                 
-                 <View
-                  style={{
-                    flex:1,
-                    flexDirection: 'row',
-                    
-                      height:30,
-                      width: Dimensions.get('window').width,
-                      backgroundColor: COLORS.primary,
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginRight: SIZES.base
-                  }}
-              >
-                 <TouchableOpacity
-     onPress={() => {navigation.navigate('Home')}}
-  >
-     <Image
-                            source={icons.back_arrow}
-                            resizeMode="contain"
-                            style={{
-                                width: 30,
-                                height: 30,
-                                margin:6,
-                                tintColor: COLORS.secondary
-                            }}
-                        />
-                {/* <Icon size={30} name='arrow-left'
-                                  style={{
-                                    margin:6,
-                                    color: COLORS.secondary,
-                                  }}/> */}
-                </TouchableOpacity>
-                  <Text style={{ color: COLORS.secondary, ...FONTS.h2 }}>   Editar Negocio </Text>
-                  <TouchableOpacity
-      onPress={() => this.Delete()}
-  >
-                  <Icon size={30} name='trash-o'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.secondary,
-                                  }}/>
-</TouchableOpacity>
-              </View>
-              </View>
-        
+        <Text>Nuevo Negocio</Text>
         
         <View style={{ margin: 10 }}>
           <TextInput
@@ -280,7 +219,7 @@ render() {
         <View style={{ margin: 10 }}>
         
         <SelectDropdown
-        defaultButtonText={this.state.type}
+        defaultButtonText='Seleccione una Categoría'
         buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
         buttonStyle={{ 
           width: SIZES.width * 0.8,
@@ -356,7 +295,7 @@ render() {
                                 width: SIZES.width * 0.8,
                                 height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
-                                backgroundColor: COLORS.secondary,
+                                backgroundColor: COLORS.primary,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderRadius: SIZES.radius,
@@ -395,6 +334,7 @@ render() {
                   </TouchableHighlight>
                </View>
                </View>
+               
               
             </Modal>
             </View>
@@ -408,6 +348,7 @@ render() {
                             padding: SIZES.padding * 0.5,
                             alignItems: 'center',
                             justifyContent: 'center'
+                            
                         }}
                     >
                          <Modal animationType = {"slide"} transparent = {false}
@@ -534,10 +475,8 @@ render() {
                             justifyContent: 'center',
                             height: 60,
                             width: 30,
-                            margin:20,
                         }}
                     >
-
                         <TouchableOpacity
                             style={{
                                 width: SIZES.width * 0.8,
@@ -551,11 +490,42 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Editar</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Crear</Text>
                         </TouchableOpacity>
                     </View>
+        <View
+                        style={{
+                            
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: 60,
+                            width: 30,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                width: SIZES.width * 0.8,
+                                height: SIZES.width * 0.1,
+                                padding: SIZES.padding,
+                                backgroundColor: COLORS.secondary,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: SIZES.radius,
+                                elevation: 5,
+                            }}
+                            onPress={() => {
+                              
+                              navigation.navigate('Home')
+                            }}
+                        >
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                        </TouchableOpacity>
+                    </View>
+
+               
                
       </View>
+        // <Button title='Go to Login' onPress={this.goToLogin} />
       
         )
 

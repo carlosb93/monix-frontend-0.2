@@ -6,9 +6,9 @@ import { StyleSheet,
   TouchableOpacity,
   Image } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import APIKit, {setClientToken} from '../shared/APIKit';
+import APIKit, {setClientToken} from '../../shared/APIKit';
 
-import { icons, COLORS, SIZES, FONTS } from '../constants'
+import { icons, COLORS, SIZES, FONTS } from '../../constants'
   
 
 export default class Signup extends React.Component {
