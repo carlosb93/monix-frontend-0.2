@@ -27,7 +27,7 @@ export const COLORS = {
     purple: '#8e44ad',
     red: '#FF0000',
     green:"#1fa67a",
-    pink:"FD33FF",
+    pink:"#FD33FF",
 };
 
 export const SIZES = {

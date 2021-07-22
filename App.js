@@ -6,7 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Signup, Login, SplashScreen, Profile,
         EditProfile, Expenses, Business, BusinessForm,
         BusinessServices, InventaryNew, InventaryEdit, BusinessEdit,
-        BusinessInv } from './screens';
+        BusinessInv, BusinessSales, SalesNew, SalesEdit,
+        BusinessExpense, ExpenseNew, ExpenseEdit } from './screens';
 
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
@@ -16,6 +17,7 @@ import BusinessModel from './models/Business';
 import UserModel from './models/User';
 import InventaryModel from './models/Inventary';
 import SalesModel from './models/Sales';
+import ExpensesModel from './models/Expenses';
 
 
 
@@ -29,7 +31,6 @@ export default class App extends React.Component {
 		super();
 		this.state = {
             isAuthenticated: 'false',
-            setCategory: null,
             category: null,
 		}
     }
@@ -45,32 +46,32 @@ export default class App extends React.Component {
         const props =[
           {
             name: 'Education',
-            icon: 'faGraduationCap',
+            icon: 'archive',
             color: COLORS.blue
         },
         {
           name: 'Nutrition',
-          icon: 'faCutlery',
+          icon: 'cutlery',
           color: COLORS.green
        },
         {
             name: 'Child',
-            icon: 'faChild',
+            icon: 'child',
             color: COLORS.yellow
         },
         {
           name: 'Beauty & Care',
-          icon: 'faEye',
+          icon: 'eye',
           color: COLORS.pink
        },
         {
             name: 'Travel',
-            icon: 'faPlane',
+            icon: 'plane',
             color: COLORS.blue
         },
         {
           name: 'Clothing',
-          icon: 'faShoppingBag',
+          icon: 'shopping-bag',
           color: COLORS.primary
        }
         ]
@@ -78,7 +79,7 @@ export default class App extends React.Component {
       
       try {
         user =  await UserModel.query()
-        console.log(user)
+        
           } catch (error) {
                 await UserModel.createTable()
                 console.log('Table user created successfully')
@@ -102,17 +103,26 @@ export default class App extends React.Component {
                 console.log('Table sales created successfully')
       }
       try {
+        inv =  await ExpensesModel.query()
+          } catch (error) {
+                await ExpensesModel.createTable()
+                console.log('Table expenses created successfully')
+      }
+      try {
+        // await CategoryModel.dropTable()
         categories =  await CategoryModel.query()
-        if(categories.length = 0 ){
-      
-          var i ;
-          for(i=0; i < props.length; i++){
-            const categoria = new CategoryModel(props[i])
-            await categoria.save()
-          }
-          this.state.setCategory = await CategoryModel.query()
-          console.log('Table categories filled with data')
-        }
+        
+       if(categories.length == 0){
+
+         var i ;
+         for(i=0; i < props.length; i++){
+           const categoria = new CategoryModel(props[i])
+           categoria.save()
+         }
+         console.log('Table categories filled successfully')
+         const setCategory = await CategoryModel.query()
+       }
+       
           } catch (error) {
                 await CategoryModel.createTable()
                 console.log('Table categories created successfully')
@@ -160,6 +170,12 @@ async	componentDidMount() {
                 <Stack.Screen name="BusinessInv" component={BusinessInv} />
                 <Stack.Screen name="InventaryNew" component={InventaryNew} />
                 <Stack.Screen name="InventaryEdit" component={InventaryEdit} />
+                <Stack.Screen name="BusinessSales" component={BusinessSales} />
+                <Stack.Screen name="SalesNew" component={SalesNew} />
+                <Stack.Screen name="SalesEdit" component={SalesEdit} />
+                <Stack.Screen name="BusinessExpense" component={BusinessExpense} />
+                <Stack.Screen name="ExpenseNew" component={ExpenseNew} />
+                <Stack.Screen name="ExpenseEdit" component={ExpenseEdit} />
                 <Stack.Screen name="Business" component={Business} />
                 <Stack.Screen name="Expenses" component={Expenses} />
                 <Stack.Screen name="Home" component={Tabs} />

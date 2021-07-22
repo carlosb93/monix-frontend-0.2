@@ -15,6 +15,12 @@ import BusinessEdit from './business/BusinessEdit'
 import BusinessInv from './business/BusinessInv'
 import InventaryNew from './business/InventaryNew'
 import InventaryEdit from './business/InventaryEdit'
+import BusinessSales from './business/BusinessSales'
+import SalesNew from './business/SalesNew'
+import SalesEdit from './business/SalesEdit'
+import BusinessExpense from './business/BusinessExpense'
+import ExpenseNew from './business/ExpenseNew'
+import ExpenseEdit from './business/ExpenseEdit'
 
 export {
     Home,
@@ -31,4 +37,10 @@ export {
     BusinessInv,
     InventaryNew,
     InventaryEdit,
+    BusinessSales,
+    SalesNew,
+    SalesEdit,
+    BusinessExpense,
+    ExpenseNew,
+    ExpenseEdit,
 }

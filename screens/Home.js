@@ -53,12 +53,12 @@ export default class Home extends React.Component {
 
  
     const token = await AsyncStorage.getItem('token')
-    setClientToken(token);
+    this.setState({token: await AsyncStorage.getItem('token')})
+    await setClientToken(token);
+    console.log('///////////////////////////// token /////////////////////////////////////////')
     console.log(token)
 
-    console.log(token)
-
-    APIKit.get('/auth/me').then((res) => {
+    await APIKit.get('/auth/me').then((res) => {
         
 
     if(res.data.user.isActive == 0 ){
@@ -66,8 +66,7 @@ export default class Home extends React.Component {
            this.logOut()
 
     }else{
-        console.log('me');
-        console.log(res.data.user)
+        
         this.setState({ isAuth: true})
         this.setState({ id: res.data.user.id})
         this.setState({ name: res.data.user.name})
@@ -80,9 +79,7 @@ export default class Home extends React.Component {
         this.filluser();
       }
     }
-    }).catch((error) => {
-        console.log(error);  
-        console.log(this.state);   
+    }).catch((error) => {  
         this.setState({ isAuth: false});
         // this.state.navigation.replace('Login');
        });
@@ -95,9 +92,9 @@ export default class Home extends React.Component {
     const usuario = await UserModel.query({id: this.state.id})
 
     if(usuario.length > 0){
-      console.log('1')
+
       this.setState({ isAuth: true});
-        console.log('2')
+
         await AsyncStorage.setItem('isAuth', JSON.stringify(true))
         await AsyncStorage.setItem('id', JSON.stringify(this.state.id))
         await AsyncStorage.setItem('token', this.state.token)
@@ -105,9 +102,9 @@ export default class Home extends React.Component {
 
         const user_id = this.state.id
          const user = await UserModel.find(user_id)
-         console.log(user)
+     
          if(user){
-          console.log('3')
+     
 
            user.name = this.state.name,
            user.email = this.state.email,
@@ -123,7 +120,6 @@ export default class Home extends React.Component {
           }
     
      }else{
-      console.log('6')
       await AsyncStorage.setItem('isAuth', JSON.stringify(true))
       await AsyncStorage.setItem('id', JSON.stringify(this.state.id))
       await AsyncStorage.setItem('token', this.state.token)
@@ -138,7 +134,7 @@ export default class Home extends React.Component {
         isAuth: true
        }
 
-      console.log(props);
+      
       const newuser = new UserModel(props)
       newuser.save()
       

@@ -67,7 +67,6 @@ export default class BusinessInv extends React.Component {
 
     var inventary = [];
     inventary = await InventaryModel.query({business_id: this.state.negocioId });
-    console.log(inventary)
 
     this.setState({inventaryes: inventary}) 
 
@@ -120,7 +119,7 @@ export default class BusinessInv extends React.Component {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('Home')}}
+     onPress={() => {navigation.navigate('BusinessServices')}}
   >
      <Image
                             source={icons.back_arrow}
@@ -215,7 +214,7 @@ export default class BusinessInv extends React.Component {
       borderRadius: 100,
     }}
      onPress={() => {navigation.navigate('InventaryNew', {
-      itemId: 1,
+      itemId: this.state.negocioId,
       otherParam: {},
     });}}
   >

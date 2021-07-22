@@ -139,18 +139,25 @@ export default class BusinessForm extends React.Component {
 
   showData = async () => {
 
-    props = {
+    const props = {
       name: this.state.name,
       categoria: this.state.type,
       code: this.state.code,
       user_id: JSON.parse(await AsyncStorage.getItem('id')),
       icon: this.state.IconSelection,
       color: this.state.ColorPicker,
-      
      }
-var negocio =[];
-negocio = new BusinessModel(props)
-negocio.save()
+
+     try {
+      var negocio =[];
+      negocio = new BusinessModel(props)
+      negocio.save()
+      
+            } catch (error) {
+                  
+                  console.log(error)
+        }
+
 
 this.state.navigation.navigate('Home')
   }

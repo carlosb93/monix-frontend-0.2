@@ -162,7 +162,6 @@ this.state.navigation.navigate('Home')
     
 const id = this.state.id;
 const negocio = await BusinessModel.destroy(id)
-console.log(negocio)
 
 this.state.navigation.navigate('Home')
   }
@@ -366,7 +365,7 @@ render() {
                               this.toggleModal(!this.state.modalVisible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Confirmar</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Actualizar</Text>
                   </TouchableHighlight>
                   </View>
         <View

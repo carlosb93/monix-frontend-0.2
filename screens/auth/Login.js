@@ -46,13 +46,13 @@ export default class Login extends React.Component {
         var bodyFormData = new FormData();
         bodyFormData.append('email', this.state.userEmail);
         bodyFormData.append('password', this.state.userPassword); 
-        console.log(bodyFormData)
+        
 
 
 const onSuccess = async({data}) => {
  
           // Set JSON Web Token on success 
-      console.log('func onSuccess');
+     
       setClientToken(data.token);
       this.setState({ token: data.token});
       this.setState({ isAuth: true});

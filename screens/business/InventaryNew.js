@@ -82,9 +82,6 @@ export default class InventaryNew extends React.Component {
 
   }
  
-
-
-
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
 
@@ -97,7 +94,7 @@ export default class InventaryNew extends React.Component {
 
   showData = async () => {
 
-    props = {
+    const props = {
       name: this.state.name,
       stock: parseInt(this.state.amount),
       cost: parseFloat(this.state.cost),
@@ -108,7 +105,7 @@ var inventary =[];
 inventary = new InventaryModel(props)
 inventary.save()
 
-this.state.navigation.navigate('Home')
+this.state.navigation.navigate('BusinessInv')
   }
 
 
@@ -125,7 +122,7 @@ render() {
     }}>
         <Text>Adicionar Producto</Text>
         <View>
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between'}}>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 
         <TouchableOpacity>
                   <Icon size={30} name='archive'
@@ -157,7 +154,7 @@ render() {
           />
         </View>
         
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between' }}>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between' ,alignItems: 'center'}}>
         <TouchableOpacity>
                   <Icon size={30} name='clone'
                                   style={{
@@ -186,7 +183,7 @@ render() {
             onSubmitEditing={() => this.costRef.current.focus()}
           />
         </View>
-        <View style={{ flexDirection: 'row', margin: 10,  height:60,justifyContent:'space-between'}}>
+        <View style={{ flexDirection: 'row', margin: 10,  height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
                   <Icon size={30} name='usd'
                                   style={{
@@ -216,7 +213,7 @@ render() {
 						onSubmitEditing={() => this.priceRef.current.focus()}
           />
         </View>
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between'}}>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
                   <Icon size={30} name='money'
                                   style={{
@@ -300,7 +297,7 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('Home')
+                              navigation.navigate('BusinessInv')
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
@@ -314,7 +311,6 @@ render() {
             </View>  
                
       </View>
-        // <Button title='Go to Login' onPress={this.goToLogin} />
       
         )
 

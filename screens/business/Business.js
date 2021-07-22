@@ -27,7 +27,7 @@ const stylesflat = StyleSheet.create({
     marginRight: SIZES.padding,
     marginLeft:  SIZES.padding,
     marginVertical: SIZES.radius,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor:COLORS.lightGray4,
     elevation: 5
   }
@@ -165,27 +165,21 @@ export default class Business extends React.Component {
           {/* Price */}
           <View
               style={{
-                  height: 40,
+                  height: 20,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  borderBottomStartRadius: 16,
-                  borderBottomEndRadius: 16,
+                  borderBottomStartRadius: 8,
+                  borderBottomEndRadius: 8,
                   backgroundColor: item.color,
               }}
           >
-              <Text style={{ color: COLORS.white, ...FONTS.h2 }}>{item.categoria}</Text>
+              <Text style={{ color: COLORS.white, ...FONTS.h4 }}>{item.categoria}</Text>
           </View>
       </View>
       </TouchableOpacity>
 
 
-  //       <View style={stylesflat.itemContainer}>
-         
-  //                        <Icon size={60} name={item.icon}
-  //  style={{
-  //      color: item.color,
-  //  }}/>
-  //       </View>
+
       )}
       keyExtractor={item => item.id}
       numColumns={numColumns} />
@@ -220,7 +214,7 @@ export default class Business extends React.Component {
      </View>
       </View>
       
-        // <Button title='Go to Login' onPress={this.goToLogin} />
+
       
         )
       }
