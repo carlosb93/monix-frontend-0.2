@@ -12,15 +12,26 @@ import Business from './business/Business'
 import BusinessForm from './business/BusinessForm'
 import BusinessServices from './business/BusinessServices'
 import BusinessEdit from './business/BusinessEdit'
+
 import BusinessInv from './business/BusinessInv'
 import InventaryNew from './business/InventaryNew'
 import InventaryEdit from './business/InventaryEdit'
+
 import BusinessSales from './business/BusinessSales'
 import SalesNew from './business/SalesNew'
 import SalesEdit from './business/SalesEdit'
+
 import BusinessExpense from './business/BusinessExpense'
 import ExpenseNew from './business/ExpenseNew'
 import ExpenseEdit from './business/ExpenseEdit'
+
+import CalendarScreen from './calendar/Calendar'
+import CreateTask from './calendar/CreateTask'
+
+import BusinessClients from './business/BusinessClients'
+import ClientsNew from './business/ClientsNew'
+import ClientsEdit from './business/ClientsEdit'
+import StatisticsClients from './business/StatisticsClients'
 
 export {
     Home,
@@ -43,4 +54,10 @@ export {
     BusinessExpense,
     ExpenseNew,
     ExpenseEdit,
+    CalendarScreen,
+    CreateTask,
+    BusinessClients,
+    ClientsNew,
+    ClientsEdit,
+    StatisticsClients,
 }

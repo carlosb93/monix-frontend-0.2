@@ -22,14 +22,15 @@ import {
   COLORS,
   SIZES,
   FONTS,
-  iconData
+  iconData,
+  icons
 } from '../../constants'
 import APIKit, {setClientToken} from '../../shared/APIKit';
 import {toTimestamp, toDatetime } from '../../shared/tools';
 import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
-import SalesModel from '../../models/Sales';
+import ExpensesModel from '../../models/Expenses';
 
 
 const options = ['cuenta BANMET'];
@@ -66,7 +67,6 @@ export default class ExpenseEdit extends React.Component {
     super(props);
     this.fechaRef = React.createRef();
     this.accountRef = React.createRef();
-    this.amountRef = React.createRef();
     this.costRef = React.createRef();
     this.priceRef = React.createRef();
     this.state = {
@@ -76,22 +76,22 @@ export default class ExpenseEdit extends React.Component {
       error: '',
       fechaError: false,
       accountError: false,
-      amountError: false,
       costError: false,
       priceError: false,
       navigation: this.props.navigation,
-      sale_id: this.props.route.params.itemId,
+      expend_id: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
       negocioId: this.props.route.params.otherParam.business_id,
-      inventory_id: this.props.route.params.otherParam.inventory_id,
-      products: [],
+      category_id: this.props.route.params.otherParam.category_id,
+      categories: [],
       fecha: new Date(),
       fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       price: ''+this.props.route.params.otherParam.price,
-      amount: ''+this.props.route.params.otherParam.amount,
       account: this.props.route.params.otherParam.account,// opcional
       description: this.props.route.params.otherParam.description,// opcional
       date: this.props.route.params.otherParam.date,// opcional
+      iconview: <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}> <Icon size={20} name={this.props.route.params.otherParam.icon} style={{color:this.props.route.params.otherParam.color, margin:8}}/>  {this.props.route.params.otherParam.name}</Text>,
+      
       isDatePickerVisible: false,
       day:new Date().getDate(),
       month:new Date().getMonth() + 1,
@@ -103,7 +103,7 @@ export default class ExpenseEdit extends React.Component {
  
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-    this.get_products()
+    this.get_categories()
     });
   }
 
@@ -111,19 +111,38 @@ export default class ExpenseEdit extends React.Component {
     this._focusListener();
   }
 
-  async get_products(){
+  async get_categories(){
      
 
-      var prod = [];
-      prod = await InventaryModel.query({business_id: this.state.negocioId });  
-      this.setState({products: prod}) 
-       
-  
-             
+    let categories = [];
+    let categoriesicon = [];
+    categories = await CategoryModel.query();
+
+    for (let index = 0; index < categories.length; index++) {
+      
+      const element = categories[index]
+      element.iconview = <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}> <Icon size={20} name={element.icon} style={{color:element.color, margin:8}}/>  {element.name}</Text>
+      
+      
+      
+      categoriesicon.push(element)
+    }
+    this.setState({categories: categoriesicon}) 
      
-    
-  }
+
+           
+   
   
+}
+Delete = async () => {
+
+    
+  const id = this.state.expend_id;
+  const expense = await ExpensesModel.destroy(id)
+  
+  this.state.navigation.navigate('BusinessExpense')
+  }
+
    showDatePicker = () => {
     this.setState({isDatePickerVisible: true});
   };
@@ -148,20 +167,21 @@ export default class ExpenseEdit extends React.Component {
     this.hideDatePicker();
   };
   showData = async () => {
+console.log(this.state.category_id)
 
-    const id = this.state.id;
-    const inv = await InventaryModel.find(id)
-    inv.inventory_id = parseInt(this.state.inventory_id)
-    inv.business_id = parseInt(this.state.negocioId)
-    inv.amount = parseInt(this.state.amount)
-    inv.price = parseFloat(this.state.price)
-    inv.account = this.state.account
-    // inv.date = this.state.date
-    inv.description = this.state.description
-    inv.save()
+    const id = this.state.expend_id;
+    var datum = toTimestamp(this.state.fecha)
+    const expense = await ExpensesModel.find(id)
+    expense.category_id = parseInt(this.state.category_id)
+    expense.business_id = parseInt(this.state.negocioId)
+    expense.price = parseFloat(this.state.price)
+    expense.account = this.state.account
+    expense.date = datum
+    expense.description = this.state.description
+    expense.save()
     
     
-    this.state.navigation.navigate('BusinessSales')
+    this.state.navigation.navigate('BusinessExpense')
       }
 
 
@@ -171,13 +191,101 @@ render() {
 
   return (
       <View  style={{
-        padding: SIZES.padding * 0.5,
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-        <Text>Adicionar Producto</Text>
+      <View  style={{
+        backgroundColor:COLORS.transparent,
+        height: 35,
+        width: Dimensions.get('window').width,
+    }}>
+                 
+                 <View
+                  style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    
+                      height:30,
+                      width: Dimensions.get('window').width,
+                      backgroundColor: COLORS.primary,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginRight: SIZES.base
+                  }}
+              >
+                 <TouchableOpacity
+     onPress={() => {navigation.navigate('BusinessExpense')}}
+  >
+     <Image
+                            source={icons.left_arrow}
+                            resizeMode="contain"
+                            style={{
+                                width: 25,
+                                height: 25,
+                                margin:6,
+                                tintColor: COLORS.white,
+                            }}
+                        />
+                </TouchableOpacity>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Editar Gasto</Text>
+                  <TouchableOpacity
+     onPress={() => {this.Delete() }}
+  >
+                  <Icon size={30} name='trash-o'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+</TouchableOpacity>
+              </View>
+              </View>
         <View>
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between'}}>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+        <TouchableOpacity>
+                  <Icon size={30} name='tag'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.primary,
+                                  }}/>
+        </TouchableOpacity>
+        
+        <SelectDropdown
+        defaultButtonText={this.state.iconview}
+        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
+        dropdownStyle={{height: SIZES.width* 0.8}}
+        buttonStyle={{ 
+          width: SIZES.width * 0.7,
+            height: SIZES.width * 0.1,
+            padding: SIZES.padding,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            borderColor: COLORS.primary,
+            borderWidth: SIZES.input,
+            elevation: 5,
+            backgroundColor: COLORS.white}}
+        
+	data={this.state.categories}
+	onSelect={(selectedItem, index) => {
+    this.setState({ category_id: selectedItem.id })
+		
+	}}
+	buttonTextAfterSelection={(selectedItem, index) => {
+		return selectedItem.iconview
+	}}
+	rowTextForSelection={(item, index) => {
+		return item.iconview
+	}}
+/>
+<TouchableOpacity style={{elevation:8}}>
+                  <Icon size={30} name='plus'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.darkgray,
+                                  }}/>
+        </TouchableOpacity>
+        
+        </View> 
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 
         <TouchableOpacity onPress={this.showDatePicker}>
                   <Icon size={30} name='calendar'
@@ -212,81 +320,9 @@ render() {
       />
         </View> 
         
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between' }}>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
-                  <Icon size={30} name='shopping-basket'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.primary,
-                                  }}/>
-        </TouchableOpacity>
-        
-        <SelectDropdown
-        defaultButtonText={this.state.name}
-        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
-        buttonStyle={{ 
-          width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            padding: SIZES.padding,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            borderColor: COLORS.primary,
-            borderWidth: SIZES.input,
-            elevation: 5,
-            backgroundColor: COLORS.white}}
-        
-	data={this.state.products}
-	onSelect={(selectedItem, index) => {
-    this.setState({ product_id: selectedItem.id })
-		
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem.name
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item.name
-	}}
-/>
-        
-        </View>
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between' }}>
-        <TouchableOpacity>
-                  <Icon size={30} name='clone'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.primary,
-                                  }}/>
-        </TouchableOpacity>
-        <TextInput
-          style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            padding: SIZES.padding,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            borderColor: COLORS.primary,
-            borderWidth: SIZES.input,
-            elevation: 5,
-            textDecorationColor: COLORS.darkgray,
-            backgroundColor: COLORS.white
-        }}
-            name='amount'
-            placeholder='Cantidad de Unidades'
-            error={this.state.amountError}
-			ref={this.amountRef}
-			value={this.state.amount}
-			onChangeText={ (amount) => this.setState({ amount })} 
-            onSubmitEditing={() => this.priceRef.current.focus()}
-          />
-        </View>
-        
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between'}}>
-        <TouchableOpacity>
-                  <Icon size={30} name='money'
+                  <Icon size={30} name='usd'
                                   style={{
                                     margin:8,
                                     color: COLORS.primary,
@@ -313,7 +349,7 @@ render() {
 						onChangeText={ (price) => this.setState({ price })} 
           />
         </View>
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between' }}>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
         <TouchableOpacity>
                   <Icon size={30} name='credit-card'
                                   style={{
@@ -352,7 +388,7 @@ render() {
 />
         
         </View>
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between'}}>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
                   <Icon size={30} name='font'
                                   style={{
@@ -411,7 +447,7 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Actualizar</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                         </TouchableOpacity>
                     </View>
         <View
@@ -435,10 +471,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessSales')
+                              navigation.navigate('BusinessExpense')
                             }}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 

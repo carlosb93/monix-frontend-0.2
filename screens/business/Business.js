@@ -191,17 +191,18 @@ export default class Business extends React.Component {
         <View>
     <TouchableOpacity
     style={{
-      
-      borderColor: 'rgba(0,0,0,0.2)',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 60,
-      bottom: 60,
-      right: -150,
-      height: 60,
-      elevation: 6,
-      backgroundColor: '#fff',
-      borderRadius: 100,
+    borderColor: 'rgba(0,0,0,0.2)',
+    width: 60,
+    position: 'absolute',
+    bottom: 60,
+    right: -170,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+    height: 60,
+    elevation: 6,
+    backgroundColor: '#fff',
+    borderRadius: 100,
     }}
      onPress={() => {navigation.navigate('BusinessForm') }}
   >

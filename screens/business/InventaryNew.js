@@ -21,7 +21,8 @@ import {
   COLORS,
   SIZES,
   FONTS,
-  iconData
+  iconData,
+  icons
 } from '../../constants'
 import APIKit, {
   setClientToken
@@ -116,11 +117,53 @@ render() {
 
   return (
       <View  style={{
-        padding: SIZES.padding * 0.5,
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-        <Text>Adicionar Producto</Text>
+
+<View  style={{
+        backgroundColor:COLORS.transparent,
+        height: 35,
+        width: Dimensions.get('window').width,
+    }}>
+                 
+                 <View
+                  style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    
+                      height:30,
+                      width: Dimensions.get('window').width,
+                      backgroundColor: COLORS.primary,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginRight: SIZES.base
+                  }}
+              >
+                 <TouchableOpacity
+     onPress={() => {navigation.navigate('BusinessInv')}}
+  >
+     <Image
+                            source={icons.left_arrow}
+                            resizeMode="contain"
+                            style={{
+                                width: 25,
+                                height: 25,
+                                margin:6,
+                                tintColor: COLORS.white,
+                            }}
+                        />
+                </TouchableOpacity>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Adicionar Producto</Text>
+                  <TouchableOpacity>
+                  <Icon size={30} name='trash-o'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.transparent,
+                                  }}/>
+</TouchableOpacity>
+              </View>
+              </View>
         <View>
         <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 
@@ -273,7 +316,7 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Crear</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                         </TouchableOpacity>
                     </View>
         <View
@@ -300,7 +343,7 @@ render() {
                               navigation.navigate('BusinessInv')
                             }}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 

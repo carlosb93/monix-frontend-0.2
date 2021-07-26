@@ -202,7 +202,7 @@ render() {
      onPress={() => {navigation.navigate('Home')}}
   >
      <Image
-                            source={icons.back_arrow}
+                            source={icons.left_arrow}
                             resizeMode="contain"
                             style={{
                                 width: 25,
@@ -211,11 +211,7 @@ render() {
                                 tintColor: COLORS.white
                             }}
                         />
-                {/* <Icon size={30} name='arrow-left'
-                                  style={{
-                                    margin:6,
-                                    color: COLORS.secondary,
-                                  }}/> */}
+
                 </TouchableOpacity>
                   <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Editar Negocio </Text>
                   <TouchableOpacity
@@ -355,7 +351,7 @@ render() {
                                 width: SIZES.width * 0.8,
                                 height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
-                                backgroundColor: COLORS.secondary,
+                                backgroundColor: COLORS.primary,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderRadius: SIZES.radius,
@@ -365,7 +361,7 @@ render() {
                               this.toggleModal(!this.state.modalVisible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Actualizar</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                   </TouchableHighlight>
                   </View>
         <View
@@ -390,7 +386,7 @@ render() {
                               this.toggleModal(!this.state.modalVisible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                   </TouchableHighlight>
                </View>
                </View>
@@ -459,7 +455,7 @@ render() {
                               this.toggleModal2(!this.state.modal2Visible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                   </TouchableHighlight>
                </View>
             </Modal>
@@ -550,7 +546,7 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Editar</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                         </TouchableOpacity>
                     </View>
                

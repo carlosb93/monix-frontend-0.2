@@ -8,6 +8,7 @@ import { StyleSheet,
   import APIKit, {setClientToken} from '../shared/APIKit';
   import { COLORS, SIZES, FONTS } from '../constants'
   import UserModel from '../models/User';
+  import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 export default class Home extends React.Component { 
 
@@ -176,6 +177,22 @@ export default class Home extends React.Component {
         }
     >
         <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Salir</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+        style={{
+            width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
+            padding: SIZES.padding,
+            backgroundColor: COLORS.primary,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            elevation: 5,
+        }}
+        onPress={() => {this.state.navigation.replace('CalendarScreen')}
+        }
+    >
+        <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Calendar</Text>
     </TouchableOpacity>
 </View>
   )

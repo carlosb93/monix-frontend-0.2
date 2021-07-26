@@ -18,23 +18,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {
-  COLORS,
-  SIZES,
-  FONTS,
-  iconData,
-  icons
-} from '../../constants'
-import APIKit, {
-  setClientToken
-} from '../../shared/APIKit';
+import {  COLORS,  SIZES,  FONTS,  iconData,  icons} from '../../constants'
+
+import APIKit, {setClientToken} from '../../shared/APIKit';
 import {toTimestamp, toDatetime } from '../../shared/tools';
 
 import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import ExpensesModel from '../../models/Expenses';
+import ClientsModel from '../../models/Clientes';
 
+import ToggleSwitch from 'toggle-switch-react-native'
 
 const options = ['cuenta BANMET'];
 
@@ -51,7 +46,9 @@ const stylesflat = StyleSheet.create({
 
 
 
-export default class ExpenseNew extends React.Component {
+
+
+export default class ClientsEdit extends React.Component {
 
 
   toggleModal(visible) {
@@ -67,31 +64,25 @@ export default class ExpenseNew extends React.Component {
   constructor(props) {
     super(props);
     this.fechaRef = React.createRef();
-    this.accountRef = React.createRef();
-    this.amountRef = React.createRef();
-    this.costRef = React.createRef();
-    this.priceRef = React.createRef();
     this.state = {
-      name: '',
       cost: 0,
-      negocioId: this.props.route.params.itemId,
       product_id: 0,
       error: '',
       fechaError: false,
-      accountError: false,
-      amountError: false,
-      costError: false,
-      priceError: false,
+      name:this.props.route.params.otherParam.name,
+      extras: this.props.route.params.otherParam.extras,
+      age: String(this.props.route.params.otherParam.age),
+      pack: String(this.props.route.params.otherParam.pack),
+      iskid:this.props.route.params.otherParam.iskid,
+      ispregnant:this.props.route.params.otherParam.ispregnant,
+      isoutdoors: this.props.route.params.otherParam.isoutdoors,
+      date:  this.props.route.params.otherParam.date,
       navigation: this.props.navigation,
+      client_id: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
-      categories: [],
+      negocioId: this.props.route.params.otherParam.business_id,
       fecha: new Date(),
-      fecha_mod: 'MM/DD/YYYY',
-      amount: '',
-      price: '',
-      account: '',// opcional
-      description: '',// opcional
-      category_id: 0,// opcional
+      fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       isDatePickerVisible: false,
       day:new Date().getDate(),
       month:new Date().getMonth() + 1,
@@ -100,15 +91,10 @@ export default class ExpenseNew extends React.Component {
     }
 
   }
-
+ 
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-    this.get_categories()
-    if(this.state.month < 10){
-      this.setState({fecha_mod: '0'+ this.state.month +'/'+ this.state.day +'/'+ this.state.year})
-    }else{
-      this.setState({fecha_mod: this.state.month +'/'+ this.state.day +'/'+ this.state.year})
-    }
+        
     });
   }
 
@@ -116,30 +102,15 @@ export default class ExpenseNew extends React.Component {
     this._focusListener();
   }
 
-  async get_categories(){
-     
+Delete = async () => {
 
-      let categories = [];
-      let categoriesicon = [];
-      categories = await CategoryModel.query();
-
-      for (let index = 0; index < categories.length; index++) {
-        
-        const element = categories[index]
-        element.iconview = <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}> <Icon size={20} name={element.icon} style={{color:element.color, margin:8}}/>  {element.name}</Text>
-        
-        
-        
-        categoriesicon.push(element)
-      }
-      this.setState({categories: categoriesicon}) 
-       
-  
-             
-     
     
-  }
+  const id = this.state.client_id;
+  const client = await ClientsModel.destroy(id)
   
+  this.state.navigation.navigate('BusinessClients')
+  }
+
    showDatePicker = () => {
     this.setState({isDatePickerVisible: true});
   };
@@ -166,28 +137,26 @@ export default class ExpenseNew extends React.Component {
 
   showData = async () => {
 
+    const id = this.state.client_id;
     var datum = toTimestamp(this.state.fecha)
 
-    const props = {
-        category_id: this.state.category_id,
-        business_id: this.state.negocioId,
-        date: datum,
-        price: parseFloat(this.state.price),
-        account: this.state.account,
-        description: this.state.description,
-       }
-  try {
-  var expenses =[];
-  expenses = new ExpensesModel(props)
-  expenses.save()
-  
-        } catch (error) {
-              
-        console.log(error)
-    }
+    const client = await ClientsModel.find(id)
+
+        client.name= this.state.name,
+        client.extras= this.state.extras,
+        client.age= parseInt(this.state.age),
+        client.pack= parseInt(this.state.pack),
+        client.iskid= this.state.iskid,
+        client.ispregnant= this.state.ispregnant,
+        client.isoutdoors= this.state.isoutdoors,
+        client.date= datum,
+        client.business_id= parseInt(this.state.negocioId),
+        client.save()
     
- this.state.navigation.navigate('BusinessExpense')
-  }
+    
+    this.state.navigation.navigate('BusinessClients')
+      }
+
 
 render() { 
   const { navigation  } = this.state;
@@ -198,7 +167,7 @@ render() {
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-<View  style={{
+      <View  style={{
         backgroundColor:COLORS.transparent,
         height: 35,
         width: Dimensions.get('window').width,
@@ -218,7 +187,7 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessExpense')}}
+     onPress={() => {navigation.navigate('BusinessClients')}}
   >
      <Image
                             source={icons.left_arrow}
@@ -231,33 +200,30 @@ render() {
                             }}
                         />
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Adicionar Gasto</Text>
-                  <TouchableOpacity>
-                  <Icon size={30} name='trash'
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Editar Gasto</Text>
+                  <TouchableOpacity
+     onPress={() => {this.Delete() }}
+  >
+                  <Icon size={30} name='trash-o'
                                   style={{
                                     margin:8,
-                                    color: COLORS.transparent,
+                                    color: COLORS.white,
                                   }}/>
 </TouchableOpacity>
               </View>
               </View>
-      
         <View>
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center', }}>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
-                  <Icon size={30} name='tag'
+                  <Icon size={30} name='user'
                                   style={{
                                     margin:8,
                                     color: COLORS.primary,
                                   }}/>
         </TouchableOpacity>
-        
-        <SelectDropdown
-        defaultButtonText='Seleccione una categoría'
-        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
-        dropdownStyle={{height: SIZES.width* 0.8}}
-        buttonStyle={{ 
-          width: SIZES.width * 0.7,
+        <TextInput
+          style={{
+            width: SIZES.width * 0.8,
             height: SIZES.width * 0.1,
             padding: SIZES.padding,
             alignItems: 'center',
@@ -265,29 +231,75 @@ render() {
             borderColor: COLORS.primary,
             borderWidth: SIZES.input,
             elevation: 5,
-            backgroundColor: COLORS.white}}
-        
-	data={this.state.categories}
-	onSelect={(selectedItem, index) => {
-    this.setState({ category_id: selectedItem.id })
-		
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		return selectedItem.iconview
-	}}
-	rowTextForSelection={(item, index) => {
-		return item.iconview
-	}}
-/>
-<TouchableOpacity style={{elevation:8}}>
-                  <Icon size={30} name='plus'
+            backgroundColor: COLORS.white
+        }}
+            name='name'
+            placeholder='Nombre'
+            autoCapitalize='none'
+            error={this.state.nameError}
+						ref={this.nameRef}
+						value={this.state.name}
+						onChangeText={ (name) => this.setState({ name })} 
+          />
+        </View>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
+        <TouchableOpacity>
+                  <Icon size={30} name='birthday-cake'
                                   style={{
                                     margin:8,
-                                    color: COLORS.darkgray,
+                                    color: COLORS.primary,
                                   }}/>
         </TouchableOpacity>
-        
-        </View>   
+        <TextInput
+          style={{
+            width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            padding: SIZES.padding,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            borderColor: COLORS.primary,
+            borderWidth: SIZES.input,
+            elevation: 5,
+            backgroundColor: COLORS.white
+        }}
+            name='age'
+            placeholder='Edad'
+            autoCapitalize='none'
+            error={this.state.ageError}
+						ref={this.ageRef}
+						value={this.state.age}
+						onChangeText={ (age) => this.setState({ age })} 
+          />
+        </View>
+        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
+        <TouchableOpacity>
+                  <Icon size={30} name='tag'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.primary,
+                                  }}/>
+        </TouchableOpacity>
+        <TextInput
+          style={{
+            width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            padding: SIZES.padding,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            borderColor: COLORS.primary,
+            borderWidth: SIZES.input,
+            elevation: 5,
+            backgroundColor: COLORS.white
+        }}
+            name='pack'
+            placeholder='Paquete'
+            autoCapitalize='none'
+            error={this.state.packError}
+						ref={this.packRef}
+						value={this.state.pack}
+						onChangeText={ (pack) => this.setState({ pack })} 
+          />
+        </View>
         <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 
         <TouchableOpacity onPress={this.showDatePicker}>
@@ -322,79 +334,67 @@ render() {
         onCancel={this.hideDatePicker}
       />
         </View> 
-        
-             
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
+           
+        <View style={{ flexDirection: 'row', margin: 10, height:30,alignItems: 'center'}}>
         <TouchableOpacity>
-                  <Icon size={30} name='usd'
+                  <Icon size={30} name='child'
                                   style={{
                                     margin:8,
                                     color: COLORS.primary,
                                   }}/>
         </TouchableOpacity>
-        <TextInput
-          style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            padding: SIZES.padding,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            borderColor: COLORS.primary,
-            borderWidth: SIZES.input,
-            elevation: 5,
-            backgroundColor: COLORS.white
-        }}
-            name='price'
-            placeholder='Monto'
-            autoCapitalize='none'
-            error={this.state.priceError}
-						ref={this.priceRef}
-						value={this.state.price}
-						onChangeText={ (price) => this.setState({ price })} 
-          />
-        </View>
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
-        <TouchableOpacity>
-                  <Icon size={30} name='credit-card'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.primary,
-                                  }}/>
-        </TouchableOpacity>
-        
-        <SelectDropdown
-        defaultButtonText='Seleccione una Cuenta'
-        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
-        buttonStyle={{ 
-          width: SIZES.width * 0.8,
-          height: SIZES.width * 0.1,
-          borderRadius: SIZES.radius,
-          borderColor: COLORS.primary,
-          borderWidth: SIZES.input,
-          elevation: 5,
-          backgroundColor: COLORS.white}}
-        
-	data={options}
-	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem})
-		
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
-	}}
+        <ToggleSwitch
+  isOn={this.state.iskid}
+  onColor="green"
+  offColor="gray"
+  label="Niño"
+  labelStyle={{ color: "black", fontWeight: "900" }}
+  size="large"
+  onToggle={isOn => this.setState({ iskid: isOn })}
 />
-        
-        </View>
-        <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
+
+</View>
+        <View style={{ flexDirection: 'row', margin: 10, height:30,alignItems: 'center'}}>
         <TouchableOpacity>
-                  <Icon size={30} name='font'
+                  <Icon size={30} name='female'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.primary,
+                                  }}/>
+        </TouchableOpacity>
+        <ToggleSwitch
+  isOn={this.state.ispregnant}
+  onColor="green"
+  offColor="gray"
+  label="Embarazada"
+  labelStyle={{ color: "black", fontWeight: "900" }}
+  size="large"
+  onToggle={isOn =>  this.setState({ ispregnant: isOn })}
+/>
+</View>
+        <View style={{ flexDirection: 'row', margin: 10, height:30,alignItems: 'center'}}>
+        <TouchableOpacity>
+                  <Icon size={30} name='tree'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.primary,
+                                  }}/>
+        </TouchableOpacity>
+        <ToggleSwitch
+  isOn={this.state.isoutdoors}
+  onColor="green"
+  offColor="gray"
+  label="Exteriores"
+  labelStyle={{ color: "black", fontWeight: "900" }}
+  size="large"
+  onToggle={isOn =>  this.setState({ isoutdoors: isOn })}
+/>
+</View>
+
+
+<View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
+        <TouchableOpacity>
+                  <Icon size={30} name='tag'
                                   style={{
                                     margin:8,
                                     color: COLORS.primary,
@@ -412,13 +412,13 @@ render() {
             elevation: 5,
             backgroundColor: COLORS.white
         }}
-            name='description'
-            placeholder='Descripcion'
+            name='extras'
+            placeholder='Extras'
             autoCapitalize='none'
-            error={this.state.descriptionError}
-						ref={this.descriptionRef}
-						value={this.state.description}
-						onChangeText={ (description) => this.setState({ description })} 
+            error={this.state.extrasError}
+						ref={this.extrasRef}
+						value={this.state.extras}
+						onChangeText={ (extras) => this.setState({ extras })} 
           />
         </View>
      
@@ -475,7 +475,7 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessExpense')
+                              navigation.navigate('BusinessClients')
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

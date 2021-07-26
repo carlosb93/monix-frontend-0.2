@@ -39,6 +39,8 @@ export const menu = require("../assets/icons/menu_icon.png");
 export const more = require("../assets/icons/more_icon.png");
 export const sports_icon = require("../assets/icons/sports_icon.png");
 export const up_arrow = require("../assets/icons/up_arrow.png");
+export const left_arrow = require("../assets/icons/left-arrow.png");
+export const right_arrow = require("../assets/icons/right-arrow.png");
 
 export default {
     back,
@@ -81,5 +83,7 @@ export default {
     menu,
     more,
     sports_icon,
-    up_arrow
+    up_arrow,
+    left_arrow,
+    right_arrow,
 }

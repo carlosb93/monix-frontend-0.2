@@ -116,7 +116,7 @@ this.state.navigation.navigate('Home')
     const id = this.state.id;
     const inventory = await InventaryModel.destroy(id)
     
-    this.state.navigation.navigate('Home')
+    this.state.navigation.navigate('BusinessInv')
       }
 
 
@@ -153,7 +153,7 @@ render() {
      onPress={() => {navigation.navigate('BusinessInv')}}
   >
      <Image
-                            source={icons.back_arrow}
+                            source={icons.left_arrow}
                             resizeMode="contain"
                             style={{
                                 width: 25,
@@ -326,7 +326,7 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Actualizar</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                         </TouchableOpacity>
                     </View>
         <View
@@ -353,7 +353,7 @@ render() {
                               navigation.navigate('BusinessInv')
                             }}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 

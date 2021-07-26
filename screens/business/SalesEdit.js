@@ -22,7 +22,8 @@ import {
   COLORS,
   SIZES,
   FONTS,
-  iconData
+  iconData,
+  icons
 } from '../../constants'
 import APIKit, {setClientToken} from '../../shared/APIKit';
 import {toTimestamp, toDatetime } from '../../shared/tools';
@@ -116,12 +117,15 @@ export default class SalesEdit extends React.Component {
       var prod = [];
       prod = await InventaryModel.query({business_id: this.state.negocioId });  
       this.setState({products: prod}) 
-       
-  
-             
-     
-    
   }
+  Delete = async () => {
+
+    
+    const id = this.state.sale_id;
+    const sales = await SalesModel.destroy(id)
+    
+    this.state.navigation.navigate('BusinessSales')
+      }
   
    showDatePicker = () => {
     this.setState({isDatePickerVisible: true});
@@ -170,11 +174,55 @@ render() {
 
   return (
       <View  style={{
-        padding: SIZES.padding * 0.5,
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-        <Text>Adicionar Producto</Text>
+      <View  style={{
+        backgroundColor:COLORS.transparent,
+        height: 35,
+        width: Dimensions.get('window').width,
+    }}>
+                 
+                 <View
+                  style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    
+                      height:30,
+                      width: Dimensions.get('window').width,
+                      backgroundColor: COLORS.primary,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginRight: SIZES.base
+                  }}
+              >
+                 <TouchableOpacity
+     onPress={() => {navigation.navigate('BusinessSales')}}
+  >
+     <Image
+                            source={icons.back_arrow}
+                            resizeMode="contain"
+                            style={{
+                                width: 25,
+                                height: 25,
+                                margin:6,
+                                tintColor: COLORS.white,
+                            }}
+                        />
+                </TouchableOpacity>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Editar Venta</Text>
+                  <TouchableOpacity
+     onPress={() => {this.Delete() }}
+  >
+                  <Icon size={30} name='trash-o'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+</TouchableOpacity>
+              </View>
+              </View>
+      
         <View>
         <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 

@@ -312,7 +312,7 @@ render() {
                               this.toggleModal(!this.state.modalVisible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Confirmar</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                   </TouchableHighlight>
                   </View>
         <View
@@ -337,7 +337,7 @@ render() {
                               this.toggleModal(!this.state.modalVisible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                   </TouchableHighlight>
                </View>
                </View>
@@ -408,7 +408,7 @@ render() {
                               this.toggleModal2(!this.state.modal2Visible)
                               }}>
                      
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                   </TouchableHighlight>
                </View>
             </Modal>
@@ -497,7 +497,7 @@ render() {
                             }}
                             onPress={() => this.showData()}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Crear</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Aceptar</Text>
                         </TouchableOpacity>
                     </View>
         <View
@@ -525,7 +525,7 @@ render() {
                               navigation.navigate('Home')
                             }}
                         >
-                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>
+                            <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 
