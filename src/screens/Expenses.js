@@ -602,11 +602,13 @@ const Expenses = () => {
     function renderChart() {
 
         let chartData = processCategoryDataToDisplay()
+       
         let colorScales = chartData.map((item) => item.color)
         let totalExpenseCount = chartData.reduce((a, b) => a + (b.expenseCount || 0), 0)
 
         console.log("Check Chart")
         console.log(chartData)
+        console.log(colorScales)
 
         if(Platform.OS == 'ios')
         {
@@ -615,7 +617,7 @@ const Expenses = () => {
                     <VictoryPie
                         
                         data={chartData}
-                        labels={(datum) => `${datum.y}`}
+                        labels={(datum) => console.log(datum)  `${datum.y}`}
                         radius={({ datum }) => (selectedCategory && selectedCategory.name == datum.name) ? SIZES.width * 0.4 : SIZES.width * 0.4 - 10}
                         innerRadius={70}
                         labelRadius={({ innerRadius }) => (SIZES.width * 0.4 + innerRadius) / 2.5}
@@ -663,7 +665,7 @@ const Expenses = () => {
                         <VictoryPie
                             standalone={false} // Android workaround
                             data={chartData}
-                            labels={(datum) => `${datum.y}`}
+                            labels={(datum) => console.log(datum) `${datum.name}`}
                             radius={({ datum }) => (selectedCategory && selectedCategory.name == datum.name) ? SIZES.width * 0.4 : SIZES.width * 0.4 - 10}
                             innerRadius={70}
                             labelRadius={({ innerRadius }) => (SIZES.width * 0.4 + innerRadius) / 2.5}

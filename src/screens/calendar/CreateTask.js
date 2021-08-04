@@ -19,7 +19,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { useKeyboardHeight } from '../../hooks';
-import { useStore } from '../../store';
+import { useStore } from '../../utils';
 // import { Routes } from '@calendar/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

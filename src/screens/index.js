@@ -3,7 +3,8 @@ import Home from './Home'
 
 import Login from './auth/Login'
 import Signup from './auth/Signup'
-import Profile from './auth/Profile'
+import ProfileScreen from './Profile'
+import Options from './Profile/Options'
 import EditProfile from './auth/EditProfile'
 
 import Expenses from './Expenses'
@@ -38,7 +39,8 @@ export {
     Login,
     Signup,
     SplashScreen,
-    Profile,
+    ProfileScreen,
+    Options,
     EditProfile,
     Expenses,
     Business,
