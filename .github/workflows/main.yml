@@ -19,4 +19,16 @@ jobs:
           password: ${{ secrets.EXPO_CLI_PASSWORD }}
       - run: npm install
       - run: expo build:android -t apk
-      
+  sendmessage:
+    name: Send telegram notification
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: send custom message with args
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          args: The ${{ github.event_name }} event ${{github.event.number}} triggered Build apk PHOTO_MANAGER.
+        
