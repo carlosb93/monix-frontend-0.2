@@ -137,7 +137,7 @@ const onSuccess = async({data}) => {
         }}
             name='userEmail'
             value={this.state.userEmail}
-            placeholder='Enter email'
+            placeholder='Ingrese email'
             autoCapitalize='none'
             onChangeText={(userEmail) => this.setState({ userEmail })}
             onSubmitEditing={() => this.passwordRef.current.focus()}
