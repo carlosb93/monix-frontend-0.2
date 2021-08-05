@@ -7,7 +7,7 @@ jobs:
   job1:
     name: Job 1
     steps:
-    - build:
+    build:
       name: Create new build
       runs-on: ubuntu-latest
       steps:
@@ -22,18 +22,10 @@ jobs:
             password: ${{ secrets.EXPO_CLI_PASSWORD }}
         - run: npm install
         - run: expo build:android -t apk
-  job2:
-    name: Job 2
-    needs: job1
-    steps:
-    - build:
-      name: telegram message
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@master
-      - name: send custom message with args
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          args: The ${{ github.event_name }} event ${{github.event.number}} triggered Build apk PHOTO_MANAGER.
+        - uses: actions/checkout@master
+        - name: send custom message with args
+          uses: appleboy/telegram-action@master
+          with:
+            to: ${{ secrets.TELEGRAM_TO }}
+            token: ${{ secrets.TELEGRAM_TOKEN }}
+            args: The ${{ github.event_name }} event ${{github.event.number}} triggered Build apk PHOTO_MANAGER.
