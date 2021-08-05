@@ -1,0 +1,21 @@
+name: Expo Build APK
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Create new build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - uses: expo/expo-github-action@v6
+        with:
+          expo-version: 4.x
+          username: ${{ secrets.EXPO_CLI_USERNAME }}
+          password: ${{ secrets.EXPO_CLI_PASSWORD }}
+      - run: npm install
+      - run: expo build:android -t apk
