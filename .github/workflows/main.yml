@@ -7,7 +7,7 @@ jobs:
   job1:
     name: Job 1
     steps:
-    build:
+    - build:
       name: Create new build
       runs-on: ubuntu-latest
       steps:
@@ -26,7 +26,7 @@ jobs:
     name: Job 2
     needs: job1
     steps:
-    build:
+    - build:
       name: telegram message
       runs-on: ubuntu-latest
       steps:
