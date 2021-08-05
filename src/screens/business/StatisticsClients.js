@@ -106,7 +106,7 @@ export default class StatisticsClients extends React.Component {
         data = await ClientsModel.query({business_id: this.state.negocioId});
         this.setState({clients: data}) 
     }catch{
-        console.log('query clients error')
+        console.log('Query clients error')
     }
 
     await this.processDataToDisplay()
