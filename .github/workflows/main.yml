@@ -2,9 +2,8 @@ name: Expo Build APK
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
-  steps:
   build:
     name: Create new build
     runs-on: ubuntu-latest
