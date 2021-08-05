@@ -160,7 +160,7 @@ const onSuccess = async({data}) => {
             name='userPassword'
             ref={this.passwordRef}
 						value={this.state.userPassword}
-            placeholder='Enter userPassword'
+            placeholder='Ingrese Password'
             secureTextEntry
             onChangeText={ (userPassword) => this.setState({ userPassword })}
             

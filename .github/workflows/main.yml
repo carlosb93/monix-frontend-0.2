@@ -4,18 +4,32 @@ on:
     branches:
       - master
 jobs:
-  build:
-    name: Create new build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - uses: expo/expo-github-action@v6
-        with:
-          expo-version: 4.x
-          username: ${{ secrets.EXPO_CLI_USERNAME }}
-          password: ${{ secrets.EXPO_CLI_PASSWORD }}
-      - run: npm install
-      - run: expo build:android -t apk
+  job1:
+    build:
+      name: Create new build
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: 14.x
+        - uses: expo/expo-github-action@v6
+          with:
+            expo-version: 4.x
+            username: ${{ secrets.EXPO_CLI_USERNAME }}
+            password: ${{ secrets.EXPO_CLI_PASSWORD }}
+        - run: npm install
+        - run: expo build:android -t apk
+  job2:
+    needs: job1
+      build:
+        name: telegram message
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@master
+        - name: send custom message with args
+          uses: appleboy/telegram-action@master
+          with:
+            to: ${{ secrets.TELEGRAM_TO }}
+            token: ${{ secrets.TELEGRAM_TOKEN }}
+            args: The ${{ github.event_name }} event ${{github.event.number}} triggered Build apk PHOTO_MANAGER.
