@@ -86,6 +86,8 @@ export default class Business extends React.Component {
       this.setState({negocio: negocios}) 
 
             }).catch((error) => {
+              this.setState({negocio: negocios}) 
+              this.setState({id: res.data.user.id})
               console.log(error);
             })
    

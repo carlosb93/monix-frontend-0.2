@@ -81,11 +81,30 @@ export default class Home extends React.Component {
       }
     }
     }).catch((error) => {  
-        this.setState({ isAuth: false});
+        // this.setState({ isAuth: false});
         // this.state.navigation.replace('Login');
+        this.loginoutsideloop();
+       
+
        });
 
 
+
+  }
+  async loginoutsideloop(){
+    
+    const id = await AsyncStorage.getItem('id')
+    const usuario = await UserModel.query({id: id})
+    if(usuario.length > 0){
+      this.setState({ isAuth: true})
+      this.setState({ id: usuario[0].id})
+      this.setState({ name: usuario[0].name})
+      this.setState({ role: usuario[0].rol})
+      this.setState({ email: usuario[0].email})
+      this.setState({ isActive: usuario[0].isActive})
+      this.setState({ business_id: usuario[0].business_id})
+  
+    }
 
   }
   async filluser(){

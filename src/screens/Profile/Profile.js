@@ -69,8 +69,11 @@ class ProfilesScreen extends Component {
 componentWillUnmount() {
   this._focusListener();
 }
-  onPressSetting = () => {
-    this.props.navigation.navigate('Options')
+  onPressSetting = ({option}) => {
+    this.props.navigation.navigate('Options', {
+      itemId: this.state.id,
+      otherParam: {option},
+    })
   }
 
   onChangePushNotifications = () => {
@@ -153,7 +156,7 @@ componentWillUnmount() {
       
         </ListItem.Content>
       </ListItem>
-      <ListItem onPress={() => this.onPressSetting()} containerStyle={styles.listItemContainer}>
+      <ListItem onPress={() => this.onPressSetting(1)} containerStyle={styles.listItemContainer}>
         <ListItem.Content >
           <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
             <BaseIcon containerStyle={{ backgroundColor: '#FAD291'}} icon={{ type: 'font-awesome', name: 'money', }}/>
@@ -184,8 +187,6 @@ componentWillUnmount() {
         </View>
         </ListItem.Content>
       </ListItem>
-
-
 
         </View>
         <InfoText text="More" />
