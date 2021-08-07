@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { ScrollView, Switch, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, Switch, TouchableOpacity, Dimensions, StyleSheet, FlatList, Text, View,  Modal, TouchableHighlight } from 'react-native'
 import { Avatar, ListItem } from 'react-native-elements'
 import PropTypes from 'prop-types'
 import {
   COLORS,
   SIZES,
   FONTS,
+  currencyData,
   iconData,
   icons
 } from '../../constants'
@@ -16,6 +17,18 @@ import InfoText from './InfoText'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIKit, {setClientToken} from '../../shared/APIKit';
 import UserModel from '../../models/User';
+
+const numColumns = 1;
+const size = Dimensions.get('window').width / numColumns;
+const stylesflat = StyleSheet.create({
+  itemContainer: {
+    width: size,
+    height: size *0.30,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
 
 const styles = StyleSheet.create({
   scroll: {
@@ -50,12 +63,14 @@ class ProfilesScreen extends Component {
     id: 0,
     name: '',
     role: '',
+    currency: '',
     email: '',
     token:'',
     isActive: '',
     business_id: 0,
     navigation: this.props.navigation,
     userEmail: null,
+    modalVisible: false,
   }
 
 
@@ -69,17 +84,76 @@ class ProfilesScreen extends Component {
 componentWillUnmount() {
   this._focusListener();
 }
+
+toggleModal(visible) {
+  console.log(currencyData)
+  this.setState({
+    modalVisible: visible
+  });
+}
+
   onPressSetting = ({option}) => {
-    this.props.navigation.navigate('Options', {
-      itemId: this.state.id,
-      otherParam: {option},
-    })
+    if(option = 'account'){
+      this.props.navigation.navigate('Accounts', {
+        itemId: this.state.id,
+        otherParam: '',
+      })
+
+    }else if(option = 'other'){
+      this.props.navigation.navigate('Options', {
+        itemId: this.state.id,
+        otherParam: {option},
+      })
+    }
+    
   }
 
   onChangePushNotifications = () => {
     this.setState(state => ({
       pushNotifications: !state.pushNotifications,
     }))
+  }
+  setCurrency = async (currency) => {
+    this.setState({currency: currency} )
+    const user_id = this.state.id
+    const user = await UserModel.find(user_id)
+     
+         if(user){
+           user.currency = currency,
+           user.save()
+          }else{
+            console.log('query error')
+
+          }
+          const payload ={
+            'currency':currency,
+          }
+
+
+
+          const token = await AsyncStorage.getItem('token')
+          await setClientToken(token);
+
+          APIKit.put('/user/'+ user_id, payload,{header:{ 
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*"
+          }})
+            .then(onSuccess)
+            .catch(onFailure);
+
+
+            const onSuccess = async({data}) => {
+              // Set JSON Web Token on success 
+           console.log('success')
+            
+            };
+
+            const onFailure = error => {
+              console.log(error && error.response);
+              // Set JSON Web Token on success 
+              console.log('fail')
+            
+            };
   }
 
   async logOut () {
@@ -98,6 +172,7 @@ componentWillUnmount() {
       this.setState({ id: usuario[0].id})
       this.setState({ name: usuario[0].name})
       this.setState({ role: usuario[0].rol})
+      this.setState({ currency: usuario[0].currency})
       this.setState({ email: usuario[0].email})
       this.setState({ isActive: usuario[0].isActive})
       this.setState({ business_id: usuario[0].business_id})
@@ -109,6 +184,7 @@ componentWillUnmount() {
   render() {
     const { emails: [firstEmail] } = this.props
     return (
+      <View>
       <ScrollView style={styles.scroll}>
         <View style={styles.userRow}>
           <View style={styles.userImage}>
@@ -143,7 +219,7 @@ componentWillUnmount() {
           <Switch onValueChange={this.onChangePushNotifications} value={this.state.pushNotifications}/>
         </ListItem.Content>
       </ListItem>
-      <ListItem onPress={() => this.onPressSetting()} containerStyle={styles.listItemContainer}>
+      <ListItem onPress={() => this.onPressSetting('account')} containerStyle={styles.listItemContainer}>
         <ListItem.Content >
           <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
             <BaseIcon containerStyle={{ backgroundColor: '#57DCE7'}} icon={{ type: 'font-awesome', name: 'credit-card', }}/>
@@ -156,7 +232,7 @@ componentWillUnmount() {
       
         </ListItem.Content>
       </ListItem>
-      <ListItem onPress={() => this.onPressSetting(1)} containerStyle={styles.listItemContainer}>
+      <ListItem onPress={() => this.toggleModal(true)} containerStyle={styles.listItemContainer}>
         <ListItem.Content >
           <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
             <BaseIcon containerStyle={{ backgroundColor: '#FAD291'}} icon={{ type: 'font-awesome', name: 'money', }}/>
@@ -165,7 +241,7 @@ componentWillUnmount() {
         </ListItem.Content>
         <ListItem.Content right>
         <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
-        <ListItem.Title style={{fontSize: 15, margin:8, color:COLORS.gray}}> USD  </ListItem.Title>
+        <ListItem.Title style={{fontSize: 15, margin:8, color:COLORS.gray}}> {this.state.currency}  </ListItem.Title>
         <Chevron/>
         </View>
         </ListItem.Content>
@@ -281,6 +357,80 @@ componentWillUnmount() {
         </View>
         
       </ScrollView>
+
+      <View
+      style={{
+          padding: SIZES.padding * 0.5,
+          alignItems: 'center',
+          justifyContent: 'center'
+      }}
+  >
+       <Modal animationType = {"slide"} transparent = {false}
+        visible = {this.state.modalVisible}
+onRequestClose = {() => { console.log("Modal has been closed.") } }>
+
+<View style = {{flex: 1,
+alignItems: 'center',
+
+backgroundColor:COLORS.transparent}}>
+
+<Text  style={{ color: COLORS.black,paddingBottom:50, ...FONTS.h2 }}>Selecciona una Moneda!</Text>
+<FlatList
+      data={currencyData}
+      renderItem={({item}) => (
+        <View style={stylesflat.itemContainer}>
+         <TouchableOpacity
+       style={{
+           width: SIZES.width * 0.8,
+           height: SIZES.width * 0.25,
+           backgroundColor: this.state.currency == item.name ? COLORS.primary : COLORS.white,
+           alignItems: 'center',
+           justifyContent: 'center',
+           borderRadius: 8,
+           elevation: 5,
+       }}
+       onPress = {() => {
+         this.setCurrency(item.name)
+        this.toggleModal(!this.state.modalVisible)
+      }}>
+             <Text style={{color: COLORS.black, ...FONTS.h2 }}>{item.name}</Text>
+   </TouchableOpacity>
+        </View>
+      )}
+      keyExtractor={item => item.id}
+      numColumns={numColumns} />
+
+<View
+      style={{
+          
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 60,
+          width: 30,
+      }}
+  >
+<TouchableHighlight style={{
+              width: SIZES.width * 0.8,
+              height: SIZES.width * 0.1,
+              padding: SIZES.padding,
+              backgroundColor: COLORS.secondary,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: SIZES.radius,
+              elevation: 5,
+          }} onPress = {() => {
+            this.toggleModal(!this.state.modalVisible)
+            }}>
+   
+   <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
+</TouchableHighlight>
+</View>
+</View>
+
+
+</Modal>
+</View>
+</View>
     )
   }
 }

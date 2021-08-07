@@ -9,40 +9,41 @@ import {
   Image,
   ScrollView,
   FlatList,
+  Button,
   Dimensions,
   TouchableHighlight
 } from 'react-native'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
-  FontAwesomeIcon
-} from '@fortawesome/react-native-fontawesome'
-import {
-  faUser,
-  faEyeDropper,
-  faArchive
-} from '@fortawesome/free-solid-svg-icons'
+    faUser,
+    faEyeDropper,
+    faArchive
+  } from '@fortawesome/free-solid-svg-icons'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import SelectDropdown from 'react-native-select-dropdown'
-import HsvColorPicker from 'react-native-hsv-color-picker';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   COLORS,
   SIZES,
   FONTS,
-  iconData
+  iconData,
+  icons
 } from '../../constants'
 import APIKit, {
   setClientToken
 } from '../../shared/APIKit';
+import {toTimestamp, toDatetime } from '../../shared/tools';
 
 import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
+import InventaryModel from '../../models/Inventary';
+import ExpensesModel from '../../models/Expenses';
+import AccountModel from '../../models/Account';
+import HsvColorPicker from 'react-native-hsv-color-picker';
 
-const options = ["Productos", "Servicios", "Restauración"]
 
-
+const currencies = ["CUP", "USD", "EUR"]
 const numColumns = 3;
 const size = Dimensions.get('window').width / numColumns;
 const stylesflat = StyleSheet.create({
@@ -53,7 +54,10 @@ const stylesflat = StyleSheet.create({
   }
 });
 
-export default class BusinessForm extends React.Component {
+
+
+
+export default class AccountNew extends React.Component {
 
 
   toggleModal(visible) {
@@ -61,42 +65,48 @@ export default class BusinessForm extends React.Component {
       modalVisible: visible
     });
   }
-  toggleModal2(visible) {
-    this.setState({
-      modal2Visible: visible
-    });
-  }
   constructor(props) {
     super(props);
-    this.codeRef = React.createRef();
-    this.nameRef = React.createRef();
-    this.typeRef = React.createRef();
-    this.colorRef = React.createRef();
-    this.iconPasswordRef = React.createRef();
     this.onSatValPickerChange = this.onSatValPickerChange.bind(this);
     this.onHuePickerChange = this.onHuePickerChange.bind(this);
     this.hsvColorPicker = React.createRef();
+    this.nameRef = React.createRef();
+    this.montoRef = React.createRef();
+
     this.state = {
+        nameError: false,
+        montoError: false,
+      user_id: this.props.route.params.itemId,
+      otherParam: this.props.route.params.otherParam,
       name: '',
-      type: '',
+      currency: '',
+      monto: '',
       color: '',
-      icon: '',
-      code: '',
       error: '',
-      nameError: false,
-      navigation: this.props.navigation,
+      
       hue: 0,
       sat: 0,
       val: 1,
       modalVisible: false,
-      modal2Visible: false,
-      ColorPicker: COLORS.primary,
-      IconSelection: 'archive',
-      
+      ColorPicker:  this.props.route.params.otherParam.color,
+
+      navigation: this.props.navigation,
 
     }
 
   }
+
+  componentDidMount() {
+    this._focusListener = this.props.navigation.addListener('focus', () => {
+    });
+  }
+
+  componentWillUnmount() {
+    this._focusListener();
+  }
+
+
+
   onSatValPickerChange({
     saturation,
     value
@@ -119,66 +129,106 @@ export default class BusinessForm extends React.Component {
       ColorPicker: this.hsvColorPicker.current.getCurrentColor(),
     });
   }
-  getIcon(name) {
-    this.setState({
-      IconSelection: name,
-    });
-  }
-
-
-
-  componentDidMount() {
-    this._focusListener = this.props.navigation.addListener('focus', () => {
-
-    });
-  }
-
-  componentWillUnmount() {
-    this._focusListener();
-  }
 
   showData = async () => {
 
+
     const props = {
-      name: this.state.name,
-      categoria: this.state.type,
-      code: this.state.code,
-      user_id: JSON.parse(await AsyncStorage.getItem('id')),
-      icon: this.state.IconSelection,
-      color: this.state.ColorPicker,
-     }
-
-     try {
-      var negocio =[];
-      negocio = new BusinessModel(props)
-      negocio.save()
-      
-            } catch (error) {
-                  
-                  console.log(error)
-        }
-
-
-this.state.navigation.navigate('Home')
+        name: this.state.name,
+        currency: this.state.currency,
+        monto: parseFloat(this.state.monto),
+        user_id: this.state.user_id,
+        color: this.state.ColorPicker,
+       }
+  try {
+  var account =[];
+  account = new AccountModel(props)
+  account.save()
+  
+        } catch (error) {
+              
+        console.log(error)
+    }
+    
+ this.state.navigation.navigate('Accounts', {
+  itemId: this.state.user_id,
+  otherParam: '',
+});
   }
 
-
-
 render() { 
-  
-  // const { hue, sat, val } = this.state;
-  const { navigation, hue, sat, val  } = this.state;
+    const { navigation, hue, sat, val  } = this.state;
 
 
   return (
-      <View  style={{
-        padding: SIZES.padding * 0.5,
+    <View  style={{
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        backgroundColor:COLORS.transparent,
     }}>
-        <Text>Nuevo Negocio</Text>
-        
-        <View style={{ margin: 10 }}>
+<View  style={{
+        backgroundColor:COLORS.transparent,
+        height: 35,
+        width: Dimensions.get('window').width,
+    }}>
+                 
+                 <View
+                  style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    
+                      height:30,
+                      width: Dimensions.get('window').width,
+                      backgroundColor: COLORS.primary,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginRight: SIZES.base
+                  }}
+              >
+                 <TouchableOpacity
+     onPress={() => {navigation.navigate('Accounts', {
+      itemId: this.state.user_id,
+      otherParam: this.state.otherParam,
+    });}}
+  >
+     <Image
+                            source={icons.left_arrow}
+                            resizeMode="contain"
+                            style={{
+                                width: 25,
+                                height: 25,
+                                margin:6,
+                                tintColor: COLORS.white,
+                            }}
+                        />
+                </TouchableOpacity>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Nueva Cuenta</Text>
+                  <TouchableOpacity>
+                  <Icon size={30} name='trash'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.transparent,
+                                  }}/>
+</TouchableOpacity>
+              </View>
+              </View>
+      
+        <View>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+        <TouchableOpacity style={{elevation:8,
+  backgroundColor:COLORS.primary,
+  width:40,
+  height:40,
+  margin:SIZES.padding,
+  borderRadius:10,
+  justifyContent:'center',
+  alignItems: 'center'}}>
+                  <Icon size={20} name='credit-card'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+        </TouchableOpacity>
           <TextInput
           style={{
             width: SIZES.width * 0.8,
@@ -192,16 +242,30 @@ render() {
             backgroundColor: COLORS.white
         }}
             name='name'
-            placeholder='Nombre del negocio'
+            placeholder='Cuenta'
             autoCapitalize='none'
             error={this.state.nameError}
 						ref={this.nameRef}
 						value={this.state.name}
 						onChangeText={ (name) => this.setState({ name })} 
-						onSubmitEditing={() => this.codeRef.current.focus()}
+						onSubmitEditing={() => this.montoRef.current.focus()}
           />
         </View>
-        <View style={{ margin: 10 }}>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+        <TouchableOpacity style={{elevation:8,
+  backgroundColor:COLORS.primary,
+  width:40,
+  height:40,
+  margin:SIZES.padding,
+  borderRadius:10,
+  justifyContent:'center',
+  alignItems: 'center'}}>
+                  <Icon size={20} name='money'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+        </TouchableOpacity>
           <TextInput
           style={{
             width: SIZES.width * 0.8,
@@ -214,52 +278,64 @@ render() {
             elevation: 5,
             backgroundColor: COLORS.white
         }}
-            name='code'
-            placeholder='Codigo de invitación'
-            autoCapitalize='characters'
-            error={this.state.codeError}
-			ref={this.codeRef}
-			value={this.state.code}
-			onChangeText={ (code) => this.setState({ code })} 
+            name='monto'
+            placeholder='Monto Total'
+            autoCapitalize='none'
+            error={this.state.montoError}
+			ref={this.montoRef}
+			value={this.state.monto}
+			onChangeText={ (monto) => this.setState({ monto })} 
           />
         </View>
-        <View style={{ margin: 10 }}>
-        
-        <SelectDropdown
-        defaultButtonText='Seleccione una Categoría'
-        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
-        buttonStyle={{ 
-          width: SIZES.width * 0.8,
-          height: SIZES.width * 0.1,
-          borderRadius: SIZES.radius,
-          borderColor: COLORS.primary,
-          borderWidth: SIZES.input,
-          elevation: 5,
-          backgroundColor: COLORS.white}}
-        
-	data={options}
-	onSelect={(selectedItem, index) => {
-    this.setState({ type: selectedItem })
-		
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
-	}}
+
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+        <TouchableOpacity style={{elevation:8,
+  backgroundColor:COLORS.primary,
+  width:40,
+  height:40,
+  margin:SIZES.padding,
+  borderRadius:10,
+  justifyContent:'center',
+  alignItems: 'center'}}>
+                  <Icon size={25} name='usd'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+        </TouchableOpacity>
+
+    <SelectDropdown
+    defaultButtonText='Seleccione una Moneda'
+    buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
+    buttonStyle={{ 
+        width: SIZES.width * 0.8,
+        height: SIZES.width * 0.1,
+        padding: SIZES.padding,
+        alignItems: 'center',
+        borderRadius: SIZES.radius,
+        borderColor: COLORS.primary,
+        borderWidth: SIZES.input,
+        elevation: 5,
+        backgroundColor: COLORS.white}}
+    
+data={currencies}
+onSelect={async (selectedItem, index) =>  {
+this.setState({currency:selectedItem})
+// await AsyncStorage.setItem('currency', selectedItem);
+}}
+buttonTextAfterSelection={(selectedItem, index) => {
+// text represented after item is selected
+// if data array is an array of objects then return selectedItem.property to render after item is selected
+return selectedItem
+}}
+rowTextForSelection={(item, index) => {
+// text represented for each item in dropdown
+// if data array is an array of objects then return item.property to represent item in dropdown
+return item
+}}
 />
-        </View>
-        
-     
-       
-  
-       
-                    <View
+    </View>
+    <View
                         style={{
                             padding: SIZES.padding * 0.5,
                             alignItems: 'center',
@@ -341,93 +417,27 @@ render() {
                   </TouchableHighlight>
                </View>
                </View>
-               
               
             </Modal>
             </View>
-
-
-
-
-
-            <View
-                        style={{
-                            padding: SIZES.padding * 0.5,
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                            
-                        }}
-                    >
-                         <Modal animationType = {"slide"} transparent = {false}
-               visible = {this.state.modal2Visible}
-               onRequestClose = {() => { console.log("Modal has been closed.") } }>
-               
-               <View style = {{flex: 1,
-      alignItems: 'center',
-      padding: 13,
-      backgroundColor:COLORS.transparent}}>
-
-      <Text  style={{ color: COLORS.black, ...FONTS.h2 }}>Selecciona un icono!</Text>
-      <FlatList
-      data={iconData}
-      renderItem={({item}) => (
-        <View style={stylesflat.itemContainer}>
-         <TouchableOpacity
-       style={{
-           width: SIZES.width * 0.25,
-           height: SIZES.width * 0.25,
-           backgroundColor: COLORS.white,
-           alignItems: 'center',
-           justifyContent: 'center',
-           borderRadius: 8,
-           elevation: 5,
-       }}
-       onPress = {() => {
-         this.getIcon(item.name)
-        this.toggleModal2(!this.state.modal2Visible)
-      }}>
-                         <Icon size={60} name={item.name}
-   style={{
-       color: COLORS.primary,
-   }}/></TouchableOpacity>
-        </View>
-      )}
-      keyExtractor={item => item.id}
-      numColumns={numColumns} />
-
-                  <TouchableHighlight style={{
-                                width: SIZES.width * 0.8,
-                                height: SIZES.width * 0.1,
-                                padding: SIZES.padding,
-                                backgroundColor: COLORS.secondary,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: SIZES.radius,
-                                elevation: 5,
-                            }} onPress = {() => {
-                              this.toggleModal2(!this.state.modal2Visible)
-                              }}>
-                     
-                     <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
-                  </TouchableHighlight>
-               </View>
-            </Modal>
-            </View>
-                    
-
-                    <View style={{flex: 1, flexDirection: 'row', height: 100, padding:60}}>
-                    <View
-                        style={{
-                            padding: SIZES.padding * 0.5,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 50,
-                            width: 150
-                        }}
-                    >
+            <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+        <TouchableOpacity style={{elevation:8,
+  backgroundColor:COLORS.primary,
+  width:40,
+  height:40,
+  margin:SIZES.padding,
+  borderRadius:10,
+  justifyContent:'center',
+  alignItems: 'center'}}>
+                  <Icon size={25} name='tint'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+        </TouchableOpacity>
                         <TouchableOpacity
                             style={{
-                                width: SIZES.width * 0.1,
+                                width: SIZES.width *0.8,
                                 height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.secondary,
@@ -444,44 +454,27 @@ render() {
                         }}/>
                         </TouchableOpacity>
                     </View>
-                    <View
-                        style={{
-                            padding: SIZES.padding * 0.5,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 50,
-                            width: 150,
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                width: SIZES.width * 0.1,
-                                height: SIZES.width * 0.1,
-                                padding: SIZES.padding,
-                                backgroundColor: COLORS.secondary,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: SIZES.radius,
-                                elevation: 5,
-                            }}
-                            onPress = {() => {this.toggleModal2(true)}}
-                        >
-                            <Icon size={20} name={this.state.IconSelection}
-   style={{
-       color: this.state.ColorPicker,
-   }}/>
-                        </TouchableOpacity>
+                    <View style={{flexDirection: 'row', margin: 20, height:60,justifyContent:'space-between',alignItems: 'center' }}>
+                        <Text style={{ color: COLORS.darkgray, ...FONTS.body3 }}>El monto inicial de cada cuenta es reiniciado a 0.0 el último día de cada mes.</Text>
                     </View>
-                    </View>
-                    
-          {/*Signup Button */}
-          <View
+
+
+       
+     
+                    <View style={{
+                                  flexDirection:'column',
+                                  alignItems: 'center',
+                                  marginLeft:50,
+                                  justifyContent: 'center',
+                                  padding: SIZES.padding* 2}}>
+  <View
                         style={{
                             
                             alignItems: 'center',
                             justifyContent: 'center',
                             height: 60,
                             width: 30,
+                            
                         }}
                     >
                         <TouchableOpacity
@@ -502,7 +495,6 @@ render() {
                     </View>
         <View
                         style={{
-                            
                             alignItems: 'center',
                             justifyContent: 'center',
                             height: 60,
@@ -522,17 +514,23 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('Home')
+                              navigation.navigate('Accounts', {
+                                itemId: this.state.user_id,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
 
-               
+                </View>
+  
+        
+
+            </View>  
                
       </View>
-        // <Button title='Go to Login' onPress={this.goToLogin} />
       
         )
 

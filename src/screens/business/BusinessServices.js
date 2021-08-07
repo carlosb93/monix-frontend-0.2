@@ -80,24 +80,20 @@ export default class BusinessServices extends React.Component {
 
     var negocios = [];
     negocios = await BusinessModel.find( this.state.negocioId);
-   
+    this.setState({id: await AsyncStorage.getItem('id')})
+    this.setState({negocio: negocios}) 
 
     setClientToken(await AsyncStorage.getItem('token'));
 
     await APIKit.get('/auth/me')
             .then((res) => {
               this.setState({id: res.data.user.id})
-              const options = {
-                where: {
-                  user_id: 1
-                }
-              }
+              
 
       this.setState({negocio: negocios}) 
 
             }).catch((error) => {
-              this.setState({id: res.data.user.id})
-              this.setState({negocio: negocios}) 
+              
               console.log(error);
             })
    
@@ -252,7 +248,7 @@ export default class BusinessServices extends React.Component {
 
                  
         
-        <View>
+        {/* <View>
     <TouchableOpacity
     style={{
       
@@ -269,7 +265,7 @@ export default class BusinessServices extends React.Component {
     backgroundColor: '#fff',
     borderRadius: 100,
     }}
-     onPress={() => {navigation.navigate('BusinessForm', {
+     onPress={() => {navigation.navigate('BusinessNew', {
       itemId: this.state.id,
       otherParam: 'New',
     }); }}
@@ -280,7 +276,7 @@ export default class BusinessServices extends React.Component {
                         }}/>
                         
   </TouchableOpacity>               
-     </View>
+     </View> */}
       </View>
       
         // <Button title='Go to Login' onPress={this.goToLogin} />

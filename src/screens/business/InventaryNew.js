@@ -106,7 +106,10 @@ var inventary =[];
 inventary = new InventaryModel(props)
 inventary.save()
 
-this.state.navigation.navigate('BusinessInv')
+this.state.navigation.navigate('BusinessInv', {
+  itemId: this.state.business_id,
+  otherParam: this.state.otherParam,
+});
   }
 
 
@@ -141,7 +144,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessInv')}}
+     onPress={() => {navigation.navigate('BusinessInv', {
+      itemId: this.state.business_id,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -340,7 +346,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessInv')
+                              navigation.navigate('BusinessInv', {
+                                itemId: this.state.business_id,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

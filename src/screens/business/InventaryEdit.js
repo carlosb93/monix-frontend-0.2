@@ -71,6 +71,7 @@ export default class InventaryEdit extends React.Component {
       cost: '' + this.props.route.params.otherParam.cost,
       price: '' + this.props.route.params.otherParam.price,
       business_id: this.props.route.params.otherParam.business_id,
+      negocioId: this.props.route.params.otherParam.business_id,
       error: '',
       nameError: false,
       amountError: false,
@@ -79,7 +80,8 @@ export default class InventaryEdit extends React.Component {
       navigation: this.props.navigation,
       product_id: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
-      inventaryes:[]
+      inventaryes:[],
+      negocio:[]
 
     }
 
@@ -88,14 +90,19 @@ export default class InventaryEdit extends React.Component {
 
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-        
+        this.get_business()
     });
   }
 
   componentWillUnmount() {
     this._focusListener();
   }
+get_business = async () =>{
 
+  negocio = await BusinessModel.query({id: this.state.negocioId});
+  this.setState({negocio: negocio})
+
+}
   showData = async () => {
 
 const id = this.state.id;
@@ -107,7 +114,12 @@ inv.price = parseFloat(this.state.price)
 inv.save()
 
 
-this.state.navigation.navigate('Home')
+   
+
+this.state.navigation.navigate('BusinessInv', {
+  itemId: this.state.negocioId,
+  otherParam: this.state.negocio,
+});
   }
 
   Delete = async () => {
@@ -116,7 +128,10 @@ this.state.navigation.navigate('Home')
     const id = this.state.id;
     const inventory = await InventaryModel.destroy(id)
     
-    this.state.navigation.navigate('BusinessInv')
+    this.state.navigation.navigate('BusinessInv', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.negocio,
+    });
       }
 
 
@@ -150,7 +165,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessInv')}}
+     onPress={() => {navigation.navigate('BusinessInv', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.negocio,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -350,7 +368,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessInv')
+                              navigation.navigate('BusinessInv', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.negocio,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

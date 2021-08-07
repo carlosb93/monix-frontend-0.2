@@ -85,6 +85,7 @@ export default class SalesEdit extends React.Component {
       negocioId: this.props.route.params.otherParam.business_id,
       inventory_id: this.props.route.params.otherParam.inventory_id,
       products: [],
+      negocio: [],
       fecha: new Date(),
       fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       price: ''+this.props.route.params.otherParam.price,
@@ -104,11 +105,18 @@ export default class SalesEdit extends React.Component {
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_products()
+    this.get_business()
     });
   }
 
   componentWillUnmount() {
     this._focusListener();
+  }
+  get_business = async () =>{
+
+    negocio = await BusinessModel.query({id: this.state.negocioId});
+    this.setState({negocio: negocio})
+  
   }
 
   async get_products(){
@@ -124,7 +132,10 @@ export default class SalesEdit extends React.Component {
     const id = this.state.sale_id;
     const sales = await SalesModel.destroy(id)
     
-    this.state.navigation.navigate('BusinessSales')
+    this.state.navigation.navigate('BusinessSales', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.negocio,
+    });
       }
   
    showDatePicker = () => {
@@ -164,7 +175,10 @@ export default class SalesEdit extends React.Component {
     inv.save()
     
     
-    this.state.navigation.navigate('BusinessSales')
+    this.state.navigation.navigate('BusinessSales', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.negocio,
+    });
       }
 
 
@@ -197,10 +211,13 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessSales')}}
+     onPress={() => {navigation.navigate('BusinessSales', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.negocio,
+    });}}
   >
      <Image
-                            source={icons.back_arrow}
+                            source={icons.left_arrow}
                             resizeMode="contain"
                             style={{
                                 width: 25,
@@ -482,7 +499,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessSales')
+                              navigation.navigate('BusinessSales', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.negocio,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Atras</Text>

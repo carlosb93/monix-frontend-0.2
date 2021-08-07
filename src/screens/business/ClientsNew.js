@@ -168,8 +168,10 @@ export default class ClientsNew extends React.Component {
               
         console.log(error)
     }
-    
- this.state.navigation.navigate('BusinessExpense')
+ this.state.navigation.navigate('BusinessClients', {
+  itemId: this.state.negocioId,
+  otherParam: this.state.otherParam,
+});
   }
 
 render() { 
@@ -201,7 +203,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessClients')}}
+     onPress={() => {navigation.navigate('BusinessClients', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}

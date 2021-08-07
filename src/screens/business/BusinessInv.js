@@ -119,7 +119,10 @@ export default class BusinessInv extends React.Component {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessServices')}}
+     onPress={() => {navigation.navigate('BusinessServices', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -132,17 +135,14 @@ export default class BusinessInv extends React.Component {
                             }}
                         />
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>    {this.state.otherParam.name}</Text>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Inventario</Text>
                   <TouchableOpacity
-     onPress={() => {navigation.navigate('BussinessEdit', {
-      itemId: this.state.otherParam.id,
-      otherParam: this.state.otherParam,
-    }); }}
+     onPress={() => {}}
   >
                   <Icon size={30} name='edit'
                                   style={{
                                     margin:8,
-                                    color: COLORS.white,
+                                    color: COLORS.transparent,
                                   }}/>
 </TouchableOpacity>
               </View>
@@ -217,7 +217,7 @@ export default class BusinessInv extends React.Component {
     }}
      onPress={() => {navigation.navigate('InventaryNew', {
       itemId: this.state.negocioId,
-      otherParam: {},
+      otherParam: this.state.otherParam,
     });}}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 

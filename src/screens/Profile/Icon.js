@@ -10,11 +10,11 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderRadius: 10,
     borderWidth: 1,
-    height: 34,
+    height: 45,
     justifyContent: 'center',
     marginLeft: 10,
     marginRight: 18,
-    width: 34,
+    width: 45,
   },
 })
 

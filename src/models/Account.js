@@ -1,7 +1,8 @@
 import * as SQLite from 'expo-sqlite'
 import { BaseModel, types } from 'expo-sqlite-orm'
+import {toTimestamp, toDatetime } from '../shared/tools';
 
-export default class User extends BaseModel {
+export default class Account extends BaseModel {
   constructor(obj) {
     super(obj)
   }
@@ -11,22 +12,18 @@ export default class User extends BaseModel {
   }
 
   static get tableName() {
-    return 'users'
+    return 'accounts'
   }
 
   static get columnMapping() {
     return {
       id: { type: types.INTEGER, primary_key: true }, // For while only supports id as primary key
-      user_id: { type: types.INTEGER }, // For while only supports id as primary key
       name: { type: types.TEXT, not_null: true },
-      password: { type: types.TEXT },
-      email: { type: types.TEXT, not_null: true, unique: true  },
-      code: { type: types.TEXT},
-      currency: { type: types.TEXT, default: () => 'CUP'},
-      token: { type: types.TEXT},
-      rol: { type: types.TEXT },
-      isActive: { type: types.INTEGER },
-      isAuth: { type: types.INTEGER },
+      currency: { type: types.TEXT, not_null: true },
+      monto: { type: types.NUMERIC, not_null: true },
+      user_id: { type: types.INTEGER },
+      color: { type: types.TEXT },
+      reset_date: { type: types.INTEGER, default: () => toTimestamp(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)) },
       timestamp: { type: types.INTEGER, default: () => Date.now() }
     }
   }

@@ -186,7 +186,10 @@ export default class ExpenseNew extends React.Component {
         console.log(error)
     }
     
- this.state.navigation.navigate('BusinessExpense')
+ this.state.navigation.navigate('BusinessExpense', {
+  itemId: this.state.negocioId,
+  otherParam: this.state.otherParam,
+});
   }
 
 render() { 
@@ -218,7 +221,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessExpense')}}
+     onPress={() => {navigation.navigate('BusinessExpense', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -475,7 +481,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessExpense')
+                              navigation.navigate('BusinessExpense', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

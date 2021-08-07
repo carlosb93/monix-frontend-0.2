@@ -5,12 +5,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Signup, Login, SplashScreen, ProfileScreen,
-        EditProfile, Expenses, Business, BusinessForm,
+        EditProfile, Expenses, Business, BusinessNew,
         BusinessServices, InventaryNew, InventaryEdit, BusinessEdit,
         BusinessInv, BusinessSales, SalesNew, SalesEdit,
         BusinessExpense, ExpenseNew, ExpenseEdit, CalendarScreen,
         CreateTask, BusinessClients, ClientsNew, ClientsEdit,
-        StatisticsClients, Options} from './screens';
+        GraphKidsByAge, GraphKidsVsPregnant, GraphOutdoorsVsIndoors, Options,
+        Accounts, AccountNew, ClientsSummaryMenu} from './screens';
 
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
@@ -23,6 +24,8 @@ import SalesModel from './models/Sales';
 import ExpensesModel from './models/Expenses';
 import CalendarModel from './models/Calendar';
 import ClientsModel from './models/Clientes';
+import AccountModel from './models/Account';
+import BalanceModel from './models/Balance';
 
 import * as Calendar from 'expo-calendar';
 
@@ -53,8 +56,15 @@ export default class App extends React.Component {
         var expenses =[];
         var user =[];
         var clients =[];
+        var accounts =[];
+        var balance =[];
       
         const props =[
+          {
+            name: 'Balance de cuenta',
+            icon: 'credit_card',
+            color: COLORS.third
+        },
           {
             name: 'Education',
             icon: 'archive',
@@ -90,7 +100,6 @@ export default class App extends React.Component {
       
       try {
         user =  await UserModel.query()
-        
           } catch (error) {
                 await UserModel.createTable()
                 console.log('Table user created successfully')
@@ -132,9 +141,22 @@ export default class App extends React.Component {
                 console.log('Table clients created successfully')
       }
       try {
-        // await CategoryModel.dropTable()
-        categories =  await CategoryModel.query()
+       
+        accounts =  await AccountModel.query()
+          } catch (error) {
+                await AccountModel.createTable()
+                console.log('Table accounts created successfully')
+      }
+      try {
+        balance =  await BalanceModel.query()
+          } catch (error) {
+                await BalanceModel.createTable()
+                console.log('Table balances created successfully')
+      }
+      try {
         
+        categories =  await CategoryModel.query()
+        console.log(categories)
        if(categories.length == 0){
 
          var i ;
@@ -144,6 +166,7 @@ export default class App extends React.Component {
          }
          console.log('Table categories filled successfully')
          const setCategory = await CategoryModel.query()
+        
        }
        
           } catch (error) {
@@ -221,10 +244,12 @@ async	componentDidMount() {
                 <Stack.Screen name="Signup" component={Signup} />
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                 <Stack.Screen name="Options" component={Options} />
+                <Stack.Screen name="Accounts" component={Accounts} />
+                <Stack.Screen name="AccountNew" component={AccountNew} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
 
                 <Stack.Screen name="BusinessServices" component={BusinessServices} />
-                <Stack.Screen name="BusinessForm" component={BusinessForm} />
+                <Stack.Screen name="BusinessNew" component={BusinessNew} />
                 <Stack.Screen name="BusinessEdit" component={BusinessEdit} />
                 <Stack.Screen name="Business" component={Business} />
 
@@ -243,7 +268,10 @@ async	componentDidMount() {
                 <Stack.Screen name="BusinessClients" component={BusinessClients} />
                  <Stack.Screen name="ClientsNew" component={ClientsNew} />
                 <Stack.Screen name="ClientsEdit" component={ClientsEdit} />
-                <Stack.Screen name="StatisticsClients" component={StatisticsClients} />
+                <Stack.Screen name="GraphKidsByAge" component={GraphKidsByAge} />
+                <Stack.Screen name="GraphKidsVsPregnant" component={GraphKidsVsPregnant} />
+                <Stack.Screen name="GraphOutdoorsVsIndoors" component={GraphOutdoorsVsIndoors} />
+                <Stack.Screen name="ClientsSummaryMenu" component={ClientsSummaryMenu} />
                 
                 <Stack.Screen name="Expenses" component={Expenses} />
                 <Stack.Screen name="CalendarScreen" component={CalendarScreen} />

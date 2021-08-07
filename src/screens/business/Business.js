@@ -57,37 +57,23 @@ export default class Business extends React.Component {
 			passwordError: false,
 			confirmPasswordError: false,
       navigation: this.props.navigation,
-      negocio:[ ]
+      negocio:[]
 		}
 	}
   async get_businnesses(){
-
-
-    
-
-  
-
-  
     var negocios = [];
     negocios = await BusinessModel.query({user_id: JSON.parse(await AsyncStorage.getItem('id'))});
-   
+    this.setState({id: await AsyncStorage.getItem('id')})
+    this.setState({negocio: negocios}) 
 
     setClientToken(await AsyncStorage.getItem('token'));
 
     await APIKit.get('/auth/me')
             .then((res) => {
-              this.setState({id: res.data.user.id})
-              const options = {
-                where: {
-                  user_id: 1
-                }
-              }
-
-      this.setState({negocio: negocios}) 
+            this.setState({id: res.data.user.id})
+            this.setState({negocio: negocios}) 
 
             }).catch((error) => {
-              this.setState({negocio: negocios}) 
-              this.setState({id: res.data.user.id})
               console.log(error);
             })
    
@@ -206,7 +192,7 @@ export default class Business extends React.Component {
     backgroundColor: '#fff',
     borderRadius: 100,
     }}
-     onPress={() => {navigation.navigate('BusinessForm') }}
+     onPress={() => {navigation.navigate('BusinessNew') }}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 
                         style={{

@@ -4,7 +4,7 @@ const { width, height } = Dimensions.get("window");
 export const COLORS = {
     // base colors
     primary: "#42B0FF", // orange
-    oldprimary: "#FC6D3F", // orange
+    third: "#FC6D3F", // orange
     secondary: "#CDCDD2",   // gray
 
 
@@ -69,6 +69,22 @@ export const FONTS = {
     body4: {  fontSize: SIZES.body4, lineHeight: 22 },
     body5: {  fontSize: SIZES.body5, lineHeight: 22 },
 };
+export const currencyData = [
+  {
+      "name": "CUP",
+      "id": "Peso Cubano"
+    },
+  {
+      "name": "USD",
+      "id": "Dolar Americano"
+    },
+  {
+      "name": "EUR",
+      "id": "Euro"
+    }
+  
+];
+
 export const iconData = [
     {
         "name": "tint",
@@ -2017,6 +2033,6 @@ export const iconData = [
     }
   ];
 
-const appTheme = { COLORS, SIZES, FONTS, iconData };
+const appTheme = { COLORS, SIZES, FONTS, iconData, currencyData };
 
 export default appTheme;

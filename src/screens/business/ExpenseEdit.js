@@ -140,7 +140,10 @@ Delete = async () => {
   const id = this.state.expend_id;
   const expense = await ExpensesModel.destroy(id)
   
-  this.state.navigation.navigate('BusinessExpense')
+  this.state.navigation.navigate('BusinessExpense', {
+    itemId: this.state.negocioId,
+    otherParam: this.state.otherParam,
+  });
   }
 
    showDatePicker = () => {
@@ -181,7 +184,10 @@ console.log(this.state.category_id)
     expense.save()
     
     
-    this.state.navigation.navigate('BusinessExpense')
+    this.state.navigation.navigate('BusinessExpense', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });
       }
 
 
@@ -214,7 +220,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessExpense')}}
+     onPress={() => {navigation.navigate('BusinessExpense', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -471,7 +480,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessExpense')
+                              navigation.navigate('BusinessExpense', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

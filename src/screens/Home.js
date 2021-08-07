@@ -9,6 +9,7 @@ import { StyleSheet,
   import { COLORS, SIZES, FONTS } from '../constants'
   import UserModel from '../models/User';
   import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+  import {toTimestamp, toDatetime } from '../shared/tools';
 
 export default class Home extends React.Component { 
 
@@ -58,6 +59,13 @@ export default class Home extends React.Component {
     await setClientToken(token);
     console.log('///////////////////////////// token /////////////////////////////////////////')
     console.log(token)
+    // var date = new Date();
+    // var last_day = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+    // console.log(Date.now())
+    // console.log(toTimestamp(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)))
+    // console.log(last_day)
+    // console.log(last_day.getDate())
+    // console.log(last_day.getMonth() + 1)
 
     await APIKit.get('/auth/me').then((res) => {
         
@@ -100,6 +108,7 @@ export default class Home extends React.Component {
       this.setState({ id: usuario[0].id})
       this.setState({ name: usuario[0].name})
       this.setState({ role: usuario[0].rol})
+      this.setState({ currency: usuario[0].currency})
       this.setState({ email: usuario[0].email})
       this.setState({ isActive: usuario[0].isActive})
       this.setState({ business_id: usuario[0].business_id})
@@ -179,24 +188,7 @@ export default class Home extends React.Component {
       <Text>{this.state.email}</Text>
     
    
-    <TouchableOpacity
-        style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            justifyContent: 'center',
-            padding: SIZES.padding,
-            backgroundColor: COLORS.primary,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            elevation: 5,
-        }}
-        onPress={() => {
-                 this.logOut();
-        }
-        }
-    >
-        <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Salir</Text>
-    </TouchableOpacity>
+
     <TouchableOpacity
         style={{
             width: SIZES.width * 0.8,
@@ -213,6 +205,7 @@ export default class Home extends React.Component {
     >
         <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Calendar</Text>
     </TouchableOpacity>
+   
 </View>
   )
 }

@@ -176,7 +176,10 @@ export default class SalesNew extends React.Component {
         console.log(error)
     }
     
- this.state.navigation.navigate('BusinessSales')
+ this.state.navigation.navigate('BusinessSales', {
+  itemId: this.state.negocioId,
+  otherParam: this.state.otherParam,
+});
   }
 
 render() { 
@@ -208,10 +211,13 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessSales')}}
+     onPress={() => {navigation.navigate('BusinessSales', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
-                            source={icons.back_arrow}
+                            source={icons.left_arrow}
                             resizeMode="contain"
                             style={{
                                 width: 25,
@@ -490,7 +496,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessSales')
+                              navigation.navigate('BusinessSales', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

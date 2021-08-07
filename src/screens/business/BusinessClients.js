@@ -48,24 +48,7 @@ export default class BusinessClients extends React.Component {
   
   constructor(props){
 		super(props);
-		this.codeRef = React.createRef();
-		this.nameRef = React.createRef();
-		this.emailRef = React.createRef();
-		this.passwordRef = React.createRef();
-		this.confirmPasswordRef = React.createRef();
     this.state = {
-      id:null,
-      name:'',
-			email: '',
-			password: '',
-			confirmPassword: '',
-			code: '',
-			error: '',
-			emailError: false,
-			codeError: false,
-			nameError: false,
-			passwordError: false,
-			confirmPasswordError: false,
       navigation: this.props.navigation,
       negocioId: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
@@ -77,7 +60,6 @@ export default class BusinessClients extends React.Component {
     var clients = [];
     try{
         clients = await ClientsModel.query({business_id: this.state.negocioId});
-        console.log(clients)
     }catch{
      console.log('query clients error')
     }
@@ -129,7 +111,10 @@ export default class BusinessClients extends React.Component {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessServices')}}
+     onPress={() => {navigation.navigate('BusinessServices', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -144,7 +129,7 @@ export default class BusinessClients extends React.Component {
                 </TouchableOpacity>
                   <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Clientes</Text>
                   <TouchableOpacity
-     onPress={() => {navigation.navigate('StatisticsClients', {
+     onPress={() => {navigation.navigate('ClientsSummaryMenu', {
       itemId: this.state.negocioId,
       otherParam: this.state.otherParam,
     }); }}
@@ -164,7 +149,7 @@ export default class BusinessClients extends React.Component {
         
      onPress={() => {navigation.navigate('ClientsEdit', {
       itemId: item.id,
-      otherParam: item,
+      otherParam: this.state.otherParam,
     }); }}
   >
         <View style={stylesflat.itemContainer}>
@@ -247,7 +232,7 @@ export default class BusinessClients extends React.Component {
     }}
      onPress={() => {navigation.navigate('ClientsNew', {
       itemId: this.state.negocioId,
-      otherParam: {},
+      otherParam: this.state.otherParam,
     });}}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 

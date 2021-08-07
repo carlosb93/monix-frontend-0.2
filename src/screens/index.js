@@ -5,12 +5,14 @@ import Login from './auth/Login'
 import Signup from './auth/Signup'
 import ProfileScreen from './Profile'
 import Options from './Profile/Options'
+import Accounts from './Profile/Accounts'
+import AccountNew from './Profile/AccountNew'
 import EditProfile from './auth/EditProfile'
 
 import Expenses from './Expenses'
 
 import Business from './business/Business'
-import BusinessForm from './business/BusinessForm'
+import BusinessNew from './business/BusinessNew'
 import BusinessServices from './business/BusinessServices'
 import BusinessEdit from './business/BusinessEdit'
 
@@ -32,7 +34,10 @@ import CreateTask from './calendar/CreateTask'
 import BusinessClients from './business/BusinessClients'
 import ClientsNew from './business/ClientsNew'
 import ClientsEdit from './business/ClientsEdit'
-import StatisticsClients from './business/StatisticsClients'
+import GraphKidsByAge from './business/GraphKidsByAge'
+import GraphKidsVsPregnant from './business/GraphKidsVsPregnant'
+import GraphOutdoorsVsIndoors from './business/GraphOutdoorsVsIndoors'
+import ClientsSummaryMenu from './business/ClientsSummaryMenu'
 
 export {
     Home,
@@ -41,10 +46,12 @@ export {
     SplashScreen,
     ProfileScreen,
     Options,
+    Accounts,
+    AccountNew,
     EditProfile,
     Expenses,
     Business,
-    BusinessForm,
+    BusinessNew,
     BusinessServices,
     BusinessEdit,
     BusinessInv,
@@ -61,5 +68,8 @@ export {
     BusinessClients,
     ClientsNew,
     ClientsEdit,
-    StatisticsClients,
+    GraphKidsByAge,
+    GraphKidsVsPregnant,
+    GraphOutdoorsVsIndoors,
+    ClientsSummaryMenu
 }

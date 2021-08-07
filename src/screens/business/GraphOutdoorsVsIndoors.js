@@ -63,7 +63,7 @@ const stylesflat = StyleSheet.create({
   }
 });
 
-export default class StatisticsClients extends React.Component {
+export default class GraphOutdoorsVsIndoors extends React.Component {
 
 
   
@@ -73,6 +73,7 @@ export default class StatisticsClients extends React.Component {
       navigation: this.props.navigation,
       otherParam: this.props.route.params.otherParam,
       itemId: this.props.route.params.itemId,
+      negocioId: this.props.route.params.itemId,
       clients:[],
       viewMode:'chart',
       selectedClientType: [],
@@ -80,8 +81,12 @@ export default class StatisticsClients extends React.Component {
       month:new Date().getMonth() + 1,
       mescontrol:'',
       chartData:[],
+      chartData2:[],
       databyname:[],
-      colorScales:[]
+      colorScales:[],
+      colorScales2:[],
+      total_ninos: 0,
+      selectedClientAge: []
     }
 
   }
@@ -109,40 +114,7 @@ export default class StatisticsClients extends React.Component {
         console.log('Query clients error')
     }
 
-    await this.processDataToDisplay()
-
-    
-
-
-
-
-    // for (let index = 0; index < data.length; index++) {
-       
-    //     const element = data[index];
-    //     console.log(element)
-    //     if(toDatetime(element.date).split('/')[0] == this.state.mescontrol){
-    //        if(element.iskid){
-             
-    //         this.setState({iskidTotal: this.state.iskidTotal + 1 })
-    //         // let percentagekid = (iskidTotal / total * 100).toFixed(0)
-    //        }
-    //       if(element.ispregnant){
-    //         this.setState({ispregnantTotal: this.state.ispregnantTotal + 1 })
-
-    //         // let percentagepreg = (ispregnantTotal / total * 100).toFixed(0)
-
-    //         pregnant =
-    //         {
-    //           label: `${percentage}%`,
-    //           y: Number(item.y),
-    //           expenseCount: item.expenseCount,
-    //           color: item.color,
-    //           name: item.name,
-    //           id: item.id
-    //       }
-            
-    //        }
-    //     }
+    await this.processOutdoorsVsIndoors()
        
                 
         
@@ -153,44 +125,47 @@ export default class StatisticsClients extends React.Component {
       this.setState({selectedClientType: chartData[0]})
       
   }
+     setSelectclientTypeByAge = async (name) => {
+      let chartData2 = this.state.chartData2.filter(a => a.name == name)
+      this.setState({selectedClientAge: chartData2[0]})
+      
+  }
 
-    processDataToDisplay = async () => {
+  processOutdoorsVsIndoors = async () => {
 
     
       const total = this.state.clients.length
   
       
-        let iskidTotal = this.state.clients.filter(a => a.iskid == true)
-        var total_kid = iskidTotal.length
-        let percentagekid = (total_kid  / total * 100).toFixed(0)
+        let isindoorsTotal = this.state.clients.filter(a => a.isoutdoors == false)
+        var total_indoors = isindoorsTotal.length
+        let percentageIsindoors = (total_indoors  / total * 100).toFixed(0)
   
-        let ispregnantTotal = this.state.clients.filter(a => a.ispregnant == true)
-        var total_pregnant = ispregnantTotal.length
-        let percentage = (total_pregnant  / total * 100).toFixed(0)
+        let isoutdoorsTotal = this.state.clients.filter(a => a.isoutdoors == true)
+        var total_outdoors = isoutdoorsTotal.length
+        let percentageIsoutdoors = (total_outdoors  / total * 100).toFixed(0)
   
   let chartdata = []
   
   chartdata.push({
-    name: 'Embarazadas',
-    clientCount: total_pregnant,
+    name: 'Exteriores',
+    clientCount: total_outdoors,
     color: COLORS.primary,
     x:1,
-    y:total_pregnant,
-    label: `${percentage}%`,
+    y:total_outdoors,
+    label: `${percentageIsoutdoors}%`,
     id: 1
   })
   chartdata.push({
-    name: 'Niño',
-    clientCount: total_kid,
+    name: 'Estudio',
+    clientCount: total_indoors,
     color: COLORS.yellow,
     x:2,
-    y:total_kid,
-    label: `${percentagekid}%`,
+    y:total_indoors,
+    label: `${percentageIsindoors}%`,
     id: 2
   })
-
   let colorScales = chartdata.map((item) => item.color)
-console.log(chartdata)
   this.setState({chartData: chartdata})
   this.setState({colorScales: colorScales})
   
@@ -228,7 +203,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessClients')}}
+     onPress={() => {navigation.navigate('ClientsSummaryMenu', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -242,7 +220,7 @@ render() {
                         />
 
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Estadisticas de Clientes </Text>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Exteriores Vs Estudio </Text>
                   <TouchableOpacity
       onPress={() => console.log('delete')}
   >

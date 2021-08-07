@@ -108,7 +108,10 @@ Delete = async () => {
   const id = this.state.client_id;
   const client = await ClientsModel.destroy(id)
   
-  this.state.navigation.navigate('BusinessClients')
+  this.state.navigation.navigate('BusinessClients', {
+    itemId: this.state.negocioId,
+    otherParam: this.state.otherParam,
+  });
   }
 
    showDatePicker = () => {
@@ -154,7 +157,10 @@ Delete = async () => {
         client.save()
     
     
-    this.state.navigation.navigate('BusinessClients')
+    this.state.navigation.navigate('BusinessClients', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });
       }
 
 
@@ -187,7 +193,10 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessClients')}}
+     onPress={() => {navigation.navigate('BusinessClients', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -475,7 +484,10 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessClients')
+                              navigation.navigate('BusinessClients', {
+                                itemId: this.state.negocioId,
+                                otherParam: this.state.otherParam,
+                              });
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

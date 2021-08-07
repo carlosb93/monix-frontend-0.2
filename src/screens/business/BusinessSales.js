@@ -115,7 +115,10 @@ export default class BusinessSales extends React.Component {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessServices')}}
+     onPress={() => {navigation.navigate('BusinessServices', {
+      itemId: this.state.negocioId,
+      otherParam: this.state.otherParam,
+    });}}
   >
      <Image
                             source={icons.left_arrow}
@@ -205,7 +208,7 @@ export default class BusinessSales extends React.Component {
     }}
      onPress={() => {navigation.navigate('SalesNew', {
       itemId: this.state.negocioId,
-      otherParam: {},
+      otherParam: this.state.otherParam,
     });}}
   >
      <FontAwesomeIcon size={25} icon={ faPlus  } 
