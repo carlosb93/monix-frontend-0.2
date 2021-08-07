@@ -31,9 +31,9 @@ import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import ExpensesModel from '../../models/Expenses';
+import AccountModel from '../../models/Account';
 
 
-const options = ['cuenta BANMET'];
 
 const numColumns = 3;
 const size = Dimensions.get('window').width / numColumns;
@@ -84,6 +84,7 @@ export default class ExpenseEdit extends React.Component {
       negocioId: this.props.route.params.otherParam.business_id,
       category_id: this.props.route.params.otherParam.category_id,
       categories: [],
+      accounts: [],
       fecha: new Date(),
       fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       price: ''+this.props.route.params.otherParam.price,
@@ -104,12 +105,29 @@ export default class ExpenseEdit extends React.Component {
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_categories()
+    this.get_accounts()
     });
   }
 
   componentWillUnmount() {
     this._focusListener();
   }
+
+  async get_accounts() {
+    const user_id = await AsyncStorage.getItem('id')
+
+    var accounts = [];
+    try{
+        accounts = await AccountModel.query({user_id: user_id});
+        console.log(accounts)
+    }catch{
+     console.log('query accounts error')
+    }
+
+    this.setState({accounts: accounts}) 
+    console.log(this.state.accounts)
+  
+}
 
   async get_categories(){
      
@@ -379,15 +397,15 @@ render() {
           elevation: 5,
           backgroundColor: COLORS.white}}
         
-	data={options}
+	data={this.state.accounts}
 	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem})
+    this.setState({ account: selectedItem.name})
 		
 	}}
 	buttonTextAfterSelection={(selectedItem, index) => {
 		// text represented after item is selected
 		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
+		return selectedItem.name
 	}}
 	rowTextForSelection={(item, index) => {
 		// text represented for each item in dropdown

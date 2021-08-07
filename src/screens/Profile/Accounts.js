@@ -215,7 +215,10 @@ render() {
       <FlatList
       data={this.state.accounts}
       renderItem={({item}) => (
-        <ListItem onPress={() => {console.log(item)}} containerStyle={styles.listItemContainer}>
+        <ListItem onPress={() => {navigation.navigate('AccountEdit', {
+            itemId: this.state.user_id,
+            otherParam: item,
+          });}} containerStyle={styles.listItemContainer}>
         <ListItem.Content>
           <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             

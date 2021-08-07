@@ -7,6 +7,7 @@ import ProfileScreen from './Profile'
 import Options from './Profile/Options'
 import Accounts from './Profile/Accounts'
 import AccountNew from './Profile/AccountNew'
+import AccountEdit from './Profile/AccountEdit'
 import EditProfile from './auth/EditProfile'
 
 import Expenses from './Expenses'
@@ -48,6 +49,7 @@ export {
     Options,
     Accounts,
     AccountNew,
+    AccountEdit,
     EditProfile,
     Expenses,
     Business,

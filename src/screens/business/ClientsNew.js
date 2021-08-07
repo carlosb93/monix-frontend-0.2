@@ -39,7 +39,6 @@ import ClientsModel from '../../models/Clientes';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 
-const options = ['cuenta BANMET'];
 
 const numColumns = 3;
 const size = Dimensions.get('window').width / numColumns;

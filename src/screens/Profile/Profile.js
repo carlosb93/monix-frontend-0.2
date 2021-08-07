@@ -17,6 +17,7 @@ import InfoText from './InfoText'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIKit, {setClientToken} from '../../shared/APIKit';
 import UserModel from '../../models/User';
+import AccountModel from '../../models/Account';
 
 const numColumns = 1;
 const size = Dimensions.get('window').width / numColumns;
@@ -64,6 +65,7 @@ class ProfilesScreen extends Component {
     name: '',
     role: '',
     currency: '',
+    accounts: [],
     email: '',
     token:'',
     isActive: '',
@@ -77,6 +79,7 @@ class ProfilesScreen extends Component {
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
     this.filluser();
+    this.get_accounts();
 
   });
 }
@@ -178,9 +181,21 @@ toggleModal(visible) {
       this.setState({ business_id: usuario[0].business_id})
       
     }
-
-
+    
   }
+  async get_accounts() {
+ 
+
+    var accounts = [];
+    try{
+        accounts = await AccountModel.query({user_id: this.state.id});
+    }catch{
+     console.log('query accounts error')
+    }
+
+    this.setState({accounts: accounts}) 
+  
+}
   render() {
     const { emails: [firstEmail] } = this.props
     return (
@@ -227,9 +242,12 @@ toggleModal(visible) {
           </View>
         </ListItem.Content>
         <ListItem.Content right>
-        
+        <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
+
+        <Text style={{ color: COLORS.primary, ...FONTS.h2 }}>{this.state.accounts.length     }     </Text>
+
         <Chevron/>
-      
+      </View>
         </ListItem.Content>
       </ListItem>
       <ListItem onPress={() => this.toggleModal(true)} containerStyle={styles.listItemContainer}>

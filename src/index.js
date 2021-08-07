@@ -11,7 +11,7 @@ import {Signup, Login, SplashScreen, ProfileScreen,
         BusinessExpense, ExpenseNew, ExpenseEdit, CalendarScreen,
         CreateTask, BusinessClients, ClientsNew, ClientsEdit,
         GraphKidsByAge, GraphKidsVsPregnant, GraphOutdoorsVsIndoors, Options,
-        Accounts, AccountNew, ClientsSummaryMenu} from './screens';
+        Accounts, AccountNew, AccountEdit, ClientsSummaryMenu} from './screens';
 
 import Tabs from './navigation/tabs';
 import { COLORS, SIZES } from './constants';
@@ -246,6 +246,7 @@ async	componentDidMount() {
                 <Stack.Screen name="Options" component={Options} />
                 <Stack.Screen name="Accounts" component={Accounts} />
                 <Stack.Screen name="AccountNew" component={AccountNew} />
+                <Stack.Screen name="AccountEdit" component={AccountEdit} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
 
                 <Stack.Screen name="BusinessServices" component={BusinessServices} />
