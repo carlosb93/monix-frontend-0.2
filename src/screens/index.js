@@ -11,6 +11,7 @@ import AccountEdit from './Profile/AccountEdit'
 import EditProfile from './auth/EditProfile'
 
 import Expenses from './Expenses'
+import Finance from './finance/Finance'
 
 import Business from './business/Business'
 import BusinessNew from './business/BusinessNew'
@@ -73,5 +74,6 @@ export {
     GraphKidsByAge,
     GraphKidsVsPregnant,
     GraphOutdoorsVsIndoors,
-    ClientsSummaryMenu
+    ClientsSummaryMenu,
+    Finance
 }

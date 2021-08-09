@@ -46,11 +46,11 @@ const SplashScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 				<Image
-					source={require('../assets/icons/logo.png')}
+					source={require('../assets/icons/logosinsombra.png')}
 					style={{width: '90%', resizeMode: 'contain', margin: 50}}
 				/>
 				<Text style={{ ...FONTS.h1 }}>Bienvenido a</Text>
-                <Text style={{ ...FONTS.h1 }}>Photo Manager</Text>
+                <Text style={{ ...FONTS.h1 }}>Mony</Text>
 				
 				<ActivityIndicator
 					animating={animating}

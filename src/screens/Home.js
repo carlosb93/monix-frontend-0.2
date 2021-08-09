@@ -205,6 +205,22 @@ export default class Home extends React.Component {
     >
         <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Calendar</Text>
     </TouchableOpacity>
+    <TouchableOpacity
+        style={{
+            width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1,
+            justifyContent: 'center',
+            padding: SIZES.padding,
+            backgroundColor: COLORS.primary,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            elevation: 5,
+        }}
+        onPress={() => {this.state.navigation.replace('Finance')}
+        }
+    >
+        <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Finance</Text>
+    </TouchableOpacity>
    
 </View>
   )
