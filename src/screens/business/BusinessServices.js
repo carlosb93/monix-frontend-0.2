@@ -4,10 +4,12 @@ import { StyleSheet,
   Text,
   TouchableOpacity,
   TextInput,
+  SafeAreaView,
   Image,
   Dimensions,
   FlatList,
   ColorPropType} from 'react-native'
+  import {SwipeablePanel} from 'rn-swipeable-panel';
   
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -18,9 +20,11 @@ import { StyleSheet,
   import { faArchive, faPlus } from '@fortawesome/free-solid-svg-icons'
   import BusinessModel from '../../models/Business';
 
+  import About from '../../components/About';
 
 const numColumns = 2;
 const size = Dimensions.get('window').width / numColumns;
+const width = Dimensions.get('window').width;
 const stylesflat = StyleSheet.create({
   itemContainer: {
     width: size - 20,
@@ -32,6 +36,8 @@ const stylesflat = StyleSheet.create({
     elevation: 5
   }
 });
+
+
 
 export default class BusinessServices extends React.Component { 
 
@@ -59,7 +65,10 @@ export default class BusinessServices extends React.Component {
       navigation: this.props.navigation,
       negocioId: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
+      swipeablePanelActive: true,
       negocio:[ ],
+      height:width*0.7,
+      content: () => <About />,
       options:[ 
         {id:1,
         icon: 'archive',
@@ -102,6 +111,7 @@ export default class BusinessServices extends React.Component {
   componentDidMount() {
 		this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_businnesses();
+    this.openPanel();
 		
 		});
   }
@@ -111,7 +121,12 @@ export default class BusinessServices extends React.Component {
     
   }
   
-  
+  openPanel = () => {
+    this.setState({ swipeablePanelActive: true });
+};
+closePanel = () => {
+  // this.setState({ swipeablePanelActive: false });
+};
   render() {
 
   const { navigation } = this.state;
@@ -244,8 +259,27 @@ export default class BusinessServices extends React.Component {
       keyExtractor={item => item.id}
       numColumns={numColumns} />
 
+<View style={{
+    width: width,
+    height: width*1.1,
+    backgroundColor: COLORS.transparent,
+  }}>
+<SwipeablePanel
+                    fullWidth
+                    openLarge={false}
+                    noBackgroundOpacity={true}
+                    isActive={this.state.swipeablePanelActive}
+                    onClose={this.closePanel}
+                    onPressCloseButton={this.closePanel}
+                    style={{borderRadius :40}}
+                >
+			{this.state.content()}
+</SwipeablePanel>
 
 
+</View>
+
+        
                  
         
         {/* <View>

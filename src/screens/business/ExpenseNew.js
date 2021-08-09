@@ -35,6 +35,7 @@ import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import ExpensesModel from '../../models/Expenses';
 import AccountModel from '../../models/Account';
+import BalanceModel from '../../models/Balance';
 
 
 
@@ -91,7 +92,7 @@ export default class ExpenseNew extends React.Component {
       fecha_mod: 'MM/DD/YYYY',
       amount: '',
       price: '',
-      account: '',// opcional
+      account: 0,// opcional
       description: '',// opcional
       category_id: 0,// opcional
       isDatePickerVisible: false,
@@ -184,7 +185,7 @@ export default class ExpenseNew extends React.Component {
   };
 
   showData = async () => {
-
+    const user_id = await AsyncStorage.getItem('id')
     var datum = toTimestamp(this.state.fecha)
 
     const props = {
@@ -192,13 +193,55 @@ export default class ExpenseNew extends React.Component {
         business_id: this.state.negocioId,
         date: datum,
         price: parseFloat(this.state.price),
-        account: this.state.account,
+        account_id: this.state.account,
         description: this.state.description,
        }
   try {
   var expenses =[];
   expenses = new ExpensesModel(props)
   expenses.save()
+
+  var account = [];
+  try{
+      account = await AccountModel.findBy({id_eq: this.state.account});
+      account.monto = account.monto - parseFloat(this.state.price)
+      account.save()
+      
+  }catch{
+   console.log('query account error')
+  }
+
+  var expense = [];
+    try{
+      const options = {
+        where: {
+          business_id_eq: this.state.negocioId
+        },
+        order: 'id DESC'
+      }
+        expense = await ExpensesModel.query(options);
+    }catch{
+     console.log('query expense error')
+    }
+
+      const propsBalance = {
+        user_id: user_id,
+        account_id: this.state.account,
+        categoria_id: this.state.category_id,
+        expense_id: expense[0].id,
+        isPositive: false,
+        monto: parseFloat(this.state.price),
+      }
+      var balance =[];
+      balance = new BalanceModel(propsBalance)
+      balance.save()
+      console.log(balance)
+
+
+
+
+
+
   
         } catch (error) {
               
@@ -209,6 +252,7 @@ export default class ExpenseNew extends React.Component {
   itemId: this.state.negocioId,
   otherParam: this.state.otherParam,
 });
+
   }
 
 render() { 
@@ -401,7 +445,7 @@ render() {
         
 	data={this.state.accounts}
 	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem.name})
+    this.setState({ account: selectedItem.id})
 		
 	}}
 	buttonTextAfterSelection={(selectedItem, index) => {

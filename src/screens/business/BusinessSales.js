@@ -61,26 +61,28 @@ export default class BusinessSales extends React.Component {
       navigation: this.props.navigation,
       negocioId: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
-      sales:[]
+      sales:[],
 		}
 	}
-  async get_sales(){
 
-    var sales = [];
-    sales = await SalesModel.getJoinSaleInv(this.state.negocioId);
-    this.setState({sales: sales}) 
-
-  }
-
+  
   componentDidMount() {
-		this._focusListener = this.props.navigation.addListener('focus', () => {
-    this.get_sales();
+    this._focusListener = this.props.navigation.addListener('focus', () => {
+      this.get_sales();
 		});
   }
-
+  
   componentWillUnmount() {
     this._focusListener();
   }
+
+  async get_sales(){
+    const sales = await SalesModel.getJoinSaleInv(this.props.route.params.itemId);
+    this.setState({sales: sales}) 
+ 
+  }
+
+  
   
   
   render() {

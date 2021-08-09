@@ -37,9 +37,5 @@ export default class Clients extends BaseModel {
     return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
   }
 
-  static getSingleSaleInv(id) {
-    const sql = 'SELECT sales.id,sales.account,sales.description,sales.amount,sales.price,sales.inventory_id,sales.business_id,sales.date,sales.timestamp, inventary.name, inventary.id AS id_inv FROM sales LEFT JOIN inventary ON sales.inventory_id=inventary.id WHERE sales.id = ? ORDER BY sales.id;'
-    const params = id
-    return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
-  }
+  
 }

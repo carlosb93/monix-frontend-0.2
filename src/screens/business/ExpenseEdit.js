@@ -32,6 +32,7 @@ import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import ExpensesModel from '../../models/Expenses';
 import AccountModel from '../../models/Account';
+import BalanceModel from '../../models/Balance';
 
 
 
@@ -44,11 +45,6 @@ const stylesflat = StyleSheet.create({
     margin: 1,
   }
 });
-
-
-
-
-
 
 export default class ExpenseEdit extends React.Component {
 
@@ -81,6 +77,7 @@ export default class ExpenseEdit extends React.Component {
       navigation: this.props.navigation,
       expend_id: this.props.route.params.itemId,
       otherParam: this.props.route.params.otherParam,
+      expense_id: this.props.route.params.otherParam.id,
       negocioId: this.props.route.params.otherParam.business_id,
       category_id: this.props.route.params.otherParam.category_id,
       categories: [],
@@ -88,11 +85,12 @@ export default class ExpenseEdit extends React.Component {
       fecha: new Date(),
       fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       price: ''+this.props.route.params.otherParam.price,
-      account: this.props.route.params.otherParam.account,// opcional
+      account: this.props.route.params.otherParam.account_id,// opcional
       description: this.props.route.params.otherParam.description,// opcional
       date: this.props.route.params.otherParam.date,// opcional
       iconview: <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}> <Icon size={20} name={this.props.route.params.otherParam.icon} style={{color:this.props.route.params.otherParam.color, margin:8}}/>  {this.props.route.params.otherParam.name}</Text>,
-      
+      account_name:[],
+      negocio:[],
       isDatePickerVisible: false,
       day:new Date().getDate(),
       month:new Date().getMonth() + 1,
@@ -104,6 +102,7 @@ export default class ExpenseEdit extends React.Component {
  
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
+    this.get_business()
     this.get_categories()
     this.get_accounts()
     });
@@ -117,14 +116,18 @@ export default class ExpenseEdit extends React.Component {
     const user_id = await AsyncStorage.getItem('id')
 
     var accounts = [];
+    var account_name = [];
     try{
         accounts = await AccountModel.query({user_id: user_id});
-        console.log(accounts)
+        
+        account_name = await AccountModel.findBy({id_eq: this.state.account});
+        
     }catch{
      console.log('query accounts error')
     }
 
     this.setState({accounts: accounts}) 
+    this.setState({account_name: account_name}) 
     console.log(this.state.accounts)
   
 }
@@ -154,9 +157,16 @@ export default class ExpenseEdit extends React.Component {
 }
 Delete = async () => {
 
-    
   const id = this.state.expend_id;
-  const expense = await ExpensesModel.destroy(id)
+  const expense = await ExpensesModel.findBy({id_eq: id})
+  const balance = await BalanceModel.findBy({expense_id_eq: id})
+  
+  const balancedelete = await BalanceModel.destroy(balance.id)
+  const account = await AccountModel.findBy({id_eq: expense.account_id})
+  account.monto = account.monto + expense.price
+  account.save()
+console.log(expense)
+  const expensedelete = await ExpensesModel.destroy(id)
   
   this.state.navigation.navigate('BusinessExpense', {
     itemId: this.state.negocioId,
@@ -187,26 +197,72 @@ Delete = async () => {
 
     this.hideDatePicker();
   };
-  showData = async () => {
-console.log(this.state.category_id)
 
+  get_business = async () =>{
+
+    const negocio = await BusinessModel.query({id: this.state.negocioId});
+    this.setState({negocio: negocio})
+  
+  }
+
+  showData = async () => {
     const id = this.state.expend_id;
     var datum = toTimestamp(this.state.fecha)
     const expense = await ExpensesModel.find(id)
     expense.category_id = parseInt(this.state.category_id)
     expense.business_id = parseInt(this.state.negocioId)
     expense.price = parseFloat(this.state.price)
-    expense.account = this.state.account
+    expense.account_id = this.state.account
     expense.date = datum
     expense.description = this.state.description
     expense.save()
+
+    await this.set_change()
     
     
     this.state.navigation.navigate('BusinessExpense', {
       itemId: this.state.negocioId,
-      otherParam: this.state.otherParam,
+      otherParam: this.state.negocio,
     });
       }
+
+
+      async set_change(){
+  
+        const account = await AccountModel.findBy({id_eq: this.state.account})
+      
+        const balance = await BalanceModel.findBy({expense_id_eq: parseInt(this.state.expense_id)})
+        
+        
+          if(balance.account_id != parseInt(account.id)){
+            const account1 = await AccountModel.findBy({id_eq: this.state.account})
+            account1.monto = account.monto - parseFloat(this.state.price)
+            account1.save()
+      
+            const account3 = await AccountModel.findBy({id_eq: balance.account_id})
+            account3.monto = account3.monto + balance.monto
+            account3.save()
+      
+          }else{
+      
+            const calculo = account.monto + balance.monto - parseFloat(this.state.price)
+      
+            const account2 = await AccountModel.findBy({id_eq: this.state.account})
+            account2.monto = parseFloat(calculo)
+            account2.save()
+      
+          }
+      
+      
+          const balance1 = await BalanceModel.findBy({expense_id_eq: parseInt(this.state.expense_id)})    
+       
+          balance1.monto = parseFloat(this.state.price)
+          balance1.account_id = this.state.account
+          balance1.categoria_id = parseInt(this.state.category_id)
+          balance1.save()
+      
+      }
+
 
 
 render() { 
@@ -386,7 +442,7 @@ render() {
         </TouchableOpacity>
         
         <SelectDropdown
-        defaultButtonText={this.state.account}
+        defaultButtonText={this.state.account_name.name}
         buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
         buttonStyle={{ 
           width: SIZES.width * 0.8,
@@ -399,7 +455,7 @@ render() {
         
 	data={this.state.accounts}
 	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem.name})
+    this.setState({ account: selectedItem.id})
 		
 	}}
 	buttonTextAfterSelection={(selectedItem, index) => {
@@ -410,7 +466,7 @@ render() {
 	rowTextForSelection={(item, index) => {
 		// text represented for each item in dropdown
 		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
+		return item.name
 	}}
 />
         

@@ -62,7 +62,7 @@ export default class App extends React.Component {
         const props =[
           {
             name: 'Balance de cuenta',
-            icon: 'credit_card',
+            icon: 'credit-card',
             color: COLORS.third
         },
           {
@@ -123,12 +123,14 @@ export default class App extends React.Component {
                 console.log('Table calendar created successfully')
       }
       try {
+        
         sales =  await SalesModel.query()
           } catch (error) {
                 await SalesModel.createTable()
                 console.log('Table sales created successfully')
       }
       try {
+        
         expenses =  await ExpensesModel.query()
           } catch (error) {
                 await ExpensesModel.createTable()
@@ -141,13 +143,14 @@ export default class App extends React.Component {
                 console.log('Table clients created successfully')
       }
       try {
-       
+        
         accounts =  await AccountModel.query()
           } catch (error) {
                 await AccountModel.createTable()
                 console.log('Table accounts created successfully')
       }
       try {
+        
         balance =  await BalanceModel.query()
           } catch (error) {
                 await BalanceModel.createTable()
@@ -156,7 +159,7 @@ export default class App extends React.Component {
       try {
         
         categories =  await CategoryModel.query()
-        console.log(categories)
+       
        if(categories.length == 0){
 
          var i ;

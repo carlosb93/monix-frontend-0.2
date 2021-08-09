@@ -77,7 +77,7 @@ const Search = ({ title, navigation, leftIcon }) => (
           color={COLORS.white}
           iconStyle={styles.icon}
           containerStyle={styles.iconContainer}
-          onPress={() => navigation.goBack(null)}
+          onPress={() => navigation.navigate('Home')}
           {...leftIcon}
         />
       </View>

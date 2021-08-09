@@ -40,6 +40,7 @@ import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import ExpensesModel from '../../models/Expenses';
 import AccountModel from '../../models/Account';
+import BalanceModel from '../../models/Balance';
 import HsvColorPicker from 'react-native-hsv-color-picker';
 
 
@@ -140,11 +141,28 @@ export default class AccountNew extends React.Component {
         user_id: this.state.user_id,
         color: this.state.ColorPicker,
        }
+    
   try {
   var account =[];
   account = new AccountModel(props)
   account.save()
-  
+
+    var accounts = [];
+    try{
+        accounts = await AccountModel.findBy({user_id_eq: this.state.user_id, name_eq: account.name });
+    }catch{
+     console.log('query accounts error')
+    }
+      const propsBalance = {
+        user_id: this.state.user_id,
+        account_id: accounts.id,
+        categoria_id: 1,
+        isPositive: true,
+        monto: parseFloat(this.state.monto),
+      }
+      var balance =[];
+      balance = new BalanceModel(propsBalance)
+      balance.save()
         } catch (error) {
               
         console.log(error)
@@ -455,7 +473,6 @@ return item
                         </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', margin: 20, height:60,justifyContent:'space-between',alignItems: 'center' }}>
-                        <Text style={{ color: COLORS.darkgray, ...FONTS.body3 }}>El monto inicial de cada cuenta es reiniciado a 0.0 el último día de cada mes.</Text>
                     </View>
 
 

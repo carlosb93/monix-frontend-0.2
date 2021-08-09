@@ -31,9 +31,11 @@ import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import SalesModel from '../../models/Sales';
+import BalanceModel from '../../models/Balance';
+import AccountModel from '../../models/Account';
 
 
-const options = ['cuenta BANMET'];
+
 
 const numColumns = 3;
 const size = Dimensions.get('window').width / numColumns;
@@ -85,12 +87,14 @@ export default class SalesEdit extends React.Component {
       negocioId: this.props.route.params.otherParam.business_id,
       inventory_id: this.props.route.params.otherParam.inventory_id,
       products: [],
+      accounts: [],
+      account_name: [],
       negocio: [],
       fecha: new Date(),
       fecha_mod: toDatetime(this.props.route.params.otherParam.date),
       price: ''+this.props.route.params.otherParam.price,
       amount: ''+this.props.route.params.otherParam.amount,
-      account: this.props.route.params.otherParam.account,// opcional
+      account: this.props.route.params.otherParam.account_id,// opcional
       description: this.props.route.params.otherParam.description,// opcional
       date: this.props.route.params.otherParam.date,// opcional
       isDatePickerVisible: false,
@@ -106,15 +110,38 @@ export default class SalesEdit extends React.Component {
     this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_products()
     this.get_business()
+    this.get_accounts()
     });
   }
 
   componentWillUnmount() {
     this._focusListener();
   }
+
+  async get_accounts() {
+    const user_id = await AsyncStorage.getItem('id')
+
+    var accounts = [];
+    var account_name = [];
+    try{
+        accounts = await AccountModel.query({user_id: user_id});
+        
+        account_name = await AccountModel.findBy({id_eq: this.state.account});
+        
+    }catch{
+     console.log('query accounts error')
+    }
+
+    this.setState({accounts: accounts}) 
+    this.setState({account_name: account_name}) 
+    console.log(this.state.accounts)
+    console.log(this.state.account_name)
+  
+}
+
   get_business = async () =>{
 
-    negocio = await BusinessModel.query({id: this.state.negocioId});
+    const negocio = await BusinessModel.query({id: this.state.negocioId});
     this.setState({negocio: negocio})
   
   }
@@ -128,9 +155,17 @@ export default class SalesEdit extends React.Component {
   }
   Delete = async () => {
 
-    
     const id = this.state.sale_id;
-    const sales = await SalesModel.destroy(id)
+    const sale = await SalesModel.findBy({id_eq: id})
+  
+    const balance = await BalanceModel.findBy({sale_id_eq: id})
+  
+    const balancedelete = await BalanceModel.destroy(balance.id)
+    const account = await AccountModel.findBy({sale_id_eq: sale.account_id})
+    account.monto = account.monto - sale.price
+    account.save()
+    
+    const saledelete = await SalesModel.destroy(id)
     
     this.state.navigation.navigate('BusinessSales', {
       itemId: this.state.negocioId,
@@ -163,24 +198,59 @@ export default class SalesEdit extends React.Component {
   };
   showData = async () => {
 
-    const id = this.state.id;
-    const inv = await InventaryModel.find(id)
-    inv.inventory_id = parseInt(this.state.inventory_id)
-    inv.business_id = parseInt(this.state.negocioId)
-    inv.amount = parseInt(this.state.amount)
-    inv.price = parseFloat(this.state.price)
-    inv.account = this.state.account
-    // inv.date = this.state.date
-    inv.description = this.state.description
-    inv.save()
+    const id = this.state.sale_id;
+    const sales = await SalesModel.find(id)
+    sales.inventory_id = parseInt(this.state.inventory_id)
+    sales.business_id = parseInt(this.state.negocioId)
+    sales.amount = parseInt(this.state.amount)
+    sales.price = parseFloat(this.state.price)
+    sales.account_id = this.state.account
+    sales.description = this.state.description
+    sales.save()
     
-    
-    this.state.navigation.navigate('BusinessSales', {
-      itemId: this.state.negocioId,
-      otherParam: this.state.negocio,
-    });
+    await this.set_change()
+      
+      console.log('error')
+      this.state.navigation.navigate('BusinessSales', {
+        itemId: this.state.negocioId,
+        otherParam: this.state.negocio,
+      });
       }
+async set_change(){
+  
+  const account = await AccountModel.findBy({id_eq: this.state.account})
 
+  const balance = await BalanceModel.findBy({sale_id_eq: parseInt(this.state.sale_id)})
+  
+  
+    if(balance.account_id != parseInt(account.id)){
+      const account1 = await AccountModel.findBy({id_eq: this.state.account})
+      account1.monto = account.monto + parseFloat(this.state.price)
+      account1.save()
+
+      const account3 = await AccountModel.findBy({id_eq: balance.account_id})
+      account3.monto = account3.monto - balance.monto
+      account3.save()
+
+    }else{
+
+      const calculo = account.monto - balance.monto + parseFloat(this.state.price)
+
+      const account2 = await AccountModel.findBy({id_eq: this.state.account})
+      account2.monto = parseFloat(calculo)
+      account2.save()
+
+    }
+
+
+    const balance1 = await BalanceModel.findBy({sale_id_eq: parseInt(this.state.sale_id)})    
+ 
+    balance1.monto = parseFloat(this.state.price)
+    balance1.account_id = this.state.account
+    balance1.categoria_id = parseInt(this.state.inventory_id)
+    balance1.save()
+
+}
 
 render() { 
   const { navigation  } = this.state;
@@ -387,7 +457,7 @@ render() {
         </TouchableOpacity>
         
         <SelectDropdown
-        defaultButtonText={this.state.account}
+        defaultButtonText={this.state.account_name.name}
         buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
         buttonStyle={{ 
           width: SIZES.width * 0.8,
@@ -398,20 +468,20 @@ render() {
           elevation: 5,
           backgroundColor: COLORS.white}}
         
-	data={options}
+	data={this.state.accounts}
 	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem})
+    this.setState({ account: selectedItem.id})
 		
 	}}
 	buttonTextAfterSelection={(selectedItem, index) => {
 		// text represented after item is selected
 		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
+		return selectedItem.name
 	}}
 	rowTextForSelection={(item, index) => {
 		// text represented for each item in dropdown
 		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
+		return item.name
 	}}
 />
         

@@ -19,12 +19,7 @@ import { StyleSheet,
   import BusinessModel from '../../models/Business';
   import InventaryModel from '../../models/Inventary';
   import ExpensesModel from '../../models/Expenses';
-  // account
-  // description
-  // price
-  // category_id
-  // business_id
-  // date
+
 
 const numColumns = 1;
 const size = Dimensions.get('window').width / numColumns;

@@ -34,9 +34,11 @@ import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
 import SalesModel from '../../models/Sales';
+import BalanceModel from '../../models/Balance';
+import AccountModel from '../../models/Account';
 
 
-const options = ['cuenta BANMET'];
+
 
 const numColumns = 3;
 const size = Dimensions.get('window').width / numColumns;
@@ -86,11 +88,12 @@ export default class SalesNew extends React.Component {
       navigation: this.props.navigation,
       otherParam: this.props.route.params.otherParam,
       products: [],
+      accounts: [],
       fecha: new Date(),
       fecha_mod: 'MM/DD/YYYY',
       amount: '',
       price: '',
-      account: '',// opcional
+      account: 0,// opcional
       description: '',// opcional
       isDatePickerVisible: false,
       day:new Date().getDate(),
@@ -104,6 +107,7 @@ export default class SalesNew extends React.Component {
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_products()
+    this.get_accounts()
     if(this.state.month < 10){
       this.setState({fecha_mod: '0'+ this.state.month +'/'+ this.state.day +'/'+ this.state.year})
     }else{
@@ -115,6 +119,21 @@ export default class SalesNew extends React.Component {
   componentWillUnmount() {
     this._focusListener();
   }
+  async get_accounts() {
+    const user_id = await AsyncStorage.getItem('id')
+
+    var accounts = [];
+    try{
+        accounts = await AccountModel.query({user_id: user_id});
+        console.log(accounts)
+    }catch{
+     console.log('query accounts error')
+    }
+
+    this.setState({accounts: accounts}) 
+    console.log(this.state.accounts)
+  
+}
 
   async get_products(){
      
@@ -154,7 +173,7 @@ export default class SalesNew extends React.Component {
   };
 
   showData = async () => {
-
+    const user_id = await AsyncStorage.getItem('id')
     var datum = toTimestamp(this.state.fecha)
 
     const props = {
@@ -163,7 +182,7 @@ export default class SalesNew extends React.Component {
         date: datum,
         amount: parseInt(this.state.amount),
         price: parseFloat(this.state.price),
-        account: this.state.account,
+        account_id: this.state.account,
         description: this.state.description,
        }
   try {
@@ -175,6 +194,51 @@ export default class SalesNew extends React.Component {
               
         console.log(error)
     }
+     
+      
+      const account = await AccountModel.findBy({id_eq: this.state.account});
+      account.monto = account.monto + parseFloat(this.state.price)
+      console.log(account)
+      account.save()
+      
+  var sale = [];
+    try{
+      const options = {
+        where: {
+          business_id_eq: this.state.negocioId
+        },
+        order: 'id DESC'
+      }
+        sale = await SalesModel.query(options);
+    }catch{
+     console.log('query sale error')
+    }
+
+      const propsBalance = {
+        user_id: user_id,
+        account_id: this.state.account,
+        categoria_id: this.state.product_id,
+        sale_id: sale[0].id,
+        isPositive: true,
+        monto: parseFloat(this.state.price),
+      }
+
+      console.log(propsBalance)
+
+      var balance =[];
+      balance = new BalanceModel(propsBalance)
+      balance.save()
+      console.log(balance)
+
+
+
+
+
+
+
+
+
+
     
  this.state.navigation.navigate('BusinessSales', {
   itemId: this.state.negocioId,
@@ -395,20 +459,20 @@ render() {
           elevation: 5,
           backgroundColor: COLORS.white}}
         
-	data={options}
+	data={this.state.accounts}
 	onSelect={(selectedItem, index) => {
-    this.setState({ account: selectedItem})
+    this.setState({ account: selectedItem.id})
 		
 	}}
 	buttonTextAfterSelection={(selectedItem, index) => {
 		// text represented after item is selected
 		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
+		return selectedItem.name
 	}}
 	rowTextForSelection={(item, index) => {
 		// text represented for each item in dropdown
 		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
+		return item.name
 	}}
 />
         
