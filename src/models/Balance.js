@@ -21,6 +21,7 @@ export default class Balance extends BaseModel {
       user_id: { type: types.INTEGER },
       account_id: { type: types.INTEGER },
       categoria_id: { type: types.INTEGER },
+      business_id: { type: types.INTEGER },
       expense_id: { type: types.INTEGER },
       sale_id: { type: types.INTEGER },
       isPositive: { type: types.BOOLEAN, not_null: true },

@@ -228,6 +228,7 @@ export default class ExpenseNew extends React.Component {
         user_id: user_id,
         account_id: this.state.account,
         categoria_id: this.state.category_id,
+        business_id: this.state.negocioId,
         expense_id: expense[0].id,
         isPositive: false,
         monto: parseFloat(this.state.price),

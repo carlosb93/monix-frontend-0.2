@@ -123,14 +123,14 @@ export default class App extends React.Component {
                 console.log('Table calendar created successfully')
       }
       try {
-        
+        // await SalesModel.dropTable()
         sales =  await SalesModel.query()
           } catch (error) {
                 await SalesModel.createTable()
                 console.log('Table sales created successfully')
       }
       try {
-        
+        // await ExpensesModel.dropTable()
         expenses =  await ExpensesModel.query()
           } catch (error) {
                 await ExpensesModel.createTable()
@@ -150,7 +150,7 @@ export default class App extends React.Component {
                 console.log('Table accounts created successfully')
       }
       try {
-        
+        // await BalanceModel.dropTable()
         balance =  await BalanceModel.query()
           } catch (error) {
                 await BalanceModel.createTable()

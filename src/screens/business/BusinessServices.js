@@ -19,6 +19,7 @@ import { StyleSheet,
   import Icon from 'react-native-vector-icons/FontAwesome';
   import { faArchive, faPlus } from '@fortawesome/free-solid-svg-icons'
   import BusinessModel from '../../models/Business';
+  import BalanceModel from '../../models/Balance';
 
   import About from '../../components/About';
 
@@ -67,8 +68,12 @@ export default class BusinessServices extends React.Component {
       otherParam: this.props.route.params.otherParam,
       swipeablePanelActive: true,
       negocio:[ ],
+      sum:0,
+      ingreso:0,
+      gasto:0,
       height:width*0.7,
-      content: () => <About />,
+      balance:[],
+      content: () => <About negocio_id={this.props.route.params.itemId} suma={this.state.sum} ingreso={this.state.ingreso} gasto={this.state.gasto} />,
       options:[ 
         {id:1,
         icon: 'archive',
@@ -107,10 +112,42 @@ export default class BusinessServices extends React.Component {
             })
    
   }
+  async get_business_balance(){
+
+    
+    const balance = await BalanceModel.query({business_id: this.state.negocioId });
+
+console.log(balance)
+
+    let sum = 0; 
+    let gasto = 0; 
+    let ingreso = 0; 
+    balance.forEach(obj => {
+      console.log(obj.isPositive)
+        if(obj.isPositive){
+          sum += obj.monto;
+          ingreso += obj.monto;
+        }else{
+          sum -= obj.monto;
+          gasto -= obj.monto;
+        }
+    
+})
+console.log(sum)
+    this.setState({balance: balance}) 
+    this.setState({sum: sum}) 
+    this.setState({ingreso: ingreso}) 
+    this.setState({gasto: gasto}) 
+
+
+   
+   
+  }
 
   componentDidMount() {
 		this._focusListener = this.props.navigation.addListener('focus', () => {
     this.get_businnesses();
+    this.get_business_balance();
     this.openPanel();
 		
 		});
@@ -271,7 +308,7 @@ closePanel = () => {
                     isActive={this.state.swipeablePanelActive}
                     onClose={this.closePanel}
                     onPressCloseButton={this.closePanel}
-                    style={{borderRadius :40}}
+                    style={{borderRadius:40,elevation:5}}
                 >
 			{this.state.content()}
 </SwipeablePanel>

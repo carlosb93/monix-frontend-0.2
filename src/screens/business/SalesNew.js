@@ -218,6 +218,7 @@ export default class SalesNew extends React.Component {
         user_id: user_id,
         account_id: this.state.account,
         categoria_id: this.state.product_id,
+        business_id: this.state.negocioId,
         sale_id: sale[0].id,
         isPositive: true,
         monto: parseFloat(this.state.price),
