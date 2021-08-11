@@ -8,6 +8,7 @@ import { StyleSheet,
   Image,
   Dimensions,
   FlatList,
+  ImageBackground,
   ColorPropType} from 'react-native'
   import {SwipeablePanel} from 'rn-swipeable-panel';
   
@@ -20,7 +21,7 @@ import { StyleSheet,
   import { faArchive, faPlus } from '@fortawesome/free-solid-svg-icons'
   import BusinessModel from '../../models/Business';
   import BalanceModel from '../../models/Balance';
-
+  import {toTimestamp, toDatetime } from '../../shared/tools';
   import About from '../../components/About';
 
 const numColumns = 2;
@@ -38,7 +39,8 @@ const stylesflat = StyleSheet.create({
   }
 });
 
-
+const date = new Date();
+const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default class BusinessServices extends React.Component { 
 
@@ -51,6 +53,7 @@ export default class BusinessServices extends React.Component {
 		this.passwordRef = React.createRef();
 		this.confirmPasswordRef = React.createRef();
     this.state = {
+      background:require('../../assets/images/background.png'),
       id:null,
       name:'',
 			email: '',
@@ -73,6 +76,11 @@ export default class BusinessServices extends React.Component {
       gasto:0,
       height:width*0.7,
       balance:[],
+      date: date,
+      contador: 0,
+      monthName:months[date.getMonth()],
+      firstDay: new Date(date.getFullYear(), date.getMonth(), 1),
+      lastDay: new Date(date.getFullYear(), date.getMonth() + 1, 0),
       content: () => <About negocio_id={this.props.route.params.itemId} suma={this.state.sum} ingreso={this.state.ingreso} gasto={this.state.gasto} />,
       options:[ 
         {id:1,
@@ -112,28 +120,108 @@ export default class BusinessServices extends React.Component {
             })
    
   }
-  async get_business_balance(){
 
-    
-    const balance = await BalanceModel.query({business_id: this.state.negocioId });
+   next_month(){
 
-console.log(balance)
+if( this.state.contador < 0){
+  this.setState({contador: 0})
+}
+const contador = this.state.contador + 1
 
-    let sum = 0; 
-    let gasto = 0; 
-    let ingreso = 0; 
-    balance.forEach(obj => {
-      console.log(obj.isPositive)
-        if(obj.isPositive){
-          sum += obj.monto;
-          ingreso += obj.monto;
-        }else{
-          sum -= obj.monto;
-          gasto -= obj.monto;
-        }
-    
+this.setState({contador: contador})
+
+let month =new Date().getMonth() + contador
+let currentyear = new Date().getFullYear()
+
+
+let datenew = new Date(currentyear, month, 10);
+
+
+const firstDay = new Date(datenew.getFullYear(),datenew.getMonth(), 1)
+const lastDay = new Date(datenew.getFullYear(), datenew.getMonth() + 1, 0)
+
+
+
+this.setState({date: datenew})
+this.setState({firstDay: firstDay})
+this.setState({lastDay: lastDay})
+
+var monthName=months[datenew.getMonth()];
+
+this.setState({monthName:monthName}, () => {
+  this.get_business_balance();
 })
-console.log(sum)
+
+
+
+       
+  }
+
+  last_month(){
+   
+    if( this.state.contador > 0){
+      this.setState({contador: 0})
+      
+    }
+    
+    const contador = this.state.contador - 1
+    this.setState({contador: contador})
+    let month = new Date().getMonth() + contador
+    let currentyear = new Date().getFullYear()
+    let datenew = new Date(currentyear, month, 10);
+    
+      
+    const firstDay = new Date(datenew.getFullYear(),datenew.getMonth(), 1)
+    const lastDay = new Date(datenew.getFullYear(), datenew.getMonth() + 1, 0)
+      
+      
+      this.setState({date: datenew})
+      this.setState({firstDay: firstDay})
+      this.setState({lastDay: lastDay})
+    
+    
+    var monthName=months[datenew.getMonth()];
+    this.setState({monthName:monthName}, () => {
+      this.get_business_balance();
+    })
+    
+  }
+
+   async get_business_balance(){
+
+// var date = new Date();
+// var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+// var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+// var first = date.getDate() - date.getDay(); // First day is the day of the month - the day of the week
+// var last = first + 6; // last day is the first day + 6
+
+// var firstDayofWeek = new Date(date.setDate(first)).toUTCString();
+// var lastdayOfWeek = new Date(date.setDate(last)).toUTCString();
+// , timestamp_gteq:toTimestamp(firstDay), timestamp_lteq:toTimestamp(lastDay) 
+    // const balance2 = await BalanceModel.findBy({business_id_eq: this.state.negocioId, categoria_id_neq: 1});
+
+const balance = await BalanceModel.getBalanceByMonth(this.state.negocioId, toTimestamp(this.state.firstDay), toTimestamp(this.state.lastDay));
+
+
+
+let sum = 0; 
+let gasto = 0; 
+let ingreso = 0; 
+
+if(balance){
+
+balance.forEach(obj => {
+      if(obj.isPositive){
+        sum += obj.monto;
+        ingreso += obj.monto;
+      }else{
+        sum -= obj.monto;
+        gasto -= obj.monto;
+      }
+    })
+}
+    
     this.setState({balance: balance}) 
     this.setState({sum: sum}) 
     this.setState({ingreso: ingreso}) 
@@ -255,10 +343,13 @@ closePanel = () => {
      }
       }}
   >
-        <View style={stylesflat.itemContainer}>
+   
+        <View style={stylesflat.itemContainer}
+        >
+           
           {/* Title */}
           <View style={{ flexDirection: 'row', padding: SIZES.padding, alignItems: 'center',justifyContent: 'center' }}>
-              
+          
                   <Icon size={70} name={item.icon}
                                   style={{
                                       color: COLORS.primary,
@@ -289,6 +380,7 @@ closePanel = () => {
             <Text style={{ ...FONTS.body4,color: COLORS.white, }}>{item.texto}</Text>
 
           </View>
+          
       </View>
       </TouchableOpacity>
 
@@ -297,9 +389,9 @@ closePanel = () => {
       numColumns={numColumns} />
 
 <View style={{
-    width: width,
-    height: width*1.1,
-    backgroundColor: COLORS.transparent,
+  width: width,
+  height: width*1.1,
+  backgroundColor: COLORS.transparent,
   }}>
 <SwipeablePanel
                     fullWidth
@@ -310,6 +402,42 @@ closePanel = () => {
                     onPressCloseButton={this.closePanel}
                     style={{borderRadius:40,elevation:5}}
                 >
+                  <View style={{
+                    flex:1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: width,
+                    height:15,
+                    marginLeft:130,
+                    backgroundColor: COLORS.transparent,
+
+  }}>
+    <TouchableOpacity onPress={() => {this.last_month()}}>
+         <View>
+         <Icon size={15} name='chevron-left'
+                               style={{
+                                 margin:5,
+                                 color: COLORS.gray,
+                               }}/>
+         </View>
+       </TouchableOpacity>
+            
+
+<Text style={{ ...FONTS.body3, margin:5,color: COLORS.gray }}>{this.state.monthName}</Text>
+<TouchableOpacity onPress={() => {this.next_month()}}>
+         <View>
+         <Icon size={15} name='chevron-right'
+                               style={{
+                                 margin:5,
+                                 color: COLORS.gray,
+                               }}/>
+         </View>
+       </TouchableOpacity>
+              
+
+</View>
+
 			{this.state.content()}
 </SwipeablePanel>
 

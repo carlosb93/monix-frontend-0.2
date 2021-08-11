@@ -11,7 +11,8 @@ import {
   FlatList,
   Button,
   Dimensions,
-  TouchableHighlight
+  TouchableHighlight,
+  ImageBackground
 } from 'react-native'
 import { Avatar, ListItem } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     },
     listItemContainer: {
     width: size * 0.9 ,
-    height: size* 0.20,
+    height: size* 0.4,
     margin: 5,   
     borderRadius:10,
     elevation:5,
@@ -101,25 +102,6 @@ export default class Accounts extends React.Component {
       otherParam: this.props.route.params.otherParam,
       modalVisible: false,
       accounts:[],
-      accounts2:[{
-        id:1,
-        name: '9595 0456 9697 0302',
-        currency: 'CUP',
-        monto: 1500.0,
-        user_id: 1,
-        color: COLORS.primary,
-        reset_date: Date.now()
-    },
-
-    {
-        id:2,
-        name: '9595 0456 9697 0305',
-        currency: 'USD',
-        monto: 1500.0,
-        user_id: 1,
-        color: COLORS.primary,
-        reset_date: Date.now()
-    }]
     }
 
   }
@@ -223,7 +205,7 @@ render() {
           <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             
             <BaseIcon containerStyle={{ backgroundColor: item.color}} icon={{ type: 'font-awesome', name: 'credit-card' }}/>
-            <ListItem.Subtitle style={{color: COLORS.black }}>{item.currency +' - '+item.name +'       $ '+item.monto}</ListItem.Subtitle>
+            <ListItem.Subtitle style={{color: COLORS.white }}>{item.currency +' - '+item.name +'       $ '+item.monto}</ListItem.Subtitle>
             
          
           </View>
@@ -232,7 +214,6 @@ render() {
         <Chevron/>
         </ListItem.Content>
       </ListItem>
-
         )}
         keyExtractor={item => item.id}
         numColumns={numColumns} />

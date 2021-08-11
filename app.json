@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "photo-manager",
-    "slug": "photo-manager",
+    "name": "mony",
+    "slug": "mony",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/adaptive-icon.png",
@@ -12,12 +12,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "host.exp.photomanager",
+      "bundleIdentifier": "host.exp.mony",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "host.exp.photomanager",
+      "package": "host.exp.mony",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",

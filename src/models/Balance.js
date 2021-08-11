@@ -30,4 +30,16 @@ export default class Balance extends BaseModel {
       timestamp: { type: types.INTEGER, default: () => Date.now() }
     }
   }
+
+
+  
+  static getBalanceByMonth(id,date1,date2) {
+    const sql = "SELECT * FROM balance WHERE business_id = ? AND categoria_id <> 1 AND timestamp BETWEEN ? AND ? ORDER BY timestamp ASC;"
+    const params = [id,date1*1000,date2*1000]
+    return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
+  }
+
 }
+//1627790400000
+//1630382400000
+//1628549526768
