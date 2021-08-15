@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mony",
-    "slug": "mony",
+    "name": "monix",
+    "slug": "monix",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/adaptive-icon.png",
@@ -12,12 +12,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "host.exp.mony",
+      "bundleIdentifier": "host.exp.monix",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "host.exp.mony",
+      "package": "host.exp.monix",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",

@@ -377,7 +377,7 @@ return item
          <HsvColorPicker
           ref={this.hsvColorPicker}
           huePickerHue={hue}
-          onHuePickerDragMove={this.onHuePickerChange}
+            onHuePickerDragMove={this.onHuePickerChange}
           onHuePickerPress={this.onHuePickerChange}
           satValPickerHue={hue}
           satValPickerSaturation={sat}

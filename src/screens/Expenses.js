@@ -5,6 +5,7 @@ import {
     ScrollView,
     View,
     Text,
+    Dimensions,
     StatusBar,
     Image,
     ImageBackground,
@@ -13,11 +14,15 @@ import {
     Animated,
     Platform
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {LinearGradient} from 'expo-linear-gradient';
 import { VictoryPie } from 'victory-native';
-
+import AccountModel from '../models/Account';
 import {Svg} from 'react-native-svg';
 
 import { COLORS, FONTS, SIZES, icons, images } from '../constants';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Expenses = () => {
 
@@ -222,6 +227,20 @@ const Expenses = () => {
         }
     ]
 
+    const get_accounts = async () => {
+
+        var accounts = [];
+        try {
+            accounts = await AccountModel.query({user_id: 1});
+           
+        } catch {
+            console.log('query accounts error')
+        }
+        console.log(accounts)
+        return accounts
+
+    }
+
     const categoryListHeightAnimationValue = useRef(new Animated.Value(115)).current;
 
     const [categories, setCategories] = React.useState(categoriesData)
@@ -229,46 +248,64 @@ const Expenses = () => {
     const [selectedCategory, setSelectedCategory] = React.useState(null)
     const [showMoreToggle, setShowMoreToggle] = React.useState(false)
 
+    
+
+
     function renderNavBar() {
         return (
             <View
+            style={{
+            backgroundColor: COLORS.transparent,
+            height: 35,
+            width: Dimensions
+                .get('window')
+                .width
+        }}>
+
+            <View
                 style={{
-                    flexDirection: 'row',
-                    height: 30,
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    paddingHorizontal: SIZES.padding,
-                    backgroundColor: COLORS.white,
-                }}
-            >
+                flex: 1,
+                flexDirection: 'row',
+                height: 30,
+                width: Dimensions
+                    .get('window')
+                    .width,
+                backgroundColor: COLORS.primary,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginRight: SIZES.base
+            }}>
                 <TouchableOpacity
-                    style={{ justifyContent: 'center', width: 50, }}
-                    onPress={() => this.navigation.navigate('BusinessClients')}
-                >
+                    onPress={() => {
+                    navigation.navigate('Home');
+                }}>
                     <Image
                         source={icons.left_arrow}
+                        resizeMode="contain"
                         style={{
-                            width: 25,
-                            height: 25,
-                            tintColor: COLORS.primary
-                        }}
-                    />
+                        width: 25,
+                        height: 25,
+                        margin: 6,
+                        tintColor: COLORS.white
+                    }}/>
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={{ justifyContent: 'center', alignItems: 'flex-end', width: 50 }}
-                    onPress={() => console.log('More')}
-                >
-                    <Image
-                        source={icons.more}
+                <Text
+                    style={{
+                    color: COLORS.white,
+                    ...FONTS.h2
+                }}>
+                    Análisis</Text>
+                <TouchableOpacity >
+                    <Icon
+                        size={30}
+                        name='trash-o'
                         style={{
-                            width: 30,
-                            height: 30,
-                            tintColor: COLORS.primary
-                        }}
-                    />
+                        margin: 8,
+                        color: COLORS.transparent
+                    }}/>
                 </TouchableOpacity>
             </View>
+        </View>
         )
     }
 
@@ -365,6 +402,125 @@ const Expenses = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+        )
+    }
+    function renderCardSection() {
+     
+       const data =[
+         {
+          "color": "#7bcd47",
+          "currency": "CUP",
+          "id": 2,
+          "monto": 1000,
+          "name": "jdjdjdj",
+          "reset_date": 1630382400,
+          "timestamp": 1628885995553,
+          "user_id": 1,
+        },
+         {
+          "color": "#539bdb",
+          "currency": "CUP",
+          "id": 1,
+          "monto": 2400,
+          "name": "9595 4567 9897 8782",
+          "reset_date": 1630382400,
+          "timestamp": 1628885485402,
+          "user_id": 1,
+        },
+      ]
+
+        return (
+            
+            <View style={{   padding: SIZES.padding, justifyContent: 'space-between', alignItems: 'center' }}>
+            <FlatList
+            data={data}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => ( <LinearGradient
+                colors={[  COLORS.softdark,COLORS.softgray]}
+                style={styles.Box}>
+                <View
+                    style={{
+                    width: '68%',
+                    alignItems: 'flex-start'
+                }}>
+                    <Text
+                        style={{
+                        fontSize: 15,
+                        color: '#fff',
+                        fontWeight: '700'
+                    }}>
+                        Balance
+                    </Text>
+                    <Text
+                        style={{
+                        fontSize: 32,
+                        color: '#fff',
+                        fontWeight: '700'
+                    }}>
+                       $ {item.monto}
+                    </Text>
+    
+                    <Text
+                        style={{
+                        marginTop: 67,
+                        color: '#fff',
+                        fontSize: 18,
+                        fontWeight: '700'
+                    }}>
+                      {item.name}
+                    </Text>
+                </View>
+    
+                <View
+                    style={{
+                    alignItems: 'flex-end',
+                    width: '38%',
+                    paddingRight:6
+                }}>
+                    <Text
+                        style={{
+                        fontSize: 17,
+                        color: '#fff',
+                        fontWeight: '700'
+                    }}>
+                        Metropolitano
+                    </Text>
+                    <View style={{
+                        flex: 1
+                    }}>
+                    <TouchableOpacity onPress={() => {  console.log('click');}} style={{
+                      padding: 10,
+                      marginTop: 32,
+                      borderRadius:25,
+                      backgroundColor: COLORS.peach,
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                  }}>
+                    <Text
+                        style={{
+                        color: '#fff',
+                        fontWeight: '700',
+                        fontSize: 15
+                    }} >
+                        Editar
+                    </Text>
+                </TouchableOpacity>
+    
+                     
+    
+                      
+                    </View>
+                </View>
+            </LinearGradient>
+           )}
+           keyExtractor={item => item.id}
+           numColumns={1}
+        />
+          </View>
+               
+               
+       
         )
     }
 
@@ -758,33 +914,59 @@ const Expenses = () => {
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.lightGray2 }}>
             {/* Nav bar section */}
-            {renderNavBar()}
+            {/* {renderNavBar()} */}
 
             {/* Header section */}
             {/* {renderHeader()} */}
-
+            <View style={{backgroundColor:COLORS.white}}>
             {/* Category Header Section */}
             {renderCategoryHeaderSection()}
+           </View>
 
             <ScrollView contentContainerStyle={{ paddingBottom: 60 }}>
                 {
                     viewMode == "list" &&
                     <View>
+                       <View style={{ flexDirection:'column',alignItems: 'center',justifyContent: 'center', backgroundColor:COLORS.white,borderBottomLeftRadius:25,borderBottomRightRadius:25,elevation:5}}>
+                       <ScrollView style={styles.scroll}>
+                        {renderCardSection()}
+                        </ScrollView>
+                        <View style={{width:20,height:4,opacity:0.5, backgroundColor:COLORS.lightGray4,borderRadius:10 ,margin:5}}>
+
+                        </View>
+                        
+                        </View>
                         {renderCategoryList()}
                         {renderIncomingExpenses()}
                     </View>
                 }
                 {
                     viewMode == "chart" &&
-                    <View>
+                    <View> 
+                        <View style={{ flexDirection:'column',alignItems: 'center',justifyContent: 'center', backgroundColor:COLORS.white,borderBottomLeftRadius:25,borderBottomRightRadius:25,elevation:5}}>
+                        <ScrollView style={styles.scroll}>
+                        {renderCardSection()}
+                        </ScrollView>
+                        <View style={{width:20,height:4,opacity:0.5, backgroundColor:COLORS.lightGray4,borderRadius:10 ,margin:5}}>
+
+                        </View>
+                        
+                        </View>
                         {renderChart()}
                         {renderExpenseSummary()}
+                        
+                        
                     </View>
                 }
+               
             </ScrollView>
         </View>
     )
 }
+const numColumns = 1;
+const size = Dimensions
+    .get('window')
+    .width / numColumns;
 
 const styles = StyleSheet.create({
     shadow: {
@@ -796,7 +978,19 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 3,
-    }
+    },
+    Box: {
+        width: size * 0.9,
+        height: 185,
+        borderRadius: 15,
+        flexDirection: 'row',
+        padding: 22,
+        margin:5,
+        elevation:5
+    },
+    scroll: {
+        backgroundColor: COLORS.white,
+    },
 })
 
 export default Expenses;

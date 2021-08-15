@@ -1,5 +1,6 @@
 import SplashScreen from './SplashScreen'
 import Home from './Home'
+import Transaction from './finance/Transaction'
 
 import Login from './auth/Login'
 import Signup from './auth/Signup'
@@ -12,6 +13,7 @@ import EditProfile from './auth/EditProfile'
 
 import Expenses from './Expenses'
 import Finance from './finance/Finance'
+import AddTransaction from './finance/AddTransaction'
 
 import Business from './business/Business'
 import BusinessNew from './business/BusinessNew'
@@ -75,5 +77,7 @@ export {
     GraphKidsVsPregnant,
     GraphOutdoorsVsIndoors,
     ClientsSummaryMenu,
-    Finance
+    Finance,
+    AddTransaction,
+    Transaction,
 }

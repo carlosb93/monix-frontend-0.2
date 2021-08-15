@@ -11,7 +11,6 @@ import { StyleSheet,
   ImageBackground,
   ColorPropType} from 'react-native'
   import {SwipeablePanel} from 'rn-swipeable-panel';
-  
   import AsyncStorage from '@react-native-async-storage/async-storage';
 
   import { icons,COLORS, SIZES, FONTS } from '../../constants'
@@ -35,12 +34,13 @@ const stylesflat = StyleSheet.create({
     marginVertical: SIZES.radius,
     borderRadius: 8,
     backgroundColor: COLORS.white,
-    elevation: 5
+    elevation: 5,
+    
   }
 });
 
 const date = new Date();
-const  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const  months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 export default class BusinessServices extends React.Component { 
 
@@ -53,7 +53,6 @@ export default class BusinessServices extends React.Component {
 		this.passwordRef = React.createRef();
 		this.confirmPasswordRef = React.createRef();
     this.state = {
-      background:require('../../assets/images/background.png'),
       id:null,
       name:'',
 			email: '',
@@ -202,7 +201,7 @@ this.setState({monthName:monthName}, () => {
     // const balance2 = await BalanceModel.findBy({business_id_eq: this.state.negocioId, categoria_id_neq: 1});
 
 const balance = await BalanceModel.getBalanceByMonth(this.state.negocioId, toTimestamp(this.state.firstDay), toTimestamp(this.state.lastDay));
-
+// const balance2 = await BalanceModel.query();
 
 
 let sum = 0; 
@@ -250,7 +249,7 @@ balance.forEach(obj => {
     this.setState({ swipeablePanelActive: true });
 };
 closePanel = () => {
-  // this.setState({ swipeablePanelActive: false });
+  this.setState({ swipeablePanelActive: false });
 };
   render() {
 
@@ -270,7 +269,7 @@ closePanel = () => {
         height: 35,
         width: Dimensions.get('window').width,
     }}>
-                 
+
                  <View
                   style={{
                     flex:1,
@@ -281,7 +280,7 @@ closePanel = () => {
                       backgroundColor: COLORS.primary,
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      marginRight: SIZES.base
+                      marginRight: SIZES.base,
                   }}
               >
                  <TouchableOpacity
@@ -311,6 +310,7 @@ closePanel = () => {
                                     color: COLORS.white,
                                   }}/>
 </TouchableOpacity>
+
               </View>
               </View>
       <FlatList
@@ -400,7 +400,7 @@ closePanel = () => {
                     isActive={this.state.swipeablePanelActive}
                     onClose={this.closePanel}
                     onPressCloseButton={this.closePanel}
-                    style={{borderRadius:40,elevation:5}}
+                    style={{borderRadius:40,elevation:5,}}
                 >
                   <View style={{
                     flex:1,

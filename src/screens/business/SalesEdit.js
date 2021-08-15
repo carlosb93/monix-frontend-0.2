@@ -247,7 +247,7 @@ async set_change(){
  
     balance1.monto = parseFloat(this.state.price)
     balance1.account_id = this.state.account
-    balance1.categoria_id = parseInt(this.state.inventory_id)
+    balance1.categoria_id = 8
     balance1.save()
 
 }

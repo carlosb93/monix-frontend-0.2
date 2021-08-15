@@ -30,7 +30,6 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import SelectDropdown from 'react-native-select-dropdown'
-import HsvColorPicker from 'react-native-hsv-color-picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

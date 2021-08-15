@@ -33,9 +33,10 @@ import {toTimestamp, toDatetime } from '../../shared/tools';
 import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
 import InventaryModel from '../../models/Inventary';
-import SalesModel from '../../models/Sales';
-import BalanceModel from '../../models/Balance';
+import IncomeModel from '../../models/Income';
+import ExpensesModel from '../../models/Expenses';
 import AccountModel from '../../models/Account';
+import BalanceModel from '../../models/Balance';
 
 
 
@@ -51,10 +52,9 @@ const stylesflat = StyleSheet.create({
 });
 
 
- 
 
 
-export default class SalesNew extends React.Component {
+export default class Transaction extends React.Component {
 
 
   toggleModal(visible) {
@@ -78,6 +78,7 @@ export default class SalesNew extends React.Component {
       name: '',
       cost: 0,
       negocioId: this.props.route.params.itemId,
+      transactiontype: this.props.route.params.itemId,
       product_id: 0,
       error: '',
       fechaError: false,
@@ -87,7 +88,7 @@ export default class SalesNew extends React.Component {
       priceError: false,
       navigation: this.props.navigation,
       otherParam: this.props.route.params.otherParam,
-      products: [],
+      categories: [],
       accounts: [],
       fecha: new Date(),
       fecha_mod: 'MM/DD/YYYY',
@@ -95,6 +96,7 @@ export default class SalesNew extends React.Component {
       price: '',
       account: 0,// opcional
       description: '',// opcional
+      category_id: 0,// opcional
       isDatePickerVisible: false,
       day:new Date().getDate(),
       month:new Date().getMonth() + 1,
@@ -103,10 +105,10 @@ export default class SalesNew extends React.Component {
     }
 
   }
- 
+
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-    this.get_products()
+    this.get_categories()
     this.get_accounts()
     if(this.state.month < 10){
       this.setState({fecha_mod: '0'+ this.state.month +'/'+ this.state.day +'/'+ this.state.year})
@@ -119,6 +121,7 @@ export default class SalesNew extends React.Component {
   componentWillUnmount() {
     this._focusListener();
   }
+
   async get_accounts() {
     const user_id = await AsyncStorage.getItem('id')
 
@@ -135,12 +138,23 @@ export default class SalesNew extends React.Component {
   
 }
 
-  async get_products(){
+  async get_categories(){
      
 
-      var prod = [];
-      prod = await InventaryModel.query({business_id: this.state.negocioId });  
-      this.setState({products: prod}) 
+      let categories = [];
+      let categoriesicon = [];
+      categories = await CategoryModel.query();
+
+      for (let index = 0; index < categories.length; index++) {
+        
+        const element = categories[index]
+        element.iconview = <Text style={{ color: COLORS.darkgray, ...FONTS.body4 }}> <Icon size={20} name={element.icon} style={{color:element.color, margin:8}}/>  {element.name}</Text>
+        
+        
+        
+        categoriesicon.push(element)
+      }
+      this.setState({categories: categoriesicon}) 
        
   
              
@@ -177,73 +191,116 @@ export default class SalesNew extends React.Component {
     var datum = toTimestamp(this.state.fecha)
 
     const props = {
-        inventory_id: this.state.product_id,
-        business_id: this.state.negocioId,
+        category_id: this.state.category_id,
+        business_id: 1,
         date: datum,
-        amount: parseInt(this.state.amount),
         price: parseFloat(this.state.price),
         account_id: this.state.account,
         description: this.state.description,
        }
-  try {
-  var sales =[];
-  sales = new SalesModel(props)
-  sales.save()
-  
-        } catch (error) {
+
+      if(this.state.transactiontype === 1){
+        //income
+        try {
+          var incomes =[];
+          incomes = new IncomeModel(props)
+          incomes.save()
+        
+          var account = [];
+          try{
+              account = await AccountModel.findBy({id_eq: this.state.account});
+              account.monto = account.monto + parseFloat(this.state.price)
+              account.save()
               
-        console.log(error)
-    }
-     
-      
-      const account = await AccountModel.findBy({id_eq: this.state.account});
-      account.monto = account.monto + parseFloat(this.state.price)
-      console.log(account)
-      account.save()
-      
-  var sale = [];
-    try{
-      const options = {
-        where: {
-          business_id_eq: this.state.negocioId
-        },
-        order: 'id DESC'
+          }catch{
+              console.log('query account error')
+          }
+        
+          var income = [];
+            try{
+              const options = {
+                where: {
+                  business_id_eq: 1
+                },
+                order: 'id DESC'
+              }
+                income = await IncomeModel.query(options);
+            }catch{
+             console.log('query income error')
+            }
+        
+              const propsBalance = {
+                user_id: user_id,
+                account_id: this.state.account,
+                categoria_id: this.state.category_id,
+                business_id: 1,
+                income_id: income[0].id,
+                isPositive: true,
+                monto: parseFloat(this.state.price),
+              }
+              var balance =[];
+              balance = new BalanceModel(propsBalance)
+              balance.save()
+              console.log(balance)
+
+                } catch (error) {
+                      
+                console.log(error)
+            }
+
+      } else{
+        //expense
+        try {
+          var expenses =[];
+          expenses = new ExpensesModel(props)
+          expenses.save()
+        
+          var account = [];
+          try{
+              account = await AccountModel.findBy({id_eq: this.state.account});
+              account.monto = account.monto - parseFloat(this.state.price)
+              account.save()
+              
+          }catch{
+              console.log('query account error')
+          }
+        
+          var expense = [];
+            try{
+              const options = {
+                where: {
+                  business_id_eq: 1
+                },
+                order: 'id DESC'
+              }
+                expense = await ExpensesModel.query(options);
+            }catch{
+             console.log('query expense error')
+            }
+        
+              const propsBalance = {
+                user_id: user_id,
+                account_id: this.state.account,
+                categoria_id: this.state.category_id,
+                business_id: 1,
+                expense_id: expense[0].id,
+                isPositive: false,
+                monto: parseFloat(this.state.price),
+              }
+              var balance =[];
+              balance = new BalanceModel(propsBalance)
+              balance.save()
+              console.log(balance)
+
+                } catch (error) {
+                      
+                console.log(error)
+            }
       }
-        sale = await SalesModel.query(options);
-    }catch{
-     console.log('query sale error')
-    } 
-      const propsBalance = {
-        user_id: user_id,
-        account_id: this.state.account,
-        categoria_id: 8,
-        business_id: this.state.negocioId,
-        sale_id: sale[0].id,
-        isPositive: true,
-        monto: parseFloat(this.state.price),
-      }
-
-      console.log(propsBalance)
-
-      var balance =[];
-      balance = new BalanceModel(propsBalance)
-      balance.save()
-      console.log(balance)
-
-
-
-
-
-
-
-
-
 
     
- this.state.navigation.navigate('BusinessSales', {
-  itemId: this.state.negocioId,
-  otherParam: this.state.otherParam,
-});
+ this.state.navigation.navigate('Home');
+
   }
 
 render() { 
@@ -255,7 +312,7 @@ render() {
         alignItems: 'center',
         justifyContent: 'center'
     }}>
-      <View  style={{
+<View  style={{
         backgroundColor:COLORS.transparent,
         height: 35,
         width: Dimensions.get('window').width,
@@ -275,10 +332,7 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('BusinessSales', {
-      itemId: this.state.negocioId,
-      otherParam: this.state.otherParam,
-    });}}
+     onPress={() => {navigation.navigate('Home');}}
   >
      <Image
                             source={icons.left_arrow}
@@ -291,9 +345,9 @@ render() {
                             }}
                         />
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Adicionar Venta</Text>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Nueva Transacción</Text>
                   <TouchableOpacity>
-                  <Icon size={30} name='trash-o'
+                  <Icon size={30} name='trash'
                                   style={{
                                     margin:8,
                                     color: COLORS.transparent,
@@ -301,7 +355,53 @@ render() {
 </TouchableOpacity>
               </View>
               </View>
+      
         <View>
+        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center', }}>
+        <TouchableOpacity>
+                  <Icon size={30} name='tag'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.primary,
+                                  }}/>
+        </TouchableOpacity>
+        
+        <SelectDropdown
+        defaultButtonText='Seleccione una categoría'
+        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
+        dropdownStyle={{height: SIZES.width* 0.8}}
+        buttonStyle={{ 
+          width: SIZES.width * 0.7,
+            height: SIZES.width * 0.1,
+            padding: SIZES.padding,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            borderColor: COLORS.primary,
+            borderWidth: SIZES.input,
+            elevation: 5,
+            backgroundColor: COLORS.white}}
+        
+	data={this.state.categories}
+	onSelect={(selectedItem, index) => {
+    this.setState({ category_id: selectedItem.id })
+		
+	}}
+	buttonTextAfterSelection={(selectedItem, index) => {
+		return selectedItem.iconview
+	}}
+	rowTextForSelection={(item, index) => {
+		return item.iconview
+	}}
+/>
+<TouchableOpacity style={{elevation:8}}>
+                  <Icon size={30} name='plus'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.darkgray,
+                                  }}/>
+        </TouchableOpacity>
+        
+        </View>   
         <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
 
         <TouchableOpacity onPress={this.showDatePicker}>
@@ -337,81 +437,10 @@ render() {
       />
         </View> 
         
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
-        <TouchableOpacity>
-                  <Icon size={30} name='shopping-basket'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.primary,
-                                  }}/>
-        </TouchableOpacity>
-        
-        <SelectDropdown
-        defaultButtonText='Seleccione un Producto'
-        buttonTextStyle={{...FONTS.body4, color:COLORS.darkgray, }}
-        buttonStyle={{ 
-          width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            padding: SIZES.padding,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            borderColor: COLORS.primary,
-            borderWidth: SIZES.input,
-            elevation: 5,
-            backgroundColor: COLORS.white}}
-        
-	data={this.state.products}
-	onSelect={(selectedItem, index) => {
-    this.setState({ product_id: selectedItem.id })
-		
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem.name
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item.name
-	}}
-/>
-        
-        </View>
-        <View style={{flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center' }}>
-        <TouchableOpacity>
-                  <Icon size={30} name='clone'
-                                  style={{
-                                    margin:8,
-                                    color: COLORS.primary,
-                                  }}/>
-        </TouchableOpacity>
-        <TextInput
-          style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
-            padding: SIZES.padding,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            borderColor: COLORS.primary,
-            borderWidth: SIZES.input,
-            elevation: 5,
-            textDecorationColor: COLORS.darkgray,
-            backgroundColor: COLORS.white
-        }}
-            name='amount'
-            placeholder='Cantidad de Unidades'
-            error={this.state.amountError}
-			ref={this.amountRef}
-			value={this.state.amount}
-			onChangeText={ (amount) => this.setState({ amount })} 
-            onSubmitEditing={() => this.priceRef.current.focus()}
-          />
-        </View>
-        
+             
         <View style={{ flexDirection: 'row', margin: 10, height:60,justifyContent:'space-between',alignItems: 'center'}}>
         <TouchableOpacity>
-                  <Icon size={30} name='money'
+                  <Icon size={30} name='usd'
                                   style={{
                                     margin:8,
                                     color: COLORS.primary,
@@ -430,7 +459,7 @@ render() {
             backgroundColor: COLORS.white
         }}
             name='price'
-            placeholder='Precio de venta'
+            placeholder='Monto'
             autoCapitalize='none'
             error={this.state.priceError}
 						ref={this.priceRef}
@@ -560,10 +589,7 @@ render() {
                             }}
                             onPress={() => {
                               
-                              navigation.navigate('BusinessSales', {
-                                itemId: this.state.negocioId,
-                                otherParam: this.state.otherParam,
-                              });
+                              navigation.navigate('Home');
                             }}
                         >
                             <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Cancelar</Text>

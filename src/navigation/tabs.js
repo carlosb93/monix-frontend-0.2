@@ -138,7 +138,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: 25,
                                 height: 25,
-                                tintColor: focused ? COLORS.primary : COLORS.secondary
+                                tintColor: focused ? COLORS.primary : COLORS.secondaryold
                             }}
                         />
                     ),
@@ -161,7 +161,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: 25,
                                 height: 25,
-                                tintColor: focused ? COLORS.primary : COLORS.secondary
+                                tintColor: focused ? COLORS.primary : COLORS.secondaryold
                             }}
                         />
                     ),
@@ -181,7 +181,7 @@ const Tabs = ({ navigation }) => {
                     tabBarIcon: ({ focused }) => (
                         <FontAwesomeIcon size={25} icon={ faBriefcase  } 
                         style={{
-                            color: focused ? COLORS.primary : COLORS.secondary,
+                            color: focused ? COLORS.primary : COLORS.secondaryold,
                         }}/>
                     ),
                     tabBarButton: (props) => (
@@ -200,7 +200,7 @@ const Tabs = ({ navigation }) => {
                     tabBarIcon: ({ focused }) => (
                         <FontAwesomeIcon size={25} icon={ faUsers  } 
                         style={{
-                            color: focused ? COLORS.primary : COLORS.secondary,
+                            color: focused ? COLORS.primary : COLORS.secondaryold,
                         }}/>
                     ),
                     tabBarButton: (props) => (
@@ -222,7 +222,7 @@ const Tabs = ({ navigation }) => {
                             style={{
                                 width: 25,
                                 height: 25,
-                                tintColor: focused ? COLORS.primary : COLORS.secondary
+                                tintColor: focused ? COLORS.primary : COLORS.secondaryold
                             }}
                         />
                     ),

@@ -37,7 +37,9 @@ import {
     AccountNew,
     AccountEdit,
     ClientsSummaryMenu,
-    Finance
+    Finance,
+    AddTransaction,
+    Transaction,
 } from './screens';
 
 import Tabs from './navigation/tabs';
@@ -53,6 +55,7 @@ import CalendarModel from './models/Calendar';
 import ClientsModel from './models/Clientes';
 import AccountModel from './models/Account';
 import BalanceModel from './models/Balance';
+import IncomeModel from './models/Income';
 
 import * as Calendar from 'expo-calendar';
 
@@ -76,10 +79,12 @@ export default class App extends React.Component {
         var sales = [];
         var calendar = [];
         var expenses = [];
+        var income = [];
         var user = [];
         var clients = [];
         var accounts = [];
         var balance = [];
+
 
         const props = [
             {
@@ -110,6 +115,10 @@ export default class App extends React.Component {
                 name: 'Clothing',
                 icon: 'shopping-bag',
                 color: COLORS.primary
+            }, {
+                name: 'Business sales',
+                icon: 'tag',
+                color: COLORS.peach
             }
         ]
 
@@ -120,12 +129,14 @@ export default class App extends React.Component {
             console.log('Table user created successfully')
         }
         try {
+            // await BusinessModel.dropTable()
             negocio = await BusinessModel.query()
         } catch (error) {
             await BusinessModel.createTable()
             console.log('Table negocio created successfully')
         }
         try {
+            // await InventaryModel.dropTable()
             inv = await InventaryModel.query()
         } catch (error) {
             await InventaryModel.createTable()
@@ -152,6 +163,13 @@ export default class App extends React.Component {
             console.log('Table expenses created successfully')
         }
         try {
+            // await IncomeModel.dropTable()
+            income = await IncomeModel.query()
+        } catch (error) {
+            await IncomeModel.createTable()
+            console.log('Table income created successfully')
+        }
+        try {
             clients = await ClientsModel.query()
         } catch (error) {
             await ClientsModel.createTable()
@@ -172,8 +190,9 @@ export default class App extends React.Component {
             console.log('Table balances created successfully')
         }
         try {
-
+            // await CategoryModel.dropTable()
             categories = await CategoryModel.query()
+  
 
             if (categories.length == 0) {
 
@@ -245,7 +264,8 @@ export default class App extends React.Component {
                         shadowOpacity: 0,
                         elevation: 0
                     },
-                    headerTintColor: COLORS.transparent
+                    headerTintColor: COLORS.transparent,
+                    
                 }}>
                     <Stack.Screen
                         name="SplashScreen"
@@ -282,7 +302,10 @@ export default class App extends React.Component {
                     <Stack.Screen name="ExpenseNew" component={ExpenseNew}/>
                     <Stack.Screen name="ExpenseEdit" component={ExpenseEdit}/>
 
+
+                    <Stack.Screen name="Transaction" component={Transaction}/>
                     <Stack.Screen name="Finance" component={Finance}/>
+                    <Stack.Screen name="AddTransaction" component={AddTransaction}/>
 
                     <Stack.Screen name="BusinessClients" component={BusinessClients}/>
                     <Stack.Screen name="ClientsNew" component={ClientsNew}/>
@@ -295,6 +318,7 @@ export default class App extends React.Component {
                     <Stack.Screen name="Expenses" component={Expenses}/>
                     <Stack.Screen name="CalendarScreen" component={CalendarScreen}/>
                     <Stack.Screen name="CreateTask" component={CreateTask}/>
+       
 
                 </Stack.Navigator>
             </NavigationContainer>

@@ -2,12 +2,14 @@ import React from 'react'
 import { StyleSheet,
   View,
   Text,
-  TouchableOpacity} from 'react-native'
-
+  TouchableOpacity,
+  } from 'react-native'
+  import Icon from 'react-native-vector-icons/FontAwesome';
   import AsyncStorage from '@react-native-async-storage/async-storage';
   import APIKit, {setClientToken} from '../shared/APIKit';
-  import { COLORS, SIZES, FONTS } from '../constants'
+  import { COLORS, SIZES, FONTS, icons } from '../constants'
   import UserModel from '../models/User';
+  import BusinessModel from '../models/Business';
   import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
   import {toTimestamp, toDatetime } from '../shared/tools';
 
@@ -34,6 +36,7 @@ export default class Home extends React.Component {
   componentDidMount() {
 		  this._focusListener = this.props.navigation.addListener('focus', () => {
 			this.verifysession();
+			this.mainbusiness();
 
 		});
   }
@@ -116,6 +119,34 @@ export default class Home extends React.Component {
     }
 
   }
+  async mainbusiness(){
+    const id = await AsyncStorage.getItem('id')
+    const business = [
+      {
+          name: 'Personal',
+          code: 'HOME',
+          categoria: 'Personal',
+          user_id: id,
+          icon: 'credit-card-alt',
+          color: COLORS.primary,
+      } 
+  ]
+    const negocio = await BusinessModel.query()
+
+    if (negocio.length == 0) {
+
+        var i;
+        for (i = 0; i < business.length; i++) {
+            const n = new BusinessModel(business[i])
+            n.save()
+        }
+        console.log('Table negocio filled successfully')
+
+    
+  
+    }
+
+  }
   async filluser(){
     
     const usuario = await UserModel.query({id: this.state.id})
@@ -181,7 +212,8 @@ export default class Home extends React.Component {
     style={{
         padding: SIZES.padding * 0.5,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        
     }}
 >
       <Text>Home</Text>
@@ -191,36 +223,109 @@ export default class Home extends React.Component {
 
     <TouchableOpacity
         style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
+            width: SIZES.width * 0.5,
+            height: SIZES.width * 0.14,
             justifyContent: 'center',
             padding: SIZES.padding,
             backgroundColor: COLORS.primary,
             alignItems: 'center',
             borderRadius: SIZES.radius,
             elevation: 5,
+            margin:5
         }}
         onPress={() => {this.state.navigation.replace('CalendarScreen')}
         }
     >
-        <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Calendar</Text>
+      <View style={{flexDirection:'row'}}> 
+      <Icon size={20} name='calendar'
+                                  style={{
+                                      color: COLORS.white,
+                                      margin:5
+                                  }}/>
+      <Text style={{ color: COLORS.white, ...FONTS.h2 }}>CALENDAR</Text>
+      </View>
+     
     </TouchableOpacity>
     <TouchableOpacity
         style={{
-            width: SIZES.width * 0.8,
-            height: SIZES.width * 0.1,
+            width: SIZES.width * 0.5,
+            height: SIZES.width * 0.14,
             justifyContent: 'center',
             padding: SIZES.padding,
             backgroundColor: COLORS.primary,
             alignItems: 'center',
             borderRadius: SIZES.radius,
             elevation: 5,
+            margin:5
         }}
         onPress={() => {this.state.navigation.replace('Finance')}
         }
     >
-        <Text style={{ color: COLORS.white, ...FONTS.h2 }}>Finance</Text>
+        <View style={{flexDirection:'row'}}> 
+      <Icon size={20} name='money'
+                                  style={{
+                                      color: COLORS.white,
+                                      margin:5
+                                  }}/>
+      <Text style={{ color: COLORS.white, ...FONTS.h2 }}>FINANCE</Text>
+      </View>
     </TouchableOpacity>
+   
+    <TouchableOpacity
+        style={{
+            width: SIZES.width * 0.5,
+            height: SIZES.width * 0.14,
+            justifyContent: 'center',
+            padding: SIZES.padding,
+            backgroundColor: COLORS.primary,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            elevation: 5,
+            margin:5
+        }}
+        onPress={() => {this.state.navigation.navigate('Transaction', {
+          itemId: 1,
+          otherParam: this.state.id,
+        });}
+        }
+    >
+        <View style={{flexDirection:'row'}}> 
+      <Icon size={20} name='inbox'
+                                  style={{
+                                      color: COLORS.white,
+                                      margin:5
+                                  }}/>
+      <Text style={{ color: COLORS.white, ...FONTS.h2 }}>INGRESO</Text>
+      </View>
+    </TouchableOpacity>
+    <TouchableOpacity
+        style={{
+            width: SIZES.width * 0.5,
+            height: SIZES.width * 0.14,
+            justifyContent: 'center',
+            padding: SIZES.padding,
+            backgroundColor: COLORS.primary,
+            alignItems: 'center',
+            borderRadius: SIZES.radius,
+            elevation: 5,
+            margin:5
+        }}
+        onPress={() => {this.state.navigation.navigate('Transaction', {
+          itemId: 2,
+          otherParam: this.state.id,
+        });}
+        }
+    >
+        <View style={{flexDirection:'row'}}> 
+      <Icon size={20} name='money'
+                                  style={{
+                                      color: COLORS.white,
+                                      margin:5
+                                  }}/>
+      <Text style={{ color: COLORS.white, ...FONTS.h2 }}>GASTO</Text>
+      </View>
+    </TouchableOpacity>
+ 
    
 </View>
   )

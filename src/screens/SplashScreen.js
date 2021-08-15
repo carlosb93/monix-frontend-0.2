@@ -50,7 +50,7 @@ const SplashScreen = ({ navigation }) => {
 					style={{width: '80%', resizeMode: 'contain', margin: 50}}
 				/>
 				<Text style={{ ...FONTS.h1 }}>Bienvenido a</Text>
-                <Text style={{ ...FONTS.h1 }}>Mony</Text>
+                <Text style={{ ...FONTS.h1 }}>MoniX</Text>
 				
 				<ActivityIndicator
 					animating={animating}

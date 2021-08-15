@@ -28,7 +28,8 @@ import {
   SIZES,
   FONTS,
   iconData,
-  icons
+  icons,
+  colorData
 } from '../../constants'
 import APIKit, {
   setClientToken
@@ -84,7 +85,6 @@ export default class AccountNew extends React.Component {
       monto: '',
       color: '',
       error: '',
-      
       hue: 0,
       sat: 0,
       val: 1,
@@ -382,6 +382,8 @@ return item
           onSatValPickerDragMove={this.onSatValPickerChange}
           onSatValPickerPress={this.onSatValPickerChange}
         />
+
+
 
 <View
                         style={{
