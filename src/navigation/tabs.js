@@ -11,7 +11,7 @@ import { isIphoneX } from 'react-native-iphone-x-helper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faUsers,faBriefcase } from '@fortawesome/free-solid-svg-icons'
 
-import { Home, ProfileScreen, Business,Expenses} from "../screens"
+import { Home, ProfileScreen, Business,Expenses, Finance} from "../screens"
 
 import { COLORS, icons } from "../constants"
 
@@ -151,8 +151,8 @@ const Tabs = ({ navigation }) => {
             />
 
             <Tab.Screen
-                name="Expenses"
-                component={Expenses}
+                name="Finance"
+                component={Finance}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Image
@@ -167,7 +167,7 @@ const Tabs = ({ navigation }) => {
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
-                        onPress ={ () => { navigation.replace('Expenses') }}
+                        onPress ={ () => { navigation.replace('Finance')}}
                         {...props}
                         />
                     )

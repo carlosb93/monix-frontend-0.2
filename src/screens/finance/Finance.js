@@ -113,8 +113,8 @@ export default class Finance extends React.Component {
         super(props);
         this.state = {
             navigation: this.props.navigation,
-            user_id: this.props.route.params.itemId,
-            otherParam: this.props.route.params.otherParam,
+            user_id:0,
+            otherParam: [],
             modalVisible: false,
             accounts: [],
             item:[],
@@ -133,7 +133,8 @@ export default class Finance extends React.Component {
             .props
             .navigation
             .addListener('focus', () => {
-                this.get_accounts()
+                this.user()
+              
             });
     }
 
@@ -205,6 +206,15 @@ export default class Finance extends React.Component {
             })
             
           }
+
+    async user() {
+
+        this.setState({user_id:  await AsyncStorage.getItem('id')}, () => {
+            this.get_accounts();
+          })
+        
+
+    }
 
     async get_accounts() {
 
@@ -397,6 +407,23 @@ export default class Finance extends React.Component {
                 }} >
                     Editar
                 </Text>
+            </TouchableOpacity>
+                <TouchableOpacity onPress={() => {  navigation.navigate('Expenses', {
+                                itemId: this.state.user_id,
+                                otherParam: item
+                            });}} style={{
+                  padding: 10,
+                  marginTop: 10,
+                  borderRadius:25,
+                  backgroundColor: COLORS.peach,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+              }}>
+                <Icon size={20} name='pie-chart'
+                                  style={{
+                                    margin:1,
+                                    color: COLORS.white,
+                                  }}/>
             </TouchableOpacity>
 
                  

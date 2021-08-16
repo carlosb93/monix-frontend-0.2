@@ -246,30 +246,7 @@ export default class Home extends React.Component {
       </View>
      
     </TouchableOpacity>
-    <TouchableOpacity
-        style={{
-            width: SIZES.width * 0.5,
-            height: SIZES.width * 0.14,
-            justifyContent: 'center',
-            padding: SIZES.padding,
-            backgroundColor: COLORS.primary,
-            alignItems: 'center',
-            borderRadius: SIZES.radius,
-            elevation: 5,
-            margin:5
-        }}
-        onPress={() => {this.state.navigation.replace('Finance')}
-        }
-    >
-        <View style={{flexDirection:'row'}}> 
-      <Icon size={20} name='money'
-                                  style={{
-                                      color: COLORS.white,
-                                      margin:5
-                                  }}/>
-      <Text style={{ color: COLORS.white, ...FONTS.h2 }}>FINANCE</Text>
-      </View>
-    </TouchableOpacity>
+  
    
     <TouchableOpacity
         style={{

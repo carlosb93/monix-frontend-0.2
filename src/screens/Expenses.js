@@ -242,7 +242,7 @@ const Expenses = () => {
     }
 
     const categoryListHeightAnimationValue = useRef(new Animated.Value(115)).current;
-
+    const navigationRef = React.createRef();
     const [categories, setCategories] = React.useState(categoriesData)
     const [viewMode, setViewMode] = React.useState("chart")
     const [selectedCategory, setSelectedCategory] = React.useState(null)
@@ -251,7 +251,11 @@ const Expenses = () => {
     
 
 
+  
+
     function renderNavBar() {
+   
+        
         return (
             <View
             style={{
@@ -277,7 +281,8 @@ const Expenses = () => {
             }}>
                 <TouchableOpacity
                     onPress={() => {
-                    navigation.navigate('Home');
+                       
+                        navigation.navigate('Home');
                 }}>
                     <Image
                         source={icons.left_arrow}
@@ -914,7 +919,7 @@ const Expenses = () => {
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.lightGray2 }}>
             {/* Nav bar section */}
-            {/* {renderNavBar()} */}
+            {renderNavBar()}
 
             {/* Header section */}
             {/* {renderHeader()} */}
@@ -927,15 +932,7 @@ const Expenses = () => {
                 {
                     viewMode == "list" &&
                     <View>
-                       <View style={{ flexDirection:'column',alignItems: 'center',justifyContent: 'center', backgroundColor:COLORS.white,borderBottomLeftRadius:25,borderBottomRightRadius:25,elevation:5}}>
-                       <ScrollView style={styles.scroll}>
-                        {renderCardSection()}
-                        </ScrollView>
-                        <View style={{width:20,height:4,opacity:0.5, backgroundColor:COLORS.lightGray4,borderRadius:10 ,margin:5}}>
-
-                        </View>
-                        
-                        </View>
+                       
                         {renderCategoryList()}
                         {renderIncomingExpenses()}
                     </View>
@@ -943,15 +940,7 @@ const Expenses = () => {
                 {
                     viewMode == "chart" &&
                     <View> 
-                        <View style={{ flexDirection:'column',alignItems: 'center',justifyContent: 'center', backgroundColor:COLORS.white,borderBottomLeftRadius:25,borderBottomRightRadius:25,elevation:5}}>
-                        <ScrollView style={styles.scroll}>
-                        {renderCardSection()}
-                        </ScrollView>
-                        <View style={{width:20,height:4,opacity:0.5, backgroundColor:COLORS.lightGray4,borderRadius:10 ,margin:5}}>
-
-                        </View>
                         
-                        </View>
                         {renderChart()}
                         {renderExpenseSummary()}
                         
