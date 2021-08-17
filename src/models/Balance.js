@@ -39,6 +39,11 @@ export default class Balance extends BaseModel {
     const params = [id,date1*1000,date2*1000]
     return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
   }
+  static getBalance(id) {
+    const sql = "SELECT * FROM balance WHERE categoria_id <> 1 AND account_id == ?  ORDER BY timestamp ASC;"
+    const params = [id]
+    return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
+  }
   
   static getBalanceByMonthAndAccount(id,date1,date2) {
     const sql = "SELECT * FROM balance WHERE account_id = ? AND categoria_id <> 1 AND timestamp BETWEEN ? AND ?  ORDER BY timestamp ASC;"
@@ -54,6 +59,3 @@ export default class Balance extends BaseModel {
 
 
 }
-//1627790400000
-//1630382400000
-//1628549526768

@@ -388,27 +388,7 @@ export default class Finance extends React.Component {
                 <View style={{
                     flex: 1
                 }}>
-                <TouchableOpacity onPress={() => {  navigation.navigate('AccountEdit', {
-                                itemId: this.state.user_id,
-                                otherParam: item
-                            });}} style={{
-                  padding: 10,
-                  marginTop: 32,
-                  borderRadius:25,
-                  backgroundColor: COLORS.peach,
-                  alignItems: 'center',
-                  justifyContent: 'center'
-              }}>
-                <Text
-                    style={{
-                    color: '#fff',
-                    fontWeight: '700',
-                    fontSize: 15
-                }} >
-                    Editar
-                </Text>
-            </TouchableOpacity>
-                <TouchableOpacity onPress={() => {  navigation.navigate('Expenses', {
+                <TouchableOpacity onPress={() => {  navigation.navigate('GraphByCategories', {
                                 itemId: this.state.user_id,
                                 otherParam: item
                             });}} style={{
@@ -424,6 +404,40 @@ export default class Finance extends React.Component {
                                     margin:1,
                                     color: COLORS.white,
                                   }}/>
+                <Text
+                    style={{
+                    fontSize: 10,
+                    color: '#fff',
+                    fontWeight: '200'
+                }}>
+                    Gastos
+                </Text>
+            </TouchableOpacity>
+                <TouchableOpacity onPress={() => {  navigation.navigate('GraphByCategoriesIncome', {
+                                itemId: this.state.user_id,
+                                otherParam: item
+                            });}} style={{
+                  padding: 10,
+                  marginTop: 10,
+                  borderRadius:25,
+                  backgroundColor: COLORS.green,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+              }}>
+                <Icon size={20} name='pie-chart'
+                                  style={{
+                                    margin:1,
+                                    color: COLORS.white,
+                                  }}/>
+                                                      
+                <Text
+                    style={{
+                    fontSize: 10,
+                    color: '#fff',
+                    fontWeight: '200'
+                }}>
+                    Ingresos
+                </Text>
             </TouchableOpacity>
 
                  

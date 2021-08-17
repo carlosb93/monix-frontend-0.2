@@ -14,6 +14,8 @@ import EditProfile from './auth/EditProfile'
 import Expenses from './Expenses'
 import Finance from './finance/Finance'
 import AddTransaction from './finance/AddTransaction'
+import GraphByCategories from './finance/GraphByCategories'
+import GraphByCategoriesIncome from './finance/GraphByCategoriesIncome'
 
 import Business from './business/Business'
 import BusinessNew from './business/BusinessNew'
@@ -80,4 +82,6 @@ export {
     Finance,
     AddTransaction,
     Transaction,
+    GraphByCategories,
+    GraphByCategoriesIncome,
 }
