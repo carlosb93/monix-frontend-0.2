@@ -18,6 +18,7 @@ import {
     TouchableHighlight,
     ImageBackground
 } from 'react-native'
+import Numeral from 'numeral'
 import {Avatar, ListItem} from 'react-native-elements'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -357,7 +358,7 @@ export default class Finance extends React.Component {
                     color: '#fff',
                     fontWeight: '700'
                 }}>
-                    ${item.monto}
+                    ${ Numeral(item.monto).format('0,0.00')}
                 </Text>
 
                 <Text
@@ -383,7 +384,7 @@ export default class Finance extends React.Component {
                     color: '#fff',
                     fontWeight: '700'
                 }}>
-                    Metropolitano
+                    MonixCard
                 </Text>
                 <View style={{
                     flex: 1
@@ -490,7 +491,7 @@ export default class Finance extends React.Component {
               </View>
               <View style={{ flexDirection: 'column',justifyContent: 'flex-start'}}>
               <Text style={{ ...FONTS.body5, color:COLORS.darkgray }}>Importe:</Text>
-              <Text style={{ ...FONTS.h4, flexWrap: 'wrap', color: item.isPositive ? COLORS.green : COLORS.peach }}> {item.isPositive ? '$ '+item.monto : '$ - '+item.monto}</Text>
+              <Text style={{ ...FONTS.h4, flexWrap: 'wrap', color: item.isPositive ? COLORS.green : COLORS.peach }}> {item.isPositive ? '$ '+ Numeral(item.monto).format('0,0.00') : '$ - '+ Numeral(item.monto).format('0,0.00')}</Text>
               </View>
           </View>
          

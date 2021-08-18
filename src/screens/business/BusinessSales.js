@@ -10,7 +10,7 @@ import { StyleSheet,
   ColorPropType} from 'react-native'
   
   import AsyncStorage from '@react-native-async-storage/async-storage';
-
+  import Numeral from 'numeral';
   import { icons,COLORS, SIZES, FONTS } from '../../constants'
   import APIKit, {setClientToken} from '../../shared/APIKit';
   import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -174,7 +174,7 @@ export default class BusinessSales extends React.Component {
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center'}}>
               <Text style={{ ...FONTS.body5, color:COLORS.darkgray }}>Importe:</Text>
-              <Text style={{ ...FONTS.h4, flexWrap: 'wrap', color: COLORS.primary }}> {item.price}</Text>
+              <Text style={{ ...FONTS.h4, flexWrap: 'wrap', color: COLORS.primary }}> {Numeral(item.price).format('0,0.00')}</Text>
               </View>
           </View>
          

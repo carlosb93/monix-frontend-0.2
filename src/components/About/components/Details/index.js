@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {material} from 'react-native-typography';
 import {icons, COLORS, SIZES, FONTS} from '../../../../constants';
+import Numeral from 'numeral'
 
 export const Details = ({suma, ingreso, gasto}) => {
     return (
@@ -11,7 +12,7 @@ export const Details = ({suma, ingreso, gasto}) => {
                     style={suma > 0
                     ? Styles.paragraph2
                     : Styles.paragraph1}>
-                    {'$ ' + suma + ' CUP'
+                    {'$ ' + Numeral(suma).format('0,0.00') + ' CUP'
 }
                 </Text>
 
@@ -45,7 +46,7 @@ export const Details = ({suma, ingreso, gasto}) => {
                             height: 50,
                             margin: 10
                         }}>
-                            <Text style={Styles.paragraph3}>{'$ ' + ingreso}</Text>
+                            <Text style={Styles.paragraph3}>{'$ ' +  Numeral(ingreso).format('0,0.00')}</Text>
                         </View>
                     </View>
                    
@@ -72,7 +73,7 @@ export const Details = ({suma, ingreso, gasto}) => {
                             height: 50,
                             margin: 10
                         }}>
-                            <Text style={Styles.paragraph4}>{'$ ' + gasto}</Text>
+                            <Text style={Styles.paragraph4}>{'$ ' +  Numeral(gasto).format('0,0.00')}</Text>
                         </View>
                     </View>
 

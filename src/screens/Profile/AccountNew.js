@@ -106,7 +106,11 @@ export default class AccountNew extends React.Component {
     this._focusListener();
   }
 
-
+  _handlingCardNumber(name) {
+    this.setState({
+      name: name.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim()
+    });
+  }
 
   onSatValPickerChange({
     saturation,
@@ -260,12 +264,12 @@ render() {
             backgroundColor: COLORS.white
         }}
             name='name'
-            placeholder='Cuenta'
             autoCapitalize='none'
             error={this.state.nameError}
 						ref={this.nameRef}
 						value={this.state.name}
-						onChangeText={ (name) => this.setState({ name })} 
+            onChangeText={(name) => this._handlingCardNumber(name)}
+            placeholder='0000 0000 0000 0000'
 						onSubmitEditing={() => this.montoRef.current.focus()}
           />
         </View>

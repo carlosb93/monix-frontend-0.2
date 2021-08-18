@@ -19,6 +19,7 @@ import {
 } from 'react-native'
 import {Svg} from 'react-native-svg';
 import { VictoryPie } from 'victory-native';
+import Numeral from 'numeral'
 import {
   FontAwesomeIcon
 } from '@fortawesome/react-native-fontawesome'
@@ -415,7 +416,7 @@ render() {
       
                       {/* Expenses */}
                       <View style={{ justifyContent: 'center' }}>
-                    <Text style={{ color: (this.state.selectedCategory && this.state.selectedCategory.name == item.name) ? COLORS.white : COLORS.primary, ...FONTS.h4 }}>{item.name}   {item.y} CUP - {item.label}</Text>
+                    <Text style={{ color: (this.state.selectedCategory && this.state.selectedCategory.name == item.name) ? COLORS.white : COLORS.primary, ...FONTS.h4 }}>{item.name}   { Numeral(item.y).format('0,0.00')} CUP - {item.label}</Text>
                 </View>
                   </TouchableOpacity>)}
                     keyExtractor={item => item.id}

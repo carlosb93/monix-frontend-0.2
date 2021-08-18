@@ -237,8 +237,6 @@ export default class Accounts extends React.Component {
 
                     <FlatList
                         data={this.state.accounts}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
                         renderItem={({item}) => (
                        
                         <LinearGradient
@@ -289,7 +287,7 @@ export default class Accounts extends React.Component {
                     color: '#fff',
                     fontWeight: '700'
                 }}>
-                    Metropolitano
+                    MonixCard
                 </Text>
                 <View style={{
                     flex: 1
