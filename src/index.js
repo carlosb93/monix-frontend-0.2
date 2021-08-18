@@ -42,6 +42,7 @@ import {
     Transaction,
     GraphByCategories,
     GraphByCategoriesIncome,
+    Cryptocurrency,
 } from './screens';
 
 import Tabs from './navigation/tabs';
@@ -310,6 +311,7 @@ export default class App extends React.Component {
                     <Stack.Screen name="AddTransaction" component={AddTransaction}/>
                     <Stack.Screen name="GraphByCategories" component={GraphByCategories}/>
                     <Stack.Screen name="GraphByCategoriesIncome" component={GraphByCategoriesIncome}/>
+                    <Stack.Screen name="Cryptocurrency" component={Cryptocurrency}/>
 
                     <Stack.Screen name="BusinessClients" component={BusinessClients}/>
                     <Stack.Screen name="ClientsNew" component={ClientsNew}/>

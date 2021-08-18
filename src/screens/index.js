@@ -16,6 +16,7 @@ import Finance from './finance/Finance'
 import AddTransaction from './finance/AddTransaction'
 import GraphByCategories from './finance/GraphByCategories'
 import GraphByCategoriesIncome from './finance/GraphByCategoriesIncome'
+import Cryptocurrency from './crypto/Cryptocurrency'
 
 import Business from './business/Business'
 import BusinessNew from './business/BusinessNew'
@@ -84,4 +85,5 @@ export {
     Transaction,
     GraphByCategories,
     GraphByCategoriesIncome,
+    Cryptocurrency,
 }

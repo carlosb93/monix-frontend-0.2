@@ -116,6 +116,9 @@ toggleModal(visible) {
       pushNotifications: !state.pushNotifications,
     }))
   }
+  onPressCrypto = () => {
+    this.props.navigation.navigate('Cryptocurrency')
+  }
   setCurrency = async (currency) => {
     this.setState({currency: currency} )
     const user_id = this.state.id
@@ -232,6 +235,19 @@ toggleModal(visible) {
         </ListItem.Content>
         <ListItem.Content right>
           <Switch onValueChange={this.onChangePushNotifications} value={this.state.pushNotifications}/>
+        </ListItem.Content>
+      </ListItem>
+      <ListItem onPress={() => this.onPressCrypto()} containerStyle={styles.listItemContainer}>
+        <ListItem.Content>
+          <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
+            <BaseIcon containerStyle={{ backgroundColor: COLORS.softgray}} icon={{ type: 'font-awesome', name: 'bitcoin', }}/>
+            <ListItem.Title> Crypto Tracker </ListItem.Title>
+          </View>
+        </ListItem.Content>
+        <ListItem.Content right>
+        <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}}>
+          <Chevron/>
+          </View>
         </ListItem.Content>
       </ListItem>
       <ListItem onPress={() => this.onPressSetting('account')} containerStyle={styles.listItemContainer}>
