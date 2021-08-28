@@ -260,7 +260,7 @@ render() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {navigation.navigate('Finance');}}
+     onPress={() => {navigation.navigate('Home');}}
   >
      <Image
                             source={icons.left_arrow}

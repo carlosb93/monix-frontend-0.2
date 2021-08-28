@@ -8,7 +8,8 @@ import { StyleSheet,
 import { icons, COLORS, SIZES, FONTS } from '../../constants'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIKit, {setClientToken} from '../../shared/APIKit';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {Input} from 'react-native-elements';
 export default class Login extends React.Component {
 
   constructor(props) {
@@ -122,7 +123,45 @@ const onSuccess = async({data}) => {
                         />
                     
           </View>
+        {/* <View style={{ margin: 15, width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1 }}>
+          
+        <Input
+          leftIcon={
+          <Icon
+           name='user' 
+           size={24} 
+           color='black'/>}
+          name='userEmail'
+          value={this.state.userEmail}
+          placeholder='Ingrese email'
+          autoCapitalize='none'
+          onChangeText={(userEmail) => this.setState({ userEmail })}
+          onSubmitEditing={() => this.passwordRef.current.focus()}
+           />
+
+        </View>
+        <View style={{ margin: 15, width: SIZES.width * 0.8,
+            height: SIZES.width * 0.1 }}>
+          
+        <Input
+          leftIcon={
+          <Icon
+           name='key' 
+           size={24} 
+           color='black'/>}
+            name='userPassword'
+            ref={this.passwordRef}
+						value={this.state.userPassword}
+            placeholder='Ingrese Password'
+            secureTextEntry
+            onChangeText={ (userPassword) => this.setState({ userPassword })}
+           />
+
+        </View> */}
         <View style={{ margin: 10 }}>
+
+      
           <TextInput
           style={{
             width: SIZES.width * 0.8,
@@ -142,8 +181,8 @@ const onSuccess = async({data}) => {
             onChangeText={(userEmail) => this.setState({ userEmail })}
             onSubmitEditing={() => this.passwordRef.current.focus()}
           />
-        </View>
-        <View style={{ margin: 10 }}>
+        </View> 
+         <View style={{ margin: 10 }}>
           <TextInput
           style={{
             width: SIZES.width * 0.8,

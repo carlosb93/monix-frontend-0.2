@@ -43,6 +43,7 @@ import {
     GraphByCategories,
     GraphByCategoriesIncome,
     Cryptocurrency,
+    AgendaScreen,
 } from './screens';
 
 import Tabs from './navigation/tabs';
@@ -236,12 +237,20 @@ export default class App extends React.Component {
         const {status} = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-            console.log('Here are all your calendars:');
+            console.log('Here are all your EVENTS calendars:');
             // console.log({ calendars });
+            // const defaultCalendars = calendars.filter(each => each.source.name === 'playeralfa22@gmail.com');
+            console.log('///////////////////////////////////EVENTS///////////////////////////////////////');
+            // console.log( defaultCalendars );
+
+           
+           
         }
     };
 
     _askForReminderPermissions = async() => {
+
+
         if (Platform.OS === 'android') {
             return true;
         }
@@ -249,8 +258,12 @@ export default class App extends React.Component {
         const {status} = await Calendar.requestRemindersPermissionsAsync();
         if (status === 'granted') {
             const calendars = await Calendar.getRemindersPermissionsAsync(Calendar.EntityTypes.REMINDER);
-            console.log('Here are all your calendars:');
+            console.log('Here are all your REMINDERS calendars:');
             // console.log({ calendars });
+            // const defaultCalendars = calendars.filter(each => each.source.name === 'playeralfa22@gmail.com');
+            console.log('///////////////////////////////////REMINDERS///////////////////////////////////////');
+            // console.log( defaultCalendars);
+            
         }
     };
 
@@ -324,6 +337,7 @@ export default class App extends React.Component {
                     <Stack.Screen name="Expenses" component={Expenses}/>
                     <Stack.Screen name="CalendarScreen" component={CalendarScreen}/>
                     <Stack.Screen name="CreateTask" component={CreateTask}/>
+                    <Stack.Screen name="AgendaScreen" component={AgendaScreen}/>
        
 
                 </Stack.Navigator>

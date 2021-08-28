@@ -37,6 +37,7 @@ import ExpenseEdit from './business/ExpenseEdit'
 
 import CalendarScreen from './calendar/Calendar'
 import CreateTask from './calendar/CreateTask'
+import AgendaScreen from './calendar/Agenda'
 
 import BusinessClients from './business/BusinessClients'
 import ClientsNew from './business/ClientsNew'
@@ -86,4 +87,5 @@ export {
     GraphByCategories,
     GraphByCategoriesIncome,
     Cryptocurrency,
+    AgendaScreen,
 }

@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIKit, {setClientToken} from '../../shared/APIKit';
 import UserModel from '../../models/User';
 import AccountModel from '../../models/Account';
+// import TelegramLoginButton from 'react-telegram-login';
 
 const numColumns = 1;
 const size = Dimensions.get('window').width / numColumns;
@@ -87,6 +88,11 @@ class ProfilesScreen extends Component {
 componentWillUnmount() {
   this._focusListener();
 }
+
+// handleTelegramResponse (response) {
+
+//   console.log(response);
+// };
 
 toggleModal(visible) {
   console.log(currencyData)
@@ -390,6 +396,9 @@ toggleModal(visible) {
           
         </View>
         
+        {/* <View>
+           <TelegramLoginButton dataOnauth={handleTelegramResponse(response)} botName="OdauBot" />
+        </View> */}
       </ScrollView>
 
       <View

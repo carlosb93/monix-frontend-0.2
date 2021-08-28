@@ -26,7 +26,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import HsvColorPicker from 'react-native-hsv-color-picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {Input} from 'react-native-elements';
 import {
   COLORS,
   SIZES,
@@ -39,6 +39,7 @@ import APIKit, {
 
 import CategoryModel from '../../models/Category';
 import BusinessModel from '../../models/Business';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const options = ["Productos", "Servicios", "Restauración"]
 
@@ -177,6 +178,7 @@ render() {
         justifyContent: 'center'
     }}>
         <Text>Nuevo Negocio</Text>
+        
         
         <View style={{ margin: 10 }}>
           <TextInput
