@@ -248,44 +248,7 @@ if(accounts.length = 0){
             }}>
                 <Text>Home</Text>
                 <Text>{this.state.email}</Text>
-
-                <TouchableOpacity
-                    style={{
-                    width: SIZES.width * 0.5,
-                    height: SIZES.width * 0.14,
-                    justifyContent: 'center',
-                    padding: SIZES.padding,
-                    backgroundColor: COLORS.primary,
-                    alignItems: 'center',
-                    borderRadius: SIZES.radius,
-                    elevation: 5,
-                    margin: 5
-                }}
-                    onPress={() => {
-                    this
-                        .state
-                        .navigation
-                        .replace('CalendarScreen')
-                }}>
-                    <View
-                        style={{
-                        flexDirection: 'row'
-                    }}>
-                        <Icon
-                            size={20}
-                            name='calendar'
-                            style={{
-                            color: COLORS.white,
-                            margin: 5
-                        }}/>
-                        <Text
-                            style={{
-                            color: COLORS.white,
-                            ...FONTS.h2
-                        }}>CALENDAR</Text>
-                    </View>
-
-                </TouchableOpacity>
+                
                 <TouchableOpacity
                     style={{
                     width: SIZES.width * 0.5,
@@ -319,7 +282,7 @@ if(accounts.length = 0){
                             style={{
                             color: COLORS.white,
                             ...FONTS.h2
-                        }}>Agenda</Text>
+                        }}>CALENDAR</Text>
                     </View>
 
                 </TouchableOpacity>

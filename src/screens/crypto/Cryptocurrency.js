@@ -135,7 +135,7 @@ const crypto = res.data.data.map(coin => ({
   volume: coin.quote?.USD?.volume_24h,
   volumeHR: Numeral(coin.quote?.USD?.volume_24h).format('0,0.00a'),
 }))
-console.log(crypto);
+
 
           // console.log(res)
            this.setState({

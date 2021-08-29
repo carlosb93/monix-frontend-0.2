@@ -44,6 +44,7 @@ import {
     GraphByCategoriesIncome,
     Cryptocurrency,
     AgendaScreen,
+    DayView,
 } from './screens';
 
 import Tabs from './navigation/tabs';
@@ -338,6 +339,7 @@ export default class App extends React.Component {
                     <Stack.Screen name="CalendarScreen" component={CalendarScreen}/>
                     <Stack.Screen name="CreateTask" component={CreateTask}/>
                     <Stack.Screen name="AgendaScreen" component={AgendaScreen}/>
+                    <Stack.Screen name="DayView" component={DayView}/>
        
 
                 </Stack.Navigator>

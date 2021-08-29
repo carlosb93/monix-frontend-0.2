@@ -49,6 +49,7 @@
     "react-native-calendar-strip": "^2.2.3",
     "react-native-calendars": "^1.1264.0",
     "react-native-elements": "^2.3.2",
+    "react-native-events-calendar": "^1.0.8",
     "react-native-fast-image": "^7.0.2",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-get-random-values": "^1.7.0",
