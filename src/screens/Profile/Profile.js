@@ -146,7 +146,7 @@ toggleModal(visible) {
           const token = await AsyncStorage.getItem('token')
           await setClientToken(token);
 
-          APIKit.put('/user/'+ user_id, payload,{header:{ 
+          APIKit.put('/users/'+ user_id, payload,{header:{ 
             "Content-Type": "multipart/form-data",
             "Access-Control-Allow-Origin": "*"
           }})

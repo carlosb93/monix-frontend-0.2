@@ -75,7 +75,7 @@ export default class App extends React.Component {
           end: '2017-09-08 04:40:00',
           title: 'Dr. Mariana Joseph',
           summary: '3412 Piedmont Rd NE, GA 3032',
-          backgroundColor: '#FF45',
+          color: '#FF45',
         },
         {
           start: '2017-09-08 00:45:00',
@@ -149,7 +149,7 @@ export default class App extends React.Component {
                       }}
                   >
                      <TouchableOpacity
-         onPress={() => {this.state.navigation.navigate('AgendaScreen')}}
+         onPress={() => {this.state.navigation.navigate('CalendarScreen')}}
       >
          <Image
                                 source={icons.left_arrow}

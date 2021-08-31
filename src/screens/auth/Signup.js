@@ -48,13 +48,17 @@ export default class Signup extends React.Component {
 					if (password === confirmPassword) {
 						this.setState({ passwordError: false, confirmPasswordError: false })
             
-            
+        
+          
             const payload ={
-              'code':code,
-              'password':password,
-              'username':name,
-              'password_confirmation':confirmPassword,
-              'email':email,
+              "name":name,
+              "password": password,
+              "email": email, 
+              "code": code,
+              "currency": "CUP",
+              "rol": "Cliente",
+              "isActive": true,
+              "isAuth": true
             }
 
             const onSuccess = async({data}) => {
@@ -78,7 +82,7 @@ export default class Signup extends React.Component {
               return alert(this.state.errorText);
             };
             
-            APIKit.post('/auth/register', payload,{header:{ 
+            APIKit.post('/users', payload,{header:{ 
               "Content-Type": "multipart/form-data",
               "Access-Control-Allow-Origin": "*"
             }})

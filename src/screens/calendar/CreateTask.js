@@ -26,7 +26,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SIZES, FONTS, icons } from '../../constants'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import TypePicker from '../../components/TypePicker/TypePicker'
+import ColorPicker from '../../components/ColorPicker/ColorPicker'
 import CalendarModel from '../../models/Calendar';
 
 const { width: vw } = Dimensions.get('window');
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: 19
   },
   taskContainer: {
-    height: 400,
+    height: 600,
     width: 327,
     alignSelf: 'center',
     borderRadius: 8,
@@ -158,60 +159,17 @@ export default class CreateTask extends React.Component {
       isDateTimePickerVisible:false,
       setDateTimePickerVisible:false,
       keyboardHeight:50,
-      createNewCalendar: this.props.route.params?.createNewCalendar ?? (() => null),
       updateCurrentTask: this.props.route.params?.updateCurrentTask ?? (() => null),
       currentDate: this.props.route.params?.currentDate ?? (() => null),
+      
+      ColorPicker: COLORS.primary,
     }
   };
-//////////////////////////////updateTodo//////////////////////////////////
-  updateTodo= async (item) =>{
-    new Promise(async (resolve) => {
-      const datePresent = get().todo.find((data) => {
-        if (data.date === item.date) {
-          return true;
-        }
-        return false;
-      });
-  
-      if (datePresent) {
-        const updatedTodo = get().todo.map((data) => {
-          if (datePresent.date === data.date) {
-            return { ...data, todoList: [...data.todoList, ...item.todoList] };
-          }
-          return data;
-        });
-  
-        try {
-          set({ todo: updatedTodo });
-          await AsyncStorage.setItem('TODO', JSON.stringify(updatedTodo));
-        } catch (error) {
-          // Error saving data
-        }
-      } else {
-        const newTodo = [...get().todo, item];
-  
-        try {
-          set({ todo: newTodo });
-          resolve();
-          await AsyncStorage.setItem('TODO', JSON.stringify(newTodo));
-        } catch (error) {
-          // Error saving data
-        }
-      }
-    })
-  }
- ////////////////////////////////////////////////////////
+
 
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
 
-
-      if (this.state.keyboardHeight > 0) {
-        this.setState({visibleHeight:Dimensions.get('window').height - this.state.keyboardHeight})
-        // this.state.setVisibleHeight(Dimensions.get('window').height - this.state.keyboardHeight);
-      } else if (this.state.keyboardHeight === 0) {
-        this.setState({visibleHeight:Dimensions.get('window').height});
-      }
     });
   };
   
@@ -219,161 +177,13 @@ export default class CreateTask extends React.Component {
     this._focusListener();
   };
 
-   handleAlarmSet = () => {
-     this.setState({isAlarmSet: !this.state.isAlarmSet})
-    // this.state.setAlarmSet(!this.state.isAlarmSet);
-  };
+  callbackType = (childData) => {
+    this.setState({ColorPicker: childData})
+}
+  callbackColor = (childData) => {
+    this.setState({ColorPicker: childData})
+}
 
-  createNewCalendar = async () => {
-    const defaultCalendarSource =
-      Platform.OS === 'ios'
-        ? await Calendar.getDefaultCalendarAsync(Calendar.EntityTypes.EVENT)
-        : { isLocalAccount: true, name: 'Google Calendar' };
-  console.log('defaultCalendarSource')
-  console.log(defaultCalendarSource)
-    const newCalendar = {
-      title: 'Personal',
-      entityType: Calendar.EntityTypes.EVENT,
-      color: '#2196F3',
-      sourceId: defaultCalendarSource?.sourceId || undefined,
-      source: defaultCalendarSource,
-      name: 'internal',
-      accessLevel: Calendar.CalendarAccessLevel.OWNER,
-      ownerAccount: 'personal'
-    };
-    console.log('newCalendar')
-    console.log(newCalendar)
-    
-    let calendarId = null;
-  
-    try {
-      calendarId = await Calendar.createCalendarAsync(newCalendar);
-    } catch (e) {
-      Alert.alert(e.message);
-    }
-    console.log('calendarId')
-    console.log(calendarId)
-    return calendarId;
-  };
-
-  updateCurrentTask = async (currentDate) => {
-    console.log('currentDate')
-    try {
-      if (this.state.todo !== [] && this.state.todo) {
-        const markDot = this.state.todo.map((item) => item.markedDot);
-        const todoLists = this.state.todo.filter((item) => {
-          if (currentDate === item.date) {
-            return true;
-          }
-          return false;
-        });
-        this.state.setMarkedDate = markDot;
-        // this.setState({markedDate: []});////////////////////////////////////////
-        if (todoLists.length !== 0) {
-          this.state.setTodoList = todoLists[0].todoList;
-          // this.setState({todoList:todoLists[0].this.state.todoList});//////////////////////////////////////
-          
-        } else {
-          this.state.setTodoList = [];
-          // this.setState({todoList:[]});
-        }
-      }
-    } catch (error) {
-      console.log('updateCurrentTask', error.message);
-    }
-  };
-  
-   synchronizeCalendar = async () => {
-    const calendarId = await this.createNewCalendar();
-    console.log('calendarId')
-    console.log(calendarId)
-    try {
-      const createEventId = await this.addEventsToCalendar(calendarId);
-      this.handleCreateEventData(createEventId);
-    } catch (e) {
-      Alert.alert(e.message);
-    }
-  };
-  
-   addEventsToCalendar = async (calendarId) => {
-     console.log('calendarId')
-     console.log(calendarId)
-    const event = {
-      title: this.state.taskText,
-      notes: this.state.notesText,
-      startDate: moment(this.state.alarmTime).add(0, 'm').toDate(),
-      endDate: moment(this.state.alarmTime).add(5, 'm').toDate(),
-      timeZone: Localization.timezone
-    };
-    console.log('event')
-    console.log(event)
-  
-    try {
-      const createEventAsyncResNew = await Calendar.createEventAsync(
-        calendarId.toString(),
-        event
-      );
-      return createEventAsyncResNew;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
-   showDateTimePicker = () => this.state.setDateTimePickerVisible(true);
-  
-   hideDateTimePicker = () => this.state.setDateTimePickerVisible(false);
-  
-   handleCreateEventData = async (createEventId) => {
-    const creatTodo = {
-      key: uuidv4(),
-      date: `${moment(this.state.currentDay).format('YYYY')}-${moment(this.state.currentDay).format(
-        'MM'
-      )}-${moment(this.state.currentDay).format('DD')}`,
-      todoList: [
-        {
-          key: uuidv4(),
-          title: this.state.taskText,
-          notes: this.state.notesText,
-          alarm: {
-            time: this.state.alarmTime,
-            isOn: this.state.isAlarmSet,
-            createEventAsyncRes: createEventId
-          },
-          color: `rgb(${Math.floor(
-            Math.random() * Math.floor(256)
-          )},${Math.floor(Math.random() * Math.floor(256))},${Math.floor(
-            Math.random() * Math.floor(256)
-          )})`
-        }
-      ],
-      markedDot: {
-        date: this.state.currentDay,
-        dots: [
-          {
-            key: uuidv4(),
-            color: '#2E66E7',
-            selectedDotColor: '#2E66E7'
-          }
-        ]
-      }
-    };
-    console.log('event')
-    console.log(creatTodo)
-
-    this.state.navigation.navigate('CalendarScreen');
-    await this.updateTodo(creatTodo);
-    this.updateCurrentTask(this.state.currentDate);
-  };
-  
-   handleDatePicked = (date) => {
-    const selectedDatePicked = this.state.currentDay;
-    const hour = moment(date).hour();
-    const minute = moment(date).minute();
-    const newModifiedDay = moment(selectedDatePicked).hour(hour).minute(minute);
-    this.state.setAlarmTime(newModifiedDay);
-    hideDateTimePicker();
-  };
-  
   render() { 
   
   return (
@@ -426,10 +236,13 @@ export default class CreateTask extends React.Component {
 </TouchableOpacity>
               </View>
               </View>
+
+
+
+
       <DateTimePicker
         isVisible={this.state.isDateTimePickerVisible}
-        onConfirm={this.handleDatePicked}
-        onCancel={this.hideDateTimePicker}
+
         mode="time"
         date={new Date()}
         isDarkModeEnabled
@@ -443,89 +256,43 @@ export default class CreateTask extends React.Component {
         >
           <ScrollView
             contentContainerStyle={{
-              paddingBottom: 100
+              paddingBottom: 120
             }}
           >
             
-            <View style={styles.calenderContainer}>
-              <CalendarList
-                style={{
-                  width: 350,
-                  height: 350
-                }}
-                current={this.state.currentDay}
-                minDate={moment().format()}
-                horizontal
-                pastScrollRange={0}
-                pagingEnabled
-                calendarWidth={350}
-                onDayPress={(day) => {
-                  this.state.setSelectedDay({
-                    [day.dateString]: {
-                      selected: true,
-                      selectedColor: '#2E66E7'
-                    }
-                  });
-                  this.state.setCurrentDay(day.dateString);
-                  this.state.setAlarmTime(day.dateString);
-                }}
-                monthFormat="yyyy MMMM"
-                hideArrows
-                markingType="custom"
-                theme={{
-                  selectedDayBackgroundColor: '#2E66E7',
-                  selectedDayTextColor: '#ffffff',
-                  todayTextColor: '#2E66E7',
-                  backgroundColor: '#eaeef7',
-                  calendarBackground: '#eaeef7',
-                  textDisabledColor: '#d9dbe0'
-                }}
-                markedDates={this.state.selectedDay}
-              />
-            </View>
             <View style={styles.taskContainer}>
               <TextInput
                 name='taskText'
                 style={styles.title}
                 onChangeText={(taskText) => this.setState({taskText})}
                 value={this.state.taskText}
-                placeholder="What do you need to do?"
+                placeholder="Nombre su tarea!!!"
               />
+              
               <Text
                 style={{
-                  fontSize: 14,
-                  color: '#BDC6D8',
-                  marginVertical: 10
+                  color: '#9CAAC4',
+                  fontSize: 16,
+                  fontWeight: '600',
+                  marginVertical: 20
+
                 }}
               >
-                Suggestion
+                Tipo de tarea
               </Text>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.readBook}>
-                  <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Read book
-                  </Text>
-                </View>
-                <View style={styles.design}>
-                  <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Design
-                  </Text>
-                </View>
-                <View style={styles.learn}>
-                  <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Learn
-                  </Text>
-                </View>
-              </View>
+               <TypePicker parentCallback={this.callbackType}/>
+
               <View style={styles.notesContent} />
               <View>
-                <Text style={styles.notes}>Notes</Text>
+                <Text style={styles.notes}>Descripción</Text>
                 <TextInput
+                
                   name='notesText'
                   style={{
                     height: 25,
                     fontSize: 19,
                     marginTop: 3
+                    
                   }}
                   onChangeText={(notesText) => this.setState({notesText})}
                   value={this.state.notesText}
@@ -533,7 +300,13 @@ export default class CreateTask extends React.Component {
                 />
               </View>
               <View style={styles.separator} />
-              <View>
+
+              <View style={{flex: 1,flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'center',paddingBottom: 30,paddingTop: 30}}>
+
+              <View style={{backgroundColor:COLORS.white,borderColor: '#5DD976',
+    borderLeftWidth: 1,width:145, alignItems: 'center',
+                            justifyContent: 'center',elevation:2}}>
                 <Text
                   style={{
                     color: '#9CAAC4',
@@ -541,21 +314,54 @@ export default class CreateTask extends React.Component {
                     fontWeight: '600'
                   }}
                 >
-                  Times
+                  Inicio
                 </Text>
                 <TouchableOpacity
-                  onPress={() => showDateTimePicker()}
                   style={{
                     height: 25,
                     marginTop: 3
                   }}
                 >
-                  <Text style={{ fontSize: 19 }}>
-                    {moment(this.state.alarmTime).format('h:mm A')}
+                  <Text style={{ fontSize: 14 }}>
+                    {moment(this.state.alarmTime).format('YYYY-MM-DD h:mm A')}
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View style={styles.separator} />
+
+              <View  style={{width:14, alignItems: 'center',
+                           }}>
+                <Text style={{ fontSize: 14 }}>
+                    
+                    -
+                    
+                    
+                  </Text>
+              </View>
+              <View  style={{backgroundColor:COLORS.white,borderColor: '#5DD976',
+    borderLeftWidth: 1,width:145, alignItems: 'center',
+                            justifyContent: 'center',elevation:2}}>
+                <Text
+                  style={{
+                    color: '#9CAAC4',
+                    fontSize: 16,
+                    fontWeight: '600'
+                  }}
+                >
+                  Fin
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    height: 25,
+                    marginTop: 3
+                  }}
+                >
+                  <Text style={{ fontSize: 14}}>
+                    {moment(this.state.alarmTime).format('YYYY-MM-DD h:mm A')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              </View>
+            
               <View
                 style={{
                   flexDirection: 'row',
@@ -584,8 +390,23 @@ export default class CreateTask extends React.Component {
                     </Text>
                   </View>
                 </View>
-                <Switch value={this.state.isAlarmSet} onValueChange={this.handleAlarmSet} />
+                <Switch value={this.state.isAlarmSet}  />
               </View>
+
+              <Text
+                style={{
+                  color: '#9CAAC4',
+                  fontSize: 16,
+                  fontWeight: '600',
+                  marginVertical: 20
+                }}
+              >
+                Color
+              </Text>
+               <ColorPicker parentCallback={this.callbackColor}/>
+
+              <View style={styles.notesContent} />
+              
             </View>
             <TouchableOpacity
               disabled={this.state.taskText === ''}
@@ -595,14 +416,7 @@ export default class CreateTask extends React.Component {
                   backgroundColor: this.state.taskText === '' ? 'rgba(46, 102, 231,0.5)' : '#2E66E7'
                 }
               ]}
-              onPress={async () => {
-                if (this.state.isAlarmSet) {
-                  await this.synchronizeCalendar();
-                }
-                if (!this.state.isAlarmSet) {
-                  this.handleCreateEventData();
-                }
-              }}
+             
             >
               <Text
                 style={{

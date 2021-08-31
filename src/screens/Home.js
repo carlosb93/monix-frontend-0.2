@@ -8,7 +8,6 @@ import APIKit, {setClientToken} from '../shared/APIKit';
 import {COLORS, SIZES, FONTS, icons} from '../constants'
 import UserModel from '../models/User';
 import BusinessModel from '../models/Business';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import {toTimestamp, toDatetime} from '../shared/tools';
 
 export default class Home extends React.Component {
@@ -111,8 +110,9 @@ if(accounts.length = 0){
         console.log('///////////////////////////// token /////////////////////////////////////////')
         console.log(token)
         await APIKit
-            .get('/auth/me')
+            .get('/users/me')
             .then((res) => {
+                
 
                 if (res.data.user.isActive == 0) {
 
@@ -123,10 +123,10 @@ if(accounts.length = 0){
                     this.setState({isAuth: true})
                     this.setState({id: res.data.user.id})
                     this.setState({name: res.data.user.name})
-                    this.setState({role: res.data.role.name})
+                    this.setState({role: res.data.user.rol})
                     this.setState({email: res.data.user.email})
                     this.setState({isActive: res.data.user.isActive})
-                    this.setState({business_id: res.data.branch_data[0].business_id})
+                    this.setState({business_id: 1})
 
                     if (this.state.isAuth) {
                         this.filluser();
@@ -265,7 +265,7 @@ if(accounts.length = 0){
                     this
                         .state
                         .navigation
-                        .replace('AgendaScreen')
+                        .replace('CalendarScreen')
                 }}>
                     <View
                         style={{

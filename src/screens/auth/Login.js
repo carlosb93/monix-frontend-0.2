@@ -42,18 +42,20 @@ export default class Login extends React.Component {
 		let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 		if (emailRegex.test(this.state.userEmail)) {
-			if (passwordRegex.test(this.state.userPassword)) {
+      console.log(this.state.userEmail)
+      console.log(this.state.userPassword)
+			// if (passwordRegex.test(this.state.userPassword)) {
 
-        var bodyFormData = new FormData();
-        bodyFormData.append('email', this.state.userEmail);
-        bodyFormData.append('password', this.state.userPassword); 
+        // var bodyFormData = new FormData();
+        // bodyFormData.append('email', this.state.userEmail);
+        // bodyFormData.append('password', this.state.userPassword); 
         
 
 
 const onSuccess = async({data}) => {
  
           // Set JSON Web Token on success 
-     
+     console.log(data)
       setClientToken(data.token);
       this.setState({ token: data.token});
       this.setState({ isAuth: true});
@@ -78,18 +80,18 @@ const onSuccess = async({data}) => {
 
 
 
-        await APIKit.post('/auth/login', bodyFormData,{header:{
-          "Content-Type": "multipart/form-data",
+        await APIKit.post('/users/login', {'email':this.state.userEmail,'password':this.state.userPassword},{header:{
+          "Content-Type": "application/json" 
         }})
           .then(onSuccess)
           .catch(onFailure);
 
 
 				
-			} else {
-				this.setState({ userEmail: '', userPassword: '', errorText: 'Contraseña incorrecta' });
-				return alert(this.state.errorText);
-			}
+			// } else {
+			// 	this.setState({ userEmail: '', userPassword: '', errorText: 'Contraseña incorrecta' });
+			// 	return alert(this.state.errorText);
+			// }
 		} else {
 			this.setState({ userEmail: '', userPassword: '', errorText: 'Email incorrecto' });
 			return alert(this.state.errorText);

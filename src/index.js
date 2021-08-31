@@ -43,7 +43,6 @@ import {
     GraphByCategories,
     GraphByCategoriesIncome,
     Cryptocurrency,
-    AgendaScreen,
     DayView,
 } from './screens';
 
@@ -338,7 +337,6 @@ export default class App extends React.Component {
                     <Stack.Screen name="Expenses" component={Expenses}/>
                     <Stack.Screen name="CalendarScreen" component={CalendarScreen}/>
                     <Stack.Screen name="CreateTask" component={CreateTask}/>
-                    <Stack.Screen name="AgendaScreen" component={AgendaScreen}/>
                     <Stack.Screen name="DayView" component={DayView}/>
        
 

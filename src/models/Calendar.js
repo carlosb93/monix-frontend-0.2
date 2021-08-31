@@ -17,30 +17,15 @@ export default class Calendar extends BaseModel {
   static get columnMapping() {
     return {
       id: { type: types.INTEGER, primary_key: true }, // For while only supports id as primary key
-      date: { type: types.INTEGER },
-      todoList: { type: types.JSON, not_null: true },
-    //   todoList: [
-    //     {
-    //       id: 1,
-    //       title: titulo,
-    //       notes: notas,
-    //       alarm: {
-    //         time: 20/05/2021,
-    //         isOn: true,
-    //         createEventAsyncRes: true
-    //       },
-    //       color: '#2E66E7'
-    //     }
-    //   ],
-      markedDot: { type: types.JSON, not_null: true }, 
-    //markedDot[
-    //    {date: 20/05/2021,
-    //    dots: [{
-    //         id: 1,
-    //         color: '#2E66E7',
-    //         selectedDotColor: '#2E66E7'
-    //       }]
-    // }]  
+      title: { type: types.TEXT, not_null: true },
+      summary: { type: types.TEXT, not_null: true },
+      todo: { type: types.JSON },
+      start: { type: types.INTEGER, not_null: true },//2017-09-06 22:30:00
+      end: { type: types.INTEGER, not_null: true }, //2017-09-06 22:30:00
+      color: { type: types.TEXT, not_null: true },
+      type:{type: types.INTEGER, not_null: true},
+      status:{type: types.INTEGER, not_null: true},
+      user_id: { type: types.INTEGER },
       business_id: { type: types.INTEGER },
       timestamp: { type: types.INTEGER, default: () => Date.now() }
     }

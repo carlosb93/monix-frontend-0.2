@@ -91,7 +91,7 @@ export default class Profile extends React.Component {
               return alert(this.state.errorText);
             };
             
-            APIKit.post('/auth/register', payload,{header:{ 
+            APIKit.post('/users', payload,{header:{ 
               "Content-Type": "multipart/form-data",
               "Access-Control-Allow-Origin": "*"
             }})

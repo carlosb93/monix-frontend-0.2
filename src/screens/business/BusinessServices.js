@@ -106,7 +106,7 @@ export default class BusinessServices extends React.Component {
 
     setClientToken(await AsyncStorage.getItem('token'));
 
-    await APIKit.get('/auth/me')
+    await APIKit.get('/users/me')
             .then((res) => {
               this.setState({id: res.data.user.id})
               
