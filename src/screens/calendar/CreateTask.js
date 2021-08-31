@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   ScrollView,
@@ -11,24 +10,20 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { CalendarList } from 'react-native-calendars';
 import moment from 'moment';
-import * as Calendar from 'expo-calendar';
-import * as Localization from 'expo-localization';
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
-import { useKeyboardHeight } from '../../hooks';
-import { useStore } from '../../utils';
 // import { Routes } from '@calendar/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { COLORS, SIZES, FONTS, icons } from '../../constants'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import TypePicker from '../../components/TypePicker/TypePicker'
 import ColorPicker from '../../components/ColorPicker/ColorPicker'
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import SelectDropdown from 'react-native-select-dropdown'
+
 import CalendarModel from '../../models/Calendar';
+import BusinessModel from '../../models/Business';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {toTimestamp, toDatetime } from '../../shared/tools';
 
 const { width: vw } = Dimensions.get('window');
 // moment().format('YYYY/MM/DD')
@@ -43,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   separator: {
-    height: 0.5,
+    height: 0.3,
     width: '100%',
     backgroundColor: '#979797',
     alignSelf: 'center',
@@ -93,7 +88,7 @@ const styles = StyleSheet.create({
   },
   taskContainer: {
     height: 600,
-    width: 327,
+    width: 375,
     alignSelf: 'center',
     borderRadius: 8,
     shadowColor: '#2E66E7',
@@ -163,13 +158,23 @@ export default class CreateTask extends React.Component {
       currentDate: this.props.route.params?.currentDate ?? (() => null),
       
       ColorPicker: COLORS.primary,
+      isDatePickerVisible1: false,
+      isDatePickerVisible2: false,
+      timeStart: moment().format(),
+      timeEnd: moment().format(),
+      negocio:[],
+      business_id:0,
+      isworkflow:false,
+      summary:'',
+      title:'',
+      id:0,
     }
   };
 
 
   componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-
+    this.get_businnesses()
     });
   };
   
@@ -183,6 +188,143 @@ export default class CreateTask extends React.Component {
   callbackColor = (childData) => {
     this.setState({ColorPicker: childData})
 }
+
+SwitchWorkflow = () => {
+  this.setState({isworkflow: !this.state.isworkflow});
+};
+showDatePickerStart = () => {
+  this.setState({isDatePickerVisible1: true});
+};
+
+ hideDatePickerStart = () => {
+  this.setState({isDatePickerVisible1: false});
+};
+showDatePickerEnd = () => {
+  this.setState({isDatePickerVisible2: true});
+};
+
+ hideDatePickerEnd = () => {
+  this.setState({isDatePickerVisible2: false});
+};
+
+handleConfirmEnd = (timeEnd) => {
+  this.setState({timeEnd: timeEnd})
+  console.log(timeEnd)
+  this.hideDatePickerEnd();
+};
+handleConfirmStart = (timeStart) => {
+  this.setState({timeStart: timeStart})
+  this.hideDatePickerStart();
+};
+
+
+createEvent = async () => {
+  const user_id = this.state.id
+
+const date_start =  moment(this.state.timeStart).format('YYYY-MM-DD')
+const start =  moment(this.state.timeStart).valueOf()
+const end =  moment(this.state.timeEnd).valueOf()
+// console.log(moment(start).format('YYYY-MM-DD HH:mm'))
+
+
+  const props = {
+      title:this.state.title,
+      summary:this.state.summary,
+      start: start,
+      date_start: date_start,
+      end: end,
+      color:this.state.ColorPicker,
+      isworkflow:this.state.isworkflow,
+      user_id: parseInt(user_id),
+      business_id: this.state.business_id,
+      type:'EVENTO',
+      status:1
+      // todo:{},
+     }
+
+try {
+
+var evento =[];
+evento = new CalendarModel(props)
+console.log(evento)
+evento.save()
+
+} catch (error) {
+   console.log(error)
+}
+
+if(this.state.isworkflow){
+console.log('creando flujo de trabajo')
+// agregar for loop para crear cada flujo  generado por el evento del negocio
+  var event = [];
+    try{
+      const options = {
+        where: {
+          user_id_eq: this.state.id,
+          business_id_eq: this.state.business_id
+        },
+        order: 'id DESC'
+      }
+        event = await CalendarModel.query(options);
+        console.log(event)
+    }catch (error){
+     console.log(error)
+    }
+  
+  //     const propsWorkflow = {
+  //       user_id: user_id,
+  //       business_id: this.state.business_id,
+  //       event_id: event[0].id,
+  //       status: 1,
+  //     }
+  //     var workflow =[];
+  //     workflow = new WorkflowModel(propsBalance)
+  //     balance.save()
+  //     console.log(workflow)
+  
+  
+
+} 
+      
+
+this.state.navigation.navigate('CalendarScreen');
+
+}
+
+
+async get_businnesses() {
+  var negocios = [];
+  var negocioicon = [];
+
+  negocios = await BusinessModel.findBy({
+      user_id_eq: JSON.parse(await AsyncStorage.getItem('id')),
+      id_neq: JSON.parse(await AsyncStorage.getItem('id'))  
+  });
+  if(negocios != null){
+      this.setState({
+          id: await AsyncStorage.getItem('id')
+      })
+
+      for (let index = 0; index < [negocios].length; index++) {
+        
+        const element = [negocios][index]
+
+        element.iconview = <Text style={{ color: COLORS.darkgray, fontSize: 19 }}> <Icon size={20} name={element.icon} style={{color:element.color, margin:8}}/>  {element.name}</Text>
+        negocioicon.push(element)
+      }
+    
+
+
+      this.setState({negocio: negocioicon})  
+
+  }else{
+      this.setState({negocio: []})
+  }
+ 
+
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   render() { 
   
@@ -237,16 +379,22 @@ export default class CreateTask extends React.Component {
               </View>
               </View>
 
+{/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+{/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
 
 
-
-      <DateTimePicker
-        isVisible={this.state.isDateTimePickerVisible}
-
-        mode="time"
-        date={new Date()}
-        isDarkModeEnabled
-      />
+      <DateTimePickerModal
+        isVisible={this.state.isDatePickerVisible1}
+        mode="datetime"
+        onConfirm={this.handleConfirmStart}
+        onCancel={this.hideDatePickerStart}
+      />   
+      <DateTimePickerModal
+        isVisible={this.state.isDatePickerVisible2}
+        mode="datetime"
+        onConfirm={this.handleConfirmEnd}
+        onCancel={this.hideDatePickerEnd}
+      />   
 
       <SafeAreaView style={styles.container}>
         <View
@@ -262,10 +410,10 @@ export default class CreateTask extends React.Component {
             
             <View style={styles.taskContainer}>
               <TextInput
-                name='taskText'
+                name='title'
                 style={styles.title}
-                onChangeText={(taskText) => this.setState({taskText})}
-                value={this.state.taskText}
+                onChangeText={(title) => this.setState({title})}
+                value={this.state.title}
                 placeholder="Nombre su tarea!!!"
               />
               
@@ -280,32 +428,64 @@ export default class CreateTask extends React.Component {
               >
                 Tipo de tarea
               </Text>
-               <TypePicker parentCallback={this.callbackType}/>
+               {/* <TypePicker parentCallback={this.callbackType}/> */}
+              
+
+<SelectDropdown
+        defaultButtonText='Seleccione un Negocio'
+        buttonTextStyle={{fontSize: 19, color:COLORS.darkgray, }}
+        buttonStyle={{ 
+            backgroundColor: COLORS.white,
+            height: 30,
+            width: 230,
+            borderColor: '#5DD976',
+            borderLeftWidth: 1,
+            paddingLeft: 8,
+            
+          }}
+        
+	data={this.state.negocio}
+	onSelect={(selectedItem, index) => {
+    this.setState({ business_id: selectedItem.id })
+		
+	}}
+	buttonTextAfterSelection={(selectedItem, index) => {
+		return selectedItem.iconview
+	}}
+	rowTextForSelection={(item, index) => {
+		return item.iconview
+	}}
+/>
 
               <View style={styles.notesContent} />
               <View>
                 <Text style={styles.notes}>Descripción</Text>
                 <TextInput
                 
-                  name='notesText'
+                  name='summary'
                   style={{
                     height: 25,
                     fontSize: 19,
-                    marginTop: 3
+                    marginTop: 3,
+                    borderColor: '#5DD976',
+                    borderLeftWidth: 1,
+                    paddingLeft: 8,
+            
                     
                   }}
-                  onChangeText={(notesText) => this.setState({notesText})}
-                  value={this.state.notesText}
-                  placeholder="Enter notes about the task."
+                  onChangeText={(summary) => this.setState({summary})}
+                  value={this.state.summary}
+                  placeholder="Añada notas sobre este evento."
                 />
               </View>
+
               <View style={styles.separator} />
 
               <View style={{flex: 1,flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center',paddingBottom: 30,paddingTop: 30}}>
 
               <View style={{backgroundColor:COLORS.white,borderColor: '#5DD976',
-    borderLeftWidth: 1,width:145, alignItems: 'center',
+    borderLeftWidth: 1,width:165, alignItems: 'center',
                             justifyContent: 'center',elevation:2}}>
                 <Text
                   style={{
@@ -319,11 +499,20 @@ export default class CreateTask extends React.Component {
                 <TouchableOpacity
                   style={{
                     height: 25,
-                    marginTop: 3
+                    marginTop: 3,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
+                  onPress={this.showDatePickerStart}
                 >
+                   <Icon size={14} name='calendar'
+                                  style={{
+                                    margin:5,
+                                    color: COLORS.primary,
+                                  }}/>
                   <Text style={{ fontSize: 14 }}>
-                    {moment(this.state.alarmTime).format('YYYY-MM-DD h:mm A')}
+                    {moment(this.state.timeStart).format('YYYY-MM-DD HH:mm')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -338,7 +527,7 @@ export default class CreateTask extends React.Component {
                   </Text>
               </View>
               <View  style={{backgroundColor:COLORS.white,borderColor: '#5DD976',
-    borderLeftWidth: 1,width:145, alignItems: 'center',
+    borderLeftWidth: 1,width:165, alignItems: 'center',
                             justifyContent: 'center',elevation:2}}>
                 <Text
                   style={{
@@ -352,16 +541,25 @@ export default class CreateTask extends React.Component {
                 <TouchableOpacity
                   style={{
                     height: 25,
-                    marginTop: 3
+                    marginTop: 3,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                >
+                  onPress={this.showDatePickerEnd}
+                  >
+                     <Icon size={14} name='calendar'
+                                    style={{
+                                      margin:5,
+                                      color: COLORS.primary,
+                                    }}/>
                   <Text style={{ fontSize: 14}}>
-                    {moment(this.state.alarmTime).format('YYYY-MM-DD h:mm A')}
+                    {moment(this.state.timeEnd).format('YYYY-MM-DD HH:mm')}
                   </Text>
                 </TouchableOpacity>
               </View>
               </View>
-            
+              <View style={styles.separator} />
               <View
                 style={{
                   flexDirection: 'row',
@@ -369,30 +567,22 @@ export default class CreateTask extends React.Component {
                   alignItems: 'center'
                 }}
               >
+
                 <View>
                   <Text
                     style={{
                       color: '#9CAAC4',
-                      fontSize: 16,
+                      fontSize: 19,
                       fontWeight: '600'
                     }}
                   >
-                    Alarm
+                    Flujo de Trabajo
                   </Text>
-                  <View
-                    style={{
-                      height: 25,
-                      marginTop: 3
-                    }}
-                  >
-                    <Text style={{ fontSize: 19 }}>
-                      {moment(this.state.alarmTime).format('h:mm A')}
-                    </Text>
-                  </View>
+                  
                 </View>
-                <Switch value={this.state.isAlarmSet}  />
+                <Switch value={this.state.isworkflow} onChange={this.SwitchWorkflow}  />
               </View>
-
+<View style={styles.separator} />
               <Text
                 style={{
                   color: '#9CAAC4',
@@ -405,11 +595,12 @@ export default class CreateTask extends React.Component {
               </Text>
                <ColorPicker parentCallback={this.callbackColor}/>
 
-              <View style={styles.notesContent} />
+            
               
             </View>
             <TouchableOpacity
-              disabled={this.state.taskText === ''}
+              disabled={this.state.title === ''}
+              onPress={this.createEvent}
               style={[
                 styles.createTaskButton,
                 {
@@ -425,7 +616,7 @@ export default class CreateTask extends React.Component {
                   color: '#fff'
                 }}
               >
-                ADD YOUR TASK
+                Crear Evento
               </Text>
             </TouchableOpacity>
           </ScrollView>

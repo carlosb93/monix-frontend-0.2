@@ -130,7 +130,7 @@ render() {
                     >
                         <TouchableOpacity
                             style={{
-                                width: SIZES.width * 0.2,
+                                width: SIZES.width * 0.3,
                                 height: SIZES.width * 0.05,
                                 padding: SIZES.padding,
                                 backgroundColor: COLORS.white,
@@ -144,7 +144,7 @@ render() {
                             <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
                             <Icon size={12} name={ this.state.selectedBlue == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Reserva</Text>
+                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Recordatorio</Text>
                             </View>
                         </TouchableOpacity>
                         </View>
@@ -172,7 +172,7 @@ render() {
                              <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
                              <Icon size={12} name={ this.state.selectedGreen == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Reserva</Text>
+                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Nota</Text>
                             </View>
                         </TouchableOpacity>
                         </View>
@@ -200,7 +200,7 @@ render() {
                              <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
                               <Icon size={12} name={ this.state.selectedyellow == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Reserva</Text>
+                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Tarea</Text>
                             </View>
                         </TouchableOpacity>
                         </View>

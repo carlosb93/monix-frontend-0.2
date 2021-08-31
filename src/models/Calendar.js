@@ -20,11 +20,13 @@ export default class Calendar extends BaseModel {
       title: { type: types.TEXT, not_null: true },
       summary: { type: types.TEXT, not_null: true },
       todo: { type: types.JSON },
-      start: { type: types.INTEGER, not_null: true },//2017-09-06 22:30:00
-      end: { type: types.INTEGER, not_null: true }, //2017-09-06 22:30:00
+      date_start: { type: types.TEXT, not_null: true },//2017-09-06 22:30:00
+      start: { type: types.INTEGER, not_null: true },//12442353465467
+      end: { type: types.INTEGER, not_null: true }, //12423423536456
       color: { type: types.TEXT, not_null: true },
       type:{type: types.INTEGER, not_null: true},
       status:{type: types.INTEGER, not_null: true},
+      isworkflow:{type: types.BOOLEAN, not_null: false },
       user_id: { type: types.INTEGER },
       business_id: { type: types.INTEGER },
       timestamp: { type: types.INTEGER, default: () => Date.now() }

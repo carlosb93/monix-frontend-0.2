@@ -21,7 +21,6 @@ export default function styleConstructor (
     header: {
       paddingHorizontal: 30,
       height: 50,
-      borderTopWidth: 1,
       borderBottomWidth: 1,
       borderColor: '#E6E8F0',
       backgroundColor: '#F5F5F6',

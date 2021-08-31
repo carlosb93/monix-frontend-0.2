@@ -55,7 +55,7 @@ export default class Login extends React.Component {
 const onSuccess = async({data}) => {
  
           // Set JSON Web Token on success 
-     console.log(data)
+   
       setClientToken(data.token);
       this.setState({ token: data.token});
       this.setState({ isAuth: true});

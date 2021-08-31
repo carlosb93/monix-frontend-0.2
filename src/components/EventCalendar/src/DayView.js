@@ -129,7 +129,9 @@ export default class DayView extends React.PureComponent {
         height: event.height,
         width: event.width,
         top: event.top,
-        backgroundColor: event.color || '#F0F4FF'
+        backgroundColor: '#F0F4FF',
+        borderColor: event.color || '#F0F4FF',
+        borderRightWidth: 8,
       }
 
       // Fixing the number of lines for the event title makes this calculation easier.

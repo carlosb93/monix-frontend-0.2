@@ -170,7 +170,7 @@ if(accounts.length = 0){
             }
         ]
         const negocio = await BusinessModel.query()
-
+        console.log(negocio)
         if (negocio.length == 0) {
 
             var i;
