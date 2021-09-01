@@ -30,95 +30,6 @@ export default class DayView extends React.Component {
       navigation: this.props.navigation,
       currentDate: this.props.route.params?.currentDate ?? (() => null),
       events: [],
-      // events: [
-      //   {
-      //     start: '2021-08-06 22:30:00',
-      //     end: '2021-08-06 23:30:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //     color: 'green',
-      //   },
-      //   {
-      //     start: '2021-08-07 00:30:00',
-      //     end: '2021-08-07 01:30:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-07 01:30:00',
-      //     end: '2021-08-07 02:20:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-07 04:10:00',
-      //     end: '2021-08-07 04:40:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-07 01:05:00',
-      //     end: '2021-08-07 01:45:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-07 14:30:00',
-      //     end: '2021-08-07 16:30:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-08 01:20:00',
-      //     end: '2021-08-08 02:20:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-08 04:10:00',
-      //     end: '2021-08-08 04:40:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //     color: '#FF45',
-      //   },
-      //   {
-      //     start: '2021-08-08 00:45:00',
-      //     end: '2021-08-08 01:45:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //     color: '#F4EFDB',
-      //   },
-      //   {
-      //     start: '2021-08-08 11:30:00',
-      //     end: '2021-08-08 12:30:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-09 01:30:00',
-      //     end: '2021-08-09 02:00:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-31 03:10:00',
-      //     end: '2021-08-09 03:40:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-31 00:10:00',
-      //     end: '2021-08-31 01:45:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      //   {
-      //     start: '2021-08-31 12:10:00',
-      //     end: '2021-08-31 13:45:00',
-      //     title: 'Dr. Mariana Joseph',
-      //     summary: '3412 Piedmont Rd NE, GA 3032',
-      //   },
-      // ],
     };
   }
 
@@ -151,6 +62,7 @@ export default class DayView extends React.Component {
           summary: item.summary,
           start: moment(item.start).format('YYYY-MM-DD HH:mm'),
           end: moment(item.end).format('YYYY-MM-DD HH:mm'),
+          otro: moment(item.end).format('HH:mm'),
           color: item.color,
       }
       })

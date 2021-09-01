@@ -287,7 +287,7 @@ console.log('creando flujo de trabajo')
 } 
       
 
-this.state.navigation.navigate('CalendarScreen');
+this.state.navigation.navigate('AgendaScreen');
 
 }
 
@@ -353,7 +353,7 @@ async get_businnesses() {
                   }}
               >
                  <TouchableOpacity
-     onPress={() => {this.state.navigation.navigate('CalendarScreen')}}
+     onPress={() => {this.state.navigation.navigate('AgendaScreen')}}
   >
      <Image
                             source={icons.left_arrow}

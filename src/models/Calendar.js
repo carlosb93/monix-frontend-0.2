@@ -32,4 +32,11 @@ export default class Calendar extends BaseModel {
       timestamp: { type: types.INTEGER, default: () => Date.now() }
     }
   }
+
+
+  static getByDate(date) {
+    const sql = 'SELECT * FROM calendar WHERE date_start = ?;'
+    const params = [date]
+    return this.repository.databaseLayer.executeSql(sql, params).then(({ rows }) => rows)
+  }
 }

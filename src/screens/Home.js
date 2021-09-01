@@ -265,7 +265,7 @@ if(accounts.length = 0){
                     this
                         .state
                         .navigation
-                        .replace('CalendarScreen')
+                        .replace('AgendaScreen')
                 }}>
                     <View
                         style={{
@@ -282,7 +282,7 @@ if(accounts.length = 0){
                             style={{
                             color: COLORS.white,
                             ...FONTS.h2
-                        }}>CALENDAR</Text>
+                        }}>AGENDA</Text>
                     </View>
 
                 </TouchableOpacity>
