@@ -6,6 +6,7 @@ import { COLORS, SIZES, FONTS, icons } from '../../constants'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import CalendarModel from '../../models/Calendar';
+import BaseIcon from '../../components/TypePicker/Icon'
 
 
 
@@ -73,12 +74,12 @@ export default class AgendaScreen extends Component {
    }
   
  async get_events(date){
-console.log(date)
+
   var events = [];
   try{
 
       events = await CalendarModel.getByDate(date);
-    console.log(events)
+
      
   }catch{
    console.log('query event error')
@@ -97,6 +98,7 @@ console.log(date)
                         summary: events[i].summary,
                         start: moment(events[i].start).format('YYYY-MM-DD HH:mm'),
                         end: moment(events[i].end).format('YYYY-MM-DD HH:mm'),
+                        priority: events[i].priority,
                         height: 30,
                         color: events[i].color
                       }
@@ -113,6 +115,7 @@ console.log(date)
                         summary: events[i].summary,
                         start: moment(events[i].start).format('YYYY-MM-DD HH:mm'),
                         end: moment(events[i].end).format('YYYY-MM-DD HH:mm'),
+                        priority: events[i].priority,
                         height: 30,
                         color: events[i].color
                   }]
@@ -121,6 +124,7 @@ console.log(date)
 
                 }
             }
+            console.log(element)
             this.setState({events: element})
 
    }
@@ -221,7 +225,11 @@ height_calc (column) {
 
   column.height = endTime.diff(startTime, 'hours', true) * offset
 
+if(column.height == 0){
+  return 65
+}  else{
   return column.height
+}
 }
 
   renderItem(item) {
@@ -232,16 +240,43 @@ height_calc (column) {
         borderLeftWidth: 8,}]}
         onPress={() => Alert.alert(item.name)}
       >
-        <Text>{item.name}</Text>
-        <Text
+        <View style={{flexDirection:'row'}}>
+          <View>
+          <Text>{item.name}</Text>
+          <Text
                   style={{ color: '#615B73',
                   fontSize: 12,
                   flexWrap: 'wrap',}}
                 >{item.summary}</Text>
-        <Text style={{ marginTop: 3,
-      fontSize: 10,
-      color: '#615B73',
-      flexWrap: 'wrap',}} >{moment(item.start).format('YYYY-MM-DD HH:mm')} - {moment(item.end).format('YYYY-MM-DD HH:mm')}</Text>
+          <Text style={{ marginTop: 3,
+                         fontSize: 10,
+                         color: '#615B73',
+                         flexWrap: 'wrap',}} >{moment(item.start).format('YYYY-MM-DD HH:mm')} - {moment(item.end).format('YYYY-MM-DD HH:mm')}</Text>
+      
+          </View>
+          <TouchableOpacity
+                            style={{
+                                width: SIZES.width * 0.3,
+                                height: SIZES.width * 0.1,
+                                padding: SIZES.padding,
+                                marginBottom:-10,
+                                backgroundColor: item.priority == 1 ? COLORS.green : (item.priority == 2 ? COLORS.yellow : COLORS.peach) ,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: SIZES.radius,
+                            }}
+                         
+                        >
+                             <View style={{flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'center'}}>
+                             <BaseIcon containerStyle={{ backgroundColor: item.priority == 1 ? COLORS.green : (item.priority == 2 ? COLORS.yellow : COLORS.peach)  }} 
+                                       icon={{ type: 'ionicon', name: item.priority == 1 ? 'md-information-circle' : item.priority == 2 ? 'md-warning' : 'md-flame'  }}/>
+                            <Text style={{fontSize: 15,marginVertical: 20,color: COLORS.white}}> {item.priority == 1 ? 'Low' : (item.priority == 2 ? 'Medium' : 'High')} </Text>
+                            </View>
+                        </TouchableOpacity>
+        </View>
+        
+       
       </TouchableOpacity>
     );
   }

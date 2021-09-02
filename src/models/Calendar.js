@@ -26,6 +26,7 @@ export default class Calendar extends BaseModel {
       color: { type: types.TEXT, not_null: true },
       type:{type: types.INTEGER, not_null: true},
       status:{type: types.INTEGER, not_null: true},
+      priority:{type: types.INTEGER, not_null: true}, // Baja   Media  Alta
       isworkflow:{type: types.BOOLEAN, not_null: false },
       user_id: { type: types.INTEGER },
       business_id: { type: types.INTEGER },

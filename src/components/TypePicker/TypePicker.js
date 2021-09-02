@@ -12,6 +12,7 @@ import {
   Dimensions,
   TouchableHighlight
 } from 'react-native'
+import BaseIcon from './Icon'
 import {
   FontAwesomeIcon
 } from '@fortawesome/react-native-fontawesome'
@@ -49,66 +50,37 @@ export default class TypePicker extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-        selectedBlue:5,
-        selectedGreen: 0,
-        selectedyellow: 0,
-        selectedPeach: 0,
-        selectedPurple: 0,
-        ColorPicker:COLORS.primary,
+        low:5,
+        mid: 0,
+        high: 0,
+        priority: 1,
     }
 }
 
-sendData = (color) => {
-    this.props.parentCallback(color);
-}
+togglePriority(priority) {
 
-toggleColor(color) {
-if(color == COLORS.primary){
-  this.setState({selectedBlue:5})
-  this.setState({selectedGreen:0})
-  this.setState({selectedyellow:0})
-  this.setState({selectedPeach:0})
-  this.setState({selectedPurple:0})
+if(priority == 1){
+  this.setState({low:5})
+  this.setState({mid:0})
+  this.setState({high:0})
+  this.props.parentCallback(priority);
 
 }
-if(color == COLORS.green){
-  this.setState({selectedBlue:0})
-  this.setState({selectedGreen:5})
-  this.setState({selectedyellow:0})
-  this.setState({selectedPeach:0})
-  this.setState({selectedPurple:0})
+if(priority == 2){
+  this.setState({low:0})
+  this.setState({mid:5})
+  this.setState({high:0})
+  this.props.parentCallback(priority);
 
 }
-if(color == COLORS.yellow){
-  this.setState({selectedBlue:0})
-  this.setState({selectedGreen:0})
-  this.setState({selectedyellow:5})
-  this.setState({selectedPeach:0})
-  this.setState({selectedPurple:0})
-
-}
-if(color == COLORS.peach){
-  this.setState({selectedBlue:0})
-  this.setState({selectedGreen:0})
-  this.setState({selectedyellow:0})
-  this.setState({selectedPeach:5})
-  this.setState({selectedPurple:0})
-
-}
-if(color == COLORS.purple){
-  this.setState({selectedBlue:0})
-  this.setState({selectedGreen:0})
-  this.setState({selectedyellow:0})
-  this.setState({selectedPeach:0})
-  this.setState({selectedPurple:5})
+if(priority == 3){
+  this.setState({low:0})
+  this.setState({mid:0})
+  this.setState({high:5})
+  this.props.parentCallback(priority);
 
 }
 
-this.setState({
-  ColorPicker: color
-});
-
-this.sendData(color)
 }
 
 
@@ -125,26 +97,29 @@ render() {
                             alignItems: 'center',
                             justifyContent: 'center',
                             height: 50,
-                            margin:10
+                            margin:5
                         }}
                     >
                         <TouchableOpacity
                             style={{
-                                width: SIZES.width * 0.3,
-                                height: SIZES.width * 0.05,
+                                width: SIZES.width * 0.23,
+                                height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
-                                backgroundColor: COLORS.white,
+                                backgroundColor: COLORS.green,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderRadius: SIZES.radius,
-                                elevation: this.state.selectedBlue,
+                                borderColor:this.state.low == 5 ? COLORS.softGray : COLORS.green,
+                                borderWidth: this.state.low == 5 ? 3 : 0,
+                                elevation: this.state.low,
                             }}
-                            onPress = {() => {this.toggleColor(COLORS.primary)}}
+                            onPress = {() => {this.togglePriority(1)}}
                         >
                             <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
-                            <Icon size={12} name={ this.state.selectedBlue == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Recordatorio</Text>
+                            {/* <Icon size={12} name={ this.state.low == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/> */}
+                            <BaseIcon containerStyle={{ backgroundColor: COLORS.green }} icon={{ type: 'ionicon', name: 'md-information-circle' }}/>
+                            <Text style={{fontSize: 15,marginVertical: 20,color: COLORS.white}}> Low</Text>
                             </View>
                         </TouchableOpacity>
                         </View>
@@ -153,26 +128,29 @@ render() {
                            alignItems: 'center',
                             justifyContent: 'center',
                             height: 50,
-                            margin:10
+                            margin:5
                         }}
                     >
                         <TouchableOpacity
                             style={{
-                                width: SIZES.width * 0.2,
-                                height: SIZES.width * 0.05,
+                                width: SIZES.width * 0.3,
+                                height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
-                                backgroundColor: COLORS.white,
+                                backgroundColor: COLORS.yellow,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderRadius: SIZES.radius,
-                                elevation: this.state.selectedGreen,
+                                borderColor:this.state.mid == 5 ? COLORS.softGray : COLORS.yellow,
+                                borderWidth: this.state.mid == 5 ? 3 : 0,
+                                elevation: this.state.mid,
                             }}
-                            onPress = {() => {this.toggleColor(COLORS.green)}}
+                            onPress = {() => {this.togglePriority(2)}}
                         >
                              <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
-                             <Icon size={12} name={ this.state.selectedGreen == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Nota</Text>
+                             {/* <Icon size={12} name={ this.state.mid == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/> */}
+                             <BaseIcon containerStyle={{ backgroundColor: COLORS.yellow }} icon={{ type: 'ionicon', name: 'md-warning' }}/>
+                            <Text style={{fontSize: 15,marginVertical: 20,color: COLORS.white}}> Medium</Text>
                             </View>
                         </TouchableOpacity>
                         </View>
@@ -181,91 +159,35 @@ render() {
                            alignItems: 'center',
                             justifyContent: 'center',
                             height: 50,
-                            margin:10
+                            margin:5
                         }}
                     >
                         <TouchableOpacity
                             style={{
-                                width: SIZES.width * 0.2,
-                                height: SIZES.width * 0.05,
+                                width: SIZES.width * 0.23,
+                                height: SIZES.width * 0.1,
                                 padding: SIZES.padding,
-                                backgroundColor:  COLORS.white,
+                                backgroundColor:  COLORS.peach,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderRadius: SIZES.radius,
-                                elevation: this.state.selectedyellow,
+                                borderColor:this.state.high == 5 ? COLORS.softGray : COLORS.peach,
+                                borderWidth: this.state.high == 5 ? 3 : 0,
+                                elevation: this.state.high,
                             }}
-                            onPress = {() => {this.toggleColor(COLORS.yellow)}}
+                            onPress = {() => {this.togglePriority(3)}}
                         >
                              <View style={{flexDirection: 'row', alignItems: 'center',
                             justifyContent: 'center'}}>
-                              <Icon size={12} name={ this.state.selectedyellow == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Tarea</Text>
+                              {/* <Icon size={12} name={ this.state.high == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/> */}
+                              <BaseIcon containerStyle={{ backgroundColor: COLORS.peach }} icon={{ type: 'ionicon', name: 'md-flame' }}/>
+                            <Text style={{fontSize: 15,marginVertical: 20,color: COLORS.white}}> High</Text>
                             </View>
                         </TouchableOpacity>
                         </View>
 
                         </View>
-                        <View style={{flex: 1,flexDirection: 'row', alignItems: 'center',
-                        justifyContent: 'center',paddingBottom: 30}}>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 50,
-                            margin:10
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                width: SIZES.width * 0.2,
-                                height: SIZES.width * 0.05,
-                                padding: SIZES.padding,
-                                backgroundColor:  COLORS.white,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: SIZES.radius,
-                                elevation: this.state.selectedPeach,
-                            }}
-                            onPress = {() => {this.toggleColor(COLORS.peach)}}
-                        >
-                             <View style={{flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'center'}}>
-                              <Icon size={12} name={ this.state.selectedPeach == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Reserva</Text>
-                            </View>
-                        </TouchableOpacity>
-                        </View>
-
-                    <View
-                        style={{
-                           alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 50,
-                            margin:10
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                width: SIZES.width * 0.2,
-                                height: SIZES.width * 0.05,
-                                padding: SIZES.padding,
-                                backgroundColor: COLORS.white,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: SIZES.radius,
-                                elevation: this.state.selectedPurple,
-                            }}
-                            onPress = {() => {this.toggleColor(COLORS.purple)}}
-                        >
-                            <View style={{flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'center'}}>
-                              <Icon size={12} name={ this.state.selectedPurple == 5 ? 'circle' : 'circle-o'} style={{color: COLORS.softgray}}/>
-                            <Text style={{fontSize: 13,marginVertical: 20,color: COLORS.softgray}}> Reserva</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    </View>
+                        
                     </View>
     )
 }

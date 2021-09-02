@@ -82,7 +82,7 @@ export default class Business extends React.Component {
         var negocios = [];
         negocios = await BusinessModel.findBy({
             user_id_eq: JSON.parse(await AsyncStorage.getItem('id')),
-            id_neq: JSON.parse(await AsyncStorage.getItem('id'))  
+            id_neq: 1 
         });
         if(negocios != null){
             console.log(negocios)

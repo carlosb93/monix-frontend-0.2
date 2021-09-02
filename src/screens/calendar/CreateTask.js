@@ -17,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SIZES, FONTS, icons } from '../../constants'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ColorPicker from '../../components/ColorPicker/ColorPicker'
+import TypePicker from '../../components/TypePicker/TypePicker'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import SelectDropdown from 'react-native-select-dropdown'
 
@@ -168,6 +169,7 @@ export default class CreateTask extends React.Component {
       summary:'',
       title:'',
       id:0,
+      priority:1
     }
   };
 
@@ -183,11 +185,11 @@ export default class CreateTask extends React.Component {
   };
 
   callbackType = (childData) => {
-    this.setState({ColorPicker: childData})
-}
+    this.setState({priority: childData})
+};
   callbackColor = (childData) => {
     this.setState({ColorPicker: childData})
-}
+};
 
 SwitchWorkflow = () => {
   this.setState({isworkflow: !this.state.isworkflow});
@@ -219,7 +221,7 @@ handleConfirmStart = (timeStart) => {
 
 
 createEvent = async () => {
-  const user_id = this.state.id
+const user_id = this.state.id
 
 const date_start =  moment(this.state.timeStart).format('YYYY-MM-DD')
 const start =  moment(this.state.timeStart).valueOf()
@@ -238,7 +240,8 @@ const end =  moment(this.state.timeEnd).valueOf()
       user_id: parseInt(user_id),
       business_id: this.state.business_id,
       type:'EVENTO',
-      status:1
+      status:1,
+      priority:this.state.priority
       // todo:{},
      }
 
@@ -298,7 +301,7 @@ async get_businnesses() {
 
   negocios = await BusinessModel.findBy({
       user_id_eq: JSON.parse(await AsyncStorage.getItem('id')),
-      id_neq: JSON.parse(await AsyncStorage.getItem('id'))  
+      id_neq: 1 
   });
   if(negocios != null){
       this.setState({
@@ -366,7 +369,8 @@ async get_businnesses() {
                             }}
                         />
                 </TouchableOpacity>
-                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>   Nueva tarea</Text>
+                  <Text style={{ color: COLORS.white, ...FONTS.h2 }}>  Nueva tarea </Text>
+               
                   <TouchableOpacity
      onPress={() => {this.Delete() }}
   >
@@ -426,9 +430,9 @@ async get_businnesses() {
 
                 }}
               >
-                Tipo de tarea
+                Prioridad
               </Text>
-               {/* <TypePicker parentCallback={this.callbackType}/> */}
+               <TypePicker parentCallback={this.callbackType}/>
               
 
 <SelectDropdown
