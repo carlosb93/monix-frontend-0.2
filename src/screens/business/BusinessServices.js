@@ -298,6 +298,19 @@ closePanel = () => {
                         />
                 </TouchableOpacity>
                   <Text style={{ color: COLORS.white, ...FONTS.h2 }}>    {this.state.otherParam.name}</Text>
+                  <View style={{flexDirection:'row',margin:8}}>
+                  <TouchableOpacity
+     onPress={() => {navigation.navigate('BusinessFlow', {
+      itemId: this.state.otherParam.id,
+      otherParam: this.state.otherParam,
+    }); }}
+  >
+                  <Icon size={30} name='lightbulb-o'
+                                  style={{
+                                    margin:8,
+                                    color: COLORS.white,
+                                  }}/>
+</TouchableOpacity>
                   <TouchableOpacity
      onPress={() => {navigation.navigate('BusinessEdit', {
       itemId: this.state.otherParam.id,
@@ -310,6 +323,8 @@ closePanel = () => {
                                     color: COLORS.white,
                                   }}/>
 </TouchableOpacity>
+                  </View>
+                
 
               </View>
               </View>
@@ -387,6 +402,7 @@ closePanel = () => {
       )}
       keyExtractor={item => item.id}
       numColumns={numColumns} />
+
 
 <View style={{
   width: width,

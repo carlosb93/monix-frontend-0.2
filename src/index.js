@@ -45,6 +45,10 @@ import {
     Cryptocurrency,
     DayView,
     AgendaScreen,
+    BusinessFlow,
+    FlowNew,
+    FlowEdit,
+    FlowDesign,
 } from './screens';
 
 import Tabs from './navigation/tabs';
@@ -61,6 +65,8 @@ import ClientsModel from './models/Clientes';
 import AccountModel from './models/Account';
 import BalanceModel from './models/Balance';
 import IncomeModel from './models/Income';
+import FlowModel from './models/Flow';
+import FlowStepsModel from './models/FlowSteps';
 
 import * as Calendar from 'expo-calendar';
 
@@ -89,6 +95,8 @@ export default class App extends React.Component {
         var clients = [];
         var accounts = [];
         var balance = [];
+        var flow = [];
+        var flowsteps = [];
 
 
         const props = [
@@ -193,6 +201,20 @@ export default class App extends React.Component {
         } catch (error) {
             await BalanceModel.createTable()
             console.log('Table balances created successfully')
+        }
+        try {
+            // await FlowModel.dropTable()
+            flow = await FlowModel.query()
+        } catch (error) {
+            await FlowModel.createTable()
+            console.log('Table flow created successfully')
+        }
+        try {
+            // await FlowStepsModel.dropTable()
+            flowsteps = await FlowStepsModel.query()
+        } catch (error) {
+            await FlowStepsModel.createTable()
+            console.log('Table flowsteps created successfully')
         }
         try {
             // await CategoryModel.dropTable()
@@ -318,6 +340,11 @@ export default class App extends React.Component {
                     <Stack.Screen name="BusinessExpense" component={BusinessExpense}/>
                     <Stack.Screen name="ExpenseNew" component={ExpenseNew}/>
                     <Stack.Screen name="ExpenseEdit" component={ExpenseEdit}/>
+
+                    <Stack.Screen name="BusinessFlow" component={BusinessFlow}/>
+                    <Stack.Screen name="FlowNew" component={FlowNew}/>
+                    <Stack.Screen name="FlowEdit" component={FlowEdit}/>
+                    <Stack.Screen name="FlowDesign" component={FlowDesign}/>
 
 
                     <Stack.Screen name="Transaction" component={Transaction}/>
